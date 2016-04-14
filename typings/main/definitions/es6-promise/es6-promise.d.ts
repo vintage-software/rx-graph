@@ -1,4 +1,4 @@
-// Compiled using typings@0.6.10
+// Compiled using typings@0.6.8
 // Source: https://raw.githubusercontent.com/typed-typings/npm-es6-promise/fb04188767acfec1defd054fc8024fafa5cd4de7/dist/es6-promise.d.ts
 declare module 'es6-promise/dist/es6-promise' {
 export interface Thenable <R> {

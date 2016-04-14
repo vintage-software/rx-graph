@@ -1,6 +1,8 @@
 {
   "name": "vstack-graph",
-  "dependencies": {},
+  "dependencies": {
+    "es6-promise": "github:typed-typings/npm-es6-promise#fb04188767acfec1defd054fc8024fafa5cd4de7"
+  },
   "devDependencies": {},
   "ambientDependencies": {
     "es6-shim": "github:DefinitelyTyped/DefinitelyTyped/es6-shim/es6-shim.d.ts#4de74cb527395c13ba20b438c3a7a419ad931f1c",
