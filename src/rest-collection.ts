@@ -1,3 +1,5 @@
+/// <reference path="../typings/browser/ambient/es6-shim/es6-shim.d.ts" />
+
 import {Http, RequestOptionsArgs} from 'angular2/http';
 import {Injectable} from 'angular2/core';
 import {Observable} from 'rxjs/Observable';
@@ -7,14 +9,16 @@ import {Observer} from 'rxjs/Observer';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/startWith';
+import 'rxjs/add/operator/catch';
 
 export interface Dto {
-  id: any;
+    id: any;
 }
 
+@Injectable()
 export abstract class RestCollection<T extends Dto> {
     protected _requestOptionsArgs: RequestOptionsArgs;
-    private _collection$: BehaviorSubject<T[]>;
+    protected _collection$: BehaviorSubject<T[]>;
     private _errors$: BehaviorSubject<any[]>;
     private _store: { collection: T[] };
     private _history: any[];
@@ -26,11 +30,11 @@ export abstract class RestCollection<T extends Dto> {
         private _http: Http) {
         this._collection$ = new BehaviorSubject(<T[]>[]);
         this._errors$ = new BehaviorSubject([]);
-        
+
         this._store = { collection: [] };
         this._history = [];
         this._recordHistory('INIT');
-        
+
         (<any>window).store = (<any>window).store || [];
         (<any>window).store.push(this);
     }
@@ -43,7 +47,7 @@ export abstract class RestCollection<T extends Dto> {
         return this._errors$;
     }
 
-    loadAll(options = ''): Observable<any> {
+    loadAll(options = ''): Observable<Array<T>> {
         let completion$ = new Subject();
 
         this._apiGet(`${this._baseUrl}?${options}`).subscribe(data => {
@@ -57,7 +61,7 @@ export abstract class RestCollection<T extends Dto> {
         return completion$;
     }
 
-    load(id: any, options = ''): Observable<any> {
+    load(id: any, options = ''): Observable<T> {
         let completion$ = new Subject();
 
         this._apiGet(`${this._baseUrl}/${id}?${options}`).subscribe(data => {
@@ -71,7 +75,7 @@ export abstract class RestCollection<T extends Dto> {
         return completion$;
     }
 
-    create(item: any): Observable<any> {
+    create(item: any, options: string = ''): Observable<T> {
         let completion$ = new Subject();
 
         this._apiPost(this._baseUrl, this._slimify(item)).subscribe(data => {
@@ -85,7 +89,7 @@ export abstract class RestCollection<T extends Dto> {
         return completion$;
     }
 
-    update(item: any): Observable<any> {
+    update(item: any): Observable<T> {
         let completion$ = new Subject();
 
         this._apiPut(`${this._baseUrl}/${item.id}`, this._slimify(item)).subscribe(data => {
@@ -99,7 +103,7 @@ export abstract class RestCollection<T extends Dto> {
         return completion$;
     }
 
-    remove(id: any): Observable<any> {
+    remove(id: any): Observable<T> {
         let completion$ = new Subject();
 
         this._apiDelete(`${this._baseUrl}/${id}`).subscribe(response => {
@@ -112,12 +116,12 @@ export abstract class RestCollection<T extends Dto> {
 
         return completion$;
     }
-    
+
     updateCollection(items: T[]) {
-      if (items.length) {
-       items.forEach(i => this._updateCollectionItem(i.id, i));
-       this._recordHistory('MASTER-UPDATE');
-      }
+        if (items.length) {
+            items.forEach(i => this._updateCollectionItem(i.id, i));
+            this._recordHistory('MASTER-UPDATE');
+        }
     }
 
     protected _apiGet(url: string, opt?) {

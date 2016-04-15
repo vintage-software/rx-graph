@@ -1,8 +1,20 @@
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var http_1 = require('angular2/http');
+var core_1 = require('angular2/core');
 var Subject_1 = require('rxjs/Subject');
 var BehaviorSubject_1 = require('rxjs/subject/BehaviorSubject');
 require('rxjs/add/operator/share');
 require('rxjs/add/operator/map');
 require('rxjs/add/operator/startWith');
+require('rxjs/add/operator/catch');
 var RestCollection = (function () {
     function RestCollection(_baseUrl, _http) {
         this._baseUrl = _baseUrl;
@@ -55,8 +67,9 @@ var RestCollection = (function () {
         }, function (error) { _this._errors$.next(error); completion$.error(error); });
         return completion$;
     };
-    RestCollection.prototype.create = function (item) {
+    RestCollection.prototype.create = function (item, options) {
         var _this = this;
+        if (options === void 0) { options = ''; }
         var completion$ = new Subject_1.Subject();
         this._apiPost(this._baseUrl, this._slimify(item)).subscribe(function (data) {
             _this._addCollectionItem(data);
@@ -200,6 +213,10 @@ var RestCollection = (function () {
             || typeof item !== 'object';
     };
     RestCollection.debug = false;
+    RestCollection = __decorate([
+        core_1.Injectable(), 
+        __metadata('design:paramtypes', [String, http_1.Http])
+    ], RestCollection);
     return RestCollection;
 })();
 exports.RestCollection = RestCollection;

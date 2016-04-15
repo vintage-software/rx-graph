@@ -1,5 +1,7 @@
+/// <reference path="../typings/browser/ambient/es6-shim/es6-shim.d.ts" />
 import { Http, RequestOptionsArgs } from 'angular2/http';
 import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject } from 'rxjs/subject/BehaviorSubject';
 export interface Dto {
     id: any;
 }
@@ -7,7 +9,7 @@ export declare abstract class RestCollection<T extends Dto> {
     protected _baseUrl: string;
     private _http;
     protected _requestOptionsArgs: RequestOptionsArgs;
-    private _collection$;
+    protected _collection$: BehaviorSubject<T[]>;
     private _errors$;
     private _store;
     private _history;
@@ -15,11 +17,11 @@ export declare abstract class RestCollection<T extends Dto> {
     constructor(_baseUrl: string, _http: Http);
     collection$: Observable<T[]>;
     errors$: Observable<T[]>;
-    loadAll(options?: string): Observable<any>;
-    load(id: any, options?: string): Observable<any>;
-    create(item: any): Observable<any>;
-    update(item: any): Observable<any>;
-    remove(id: any): Observable<any>;
+    loadAll(options?: string): Observable<Array<T>>;
+    load(id: any, options?: string): Observable<T>;
+    create(item: any, options?: string): Observable<T>;
+    update(item: any): Observable<T>;
+    remove(id: any): Observable<T>;
     updateCollection(items: T[]): void;
     protected _apiGet(url: string, opt?: any): Observable<any>;
     protected _apiPost(url: string, val: any, opt?: any): Observable<any>;
