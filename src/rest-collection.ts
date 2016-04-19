@@ -34,9 +34,6 @@ export abstract class RestCollection<T extends Dto> {
         this._store = { collection: [] };
         this._history = [];
         this._recordHistory('INIT');
-
-        (<any>window).store = (<any>window).store || [];
-        (<any>window).store.push(this);
     }
 
     get collection$(): Observable<T[]> {
@@ -51,7 +48,7 @@ export abstract class RestCollection<T extends Dto> {
         let completion$ = new Subject();
 
         this._apiGet(`${this._baseUrl}?${options}`).subscribe(data => {
-            this._replaceCollection(data);
+            this._updateCollection(data);
             this._recordHistory('LOAD_ALL');
             this._collection$.next(this._store.collection);
             completion$.next(data);
@@ -161,8 +158,8 @@ export abstract class RestCollection<T extends Dto> {
         }
     }
 
-    protected _replaceCollection(collection: any[]) {
-        this._store = Object.assign({}, this._store, { collection }); // need to add not replace
+    protected _updateCollection(collection: any[]) {
+        this._store = Object.assign({}, this._store, { collection }); // need to add/merge not replace
     }
 
     protected _addCollectionItem(item: any) {

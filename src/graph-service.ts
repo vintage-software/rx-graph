@@ -4,7 +4,7 @@ import 'rxjs/add/operator/combineLatest';
 
 import {Dto, IServiceConfig} from './utilities';
 
-export class BaseMasterService<TGraph> {
+export class GraphService<TGraph> {
     private _debug: boolean = true;
     private _master$: BehaviorSubject<any[]>;
 

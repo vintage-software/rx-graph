@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -24,8 +25,6 @@ var RestCollection = (function () {
         this._store = { collection: [] };
         this._history = [];
         this._recordHistory('INIT');
-        window.store = window.store || [];
-        window.store.push(this);
     }
     Object.defineProperty(RestCollection.prototype, "collection$", {
         get: function () {
@@ -46,7 +45,7 @@ var RestCollection = (function () {
         if (options === void 0) { options = ''; }
         var completion$ = new Subject_1.Subject();
         this._apiGet(this._baseUrl + "?" + options).subscribe(function (data) {
-            _this._replaceCollection(data);
+            _this._updateCollection(data);
             _this._recordHistory('LOAD_ALL');
             _this._collection$.next(_this._store.collection);
             completion$.next(data);
@@ -144,7 +143,7 @@ var RestCollection = (function () {
             console.log(this._history.slice(-1)[0]);
         }
     };
-    RestCollection.prototype._replaceCollection = function (collection) {
+    RestCollection.prototype._updateCollection = function (collection) {
         this._store = Object.assign({}, this._store, { collection: collection });
     };
     RestCollection.prototype._addCollectionItem = function (item) {
@@ -218,6 +217,6 @@ var RestCollection = (function () {
         __metadata('design:paramtypes', [String, http_1.Http])
     ], RestCollection);
     return RestCollection;
-})();
+}());
 exports.RestCollection = RestCollection;
 //# sourceMappingURL=rest-collection.js.map

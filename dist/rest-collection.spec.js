@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -27,7 +28,7 @@ var MockItemService = (function (_super) {
         __metadata('design:paramtypes', [http_1.Http])
     ], MockItemService);
     return MockItemService;
-})(rest_collection_1.RestCollection);
+}(rest_collection_1.RestCollection));
 testing_1.describe('MyService Tests', function () {
     testing_1.beforeEachProviders(function () {
         return [
