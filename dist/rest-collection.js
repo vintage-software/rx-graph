@@ -12,10 +12,7 @@ var http_1 = require('angular2/http');
 var core_1 = require('angular2/core');
 var Subject_1 = require('rxjs/Subject');
 var BehaviorSubject_1 = require('rxjs/subject/BehaviorSubject');
-require('rxjs/add/operator/share');
 require('rxjs/add/operator/map');
-require('rxjs/add/operator/startWith');
-require('rxjs/add/operator/catch');
 var RestCollection = (function () {
     function RestCollection(_baseUrl, _http) {
         this._baseUrl = _baseUrl;

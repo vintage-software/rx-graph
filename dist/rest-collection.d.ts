@@ -2,10 +2,7 @@
 import { Http, RequestOptionsArgs } from 'angular2/http';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/subject/BehaviorSubject';
-import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/startWith';
-import 'rxjs/add/operator/catch';
 export interface Dto {
     id: any;
 }
