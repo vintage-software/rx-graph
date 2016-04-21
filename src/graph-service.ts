@@ -8,7 +8,7 @@ import {CollectionItem, clone} from './utilities';
 import {IServiceConfig} from './graph-helpers';
 
 export class GraphService<TGraph> {
-    private _debug: boolean = true;
+    private _debug: boolean = false;
     graph$: Observable<TGraph>;
 
     constructor(private _serviceConfigs: IServiceConfig<TGraph>[]) {

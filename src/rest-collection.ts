@@ -20,18 +20,14 @@ export abstract class RestCollection<T extends CollectionItem> {
     private _dataStore: { collection: T[] };
     private _historyStore: any[];
 
-    constructor(restCollectionConfig: {
-        baseUrl: string;
-        http: Http;
-        options?: RequestOptionsArgs;
-    }) {
+    constructor({ baseUrl, http, options } : { baseUrl: string, http: Http, options?: RequestOptionsArgs }) {
         this._collection$ = new BehaviorSubject(<T[]>[]);
         this._errors$ = new BehaviorSubject(<any>{});
         this._history$ = new BehaviorSubject(<any>{});
 
-        this._baseUrl = restCollectionConfig.baseUrl;
-        this._requestOptionsArgs = restCollectionConfig.options;
-        this._http = restCollectionConfig.http;
+        this._baseUrl = baseUrl;
+        this._requestOptionsArgs = options;
+        this._http = http;
 
         this._dataStore = { collection: [] };
         this._historyStore = [];

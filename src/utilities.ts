@@ -1,5 +1,4 @@
 import {Observable} from 'rxjs/Observable';
-import {RestCollection} from './rest-collection';
 
 export interface CollectionItem {
     id: any;
@@ -8,7 +7,9 @@ export interface CollectionItem {
 export function clone(obj) {
     let copy;
 
-    if (null == obj || "object" != typeof obj) return obj;
+    if (null === obj || 'object' !== typeof obj) {
+        return obj;
+    }
 
     if (obj instanceof Date) {
         copy = new Date();
@@ -38,7 +39,7 @@ export function clone(obj) {
 export function mergeCollection(target: any[], src: any[]) {
     src.forEach(srcItem => {
         let match = target.find(tItem => tItem.id === srcItem.id);
-        if(match) {
+        if (match) {
             Object.assign(match, srcItem)
         } else {
             target.push(srcItem);
@@ -47,17 +48,17 @@ export function mergeCollection(target: any[], src: any[]) {
 }
 
 export function slimify(item: any): any {
-  let newItem = {};
+    let newItem = {};
 
-  for (let prop in item) {
-      if (isPrimitive(item[prop])) {
-          newItem[prop] = item[prop];
-      } else {
-          newItem[prop] = null;
-      }
-  }
+    for (let prop in item) {
+        if (isPrimitive(item[prop])) {
+            newItem[prop] = item[prop];
+        } else {
+            newItem[prop] = null;
+        }
+    }
 
-  return newItem;
+    return newItem;
 }
 
 export function isPrimitive(item: any) {

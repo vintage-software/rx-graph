@@ -1,8 +1,9 @@
 "use strict";
 function clone(obj) {
     var copy;
-    if (null == obj || "object" != typeof obj)
+    if (null === obj || 'object' !== typeof obj) {
         return obj;
+    }
     if (obj instanceof Date) {
         copy = new Date();
         copy.setTime(obj.getTime());

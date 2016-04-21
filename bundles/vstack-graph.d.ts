@@ -23,7 +23,7 @@ declare module "rest-collection" {
         private _history$;
         private _dataStore;
         private _historyStore;
-        constructor(restCollectionConfig: {
+        constructor({baseUrl, http, options}: {
             baseUrl: string;
             http: Http;
             options?: RequestOptionsArgs;

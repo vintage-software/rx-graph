@@ -14,13 +14,14 @@ var BehaviorSubject_1 = require('rxjs/subject/BehaviorSubject');
 require('rxjs/add/operator/map');
 var utilities_1 = require('./utilities');
 var RestCollection = (function () {
-    function RestCollection(restCollectionConfig) {
+    function RestCollection(_a) {
+        var baseUrl = _a.baseUrl, http = _a.http, options = _a.options;
         this._collection$ = new BehaviorSubject_1.BehaviorSubject([]);
         this._errors$ = new BehaviorSubject_1.BehaviorSubject({});
         this._history$ = new BehaviorSubject_1.BehaviorSubject({});
-        this._baseUrl = restCollectionConfig.baseUrl;
-        this._requestOptionsArgs = restCollectionConfig.options;
-        this._http = restCollectionConfig.http;
+        this._baseUrl = baseUrl;
+        this._requestOptionsArgs = options;
+        this._http = http;
         this._dataStore = { collection: [] };
         this._historyStore = [];
         this._recordHistory('INIT');

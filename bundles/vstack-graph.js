@@ -17,8 +17,9 @@ System.register("utilities", [], function(exports_1, context_1) {
     var __moduleName = context_1 && context_1.id;
     function clone(obj) {
         var copy;
-        if (null == obj || "object" != typeof obj)
+        if (null === obj || 'object' !== typeof obj) {
             return obj;
+        }
         if (obj instanceof Date) {
             copy = new Date();
             copy.setTime(obj.getTime());
@@ -99,13 +100,14 @@ System.register("rest-collection", ['angular2/core', 'rxjs/Subject', 'rxjs/subje
             }],
         execute: function() {
             RestCollection = (function () {
-                function RestCollection(restCollectionConfig) {
+                function RestCollection(_a) {
+                    var baseUrl = _a.baseUrl, http = _a.http, options = _a.options;
                     this._collection$ = new BehaviorSubject_1.BehaviorSubject([]);
                     this._errors$ = new BehaviorSubject_1.BehaviorSubject({});
                     this._history$ = new BehaviorSubject_1.BehaviorSubject({});
-                    this._baseUrl = restCollectionConfig.baseUrl;
-                    this._requestOptionsArgs = restCollectionConfig.options;
-                    this._http = restCollectionConfig.http;
+                    this._baseUrl = baseUrl;
+                    this._requestOptionsArgs = options;
+                    this._http = http;
                     this._dataStore = { collection: [] };
                     this._historyStore = [];
                     this._recordHistory('INIT');
@@ -304,7 +306,7 @@ System.register("graph-service", ['rxjs/Observable', 'rxjs/add/operator/combineL
                 function GraphService(_serviceConfigs) {
                     var _this = this;
                     this._serviceConfigs = _serviceConfigs;
-                    this._debug = true;
+                    this._debug = false;
                     this.graph$ = Observable_1.Observable
                         .combineLatest(this._serviceConfigs.map(function (i) { return i.service.collection$; }))
                         .map(function (i) { return _this._slimify(i); })

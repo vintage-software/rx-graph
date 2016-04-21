@@ -8,7 +8,7 @@ var GraphService = (function () {
     function GraphService(_serviceConfigs) {
         var _this = this;
         this._serviceConfigs = _serviceConfigs;
-        this._debug = true;
+        this._debug = false;
         this.graph$ = Observable_1.Observable
             .combineLatest(this._serviceConfigs.map(function (i) { return i.service.collection$; }))
             .map(function (i) { return _this._slimify(i); })

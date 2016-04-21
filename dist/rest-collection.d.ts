@@ -12,7 +12,7 @@ export declare abstract class RestCollection<T extends CollectionItem> {
     private _history$;
     private _dataStore;
     private _historyStore;
-    constructor(restCollectionConfig: {
+    constructor({baseUrl, http, options}: {
         baseUrl: string;
         http: Http;
         options?: RequestOptionsArgs;
