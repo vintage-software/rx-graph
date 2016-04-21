@@ -25,3 +25,7 @@ export declare class ServiceConfig<TDto extends Dto, TGraph> implements IService
     mappings: Mapping[];
     constructor(service: RestCollection<TDto>, func: (graph: TGraph, collection: TDto[]) => void, mappings: Mapping[]);
 }
+export declare function clone(obj: any): any;
+export declare function deepmerge(target: any, src: any): any;
+export declare function slimify(item: any): any;
+export declare function isPrimitive(item: any): boolean;

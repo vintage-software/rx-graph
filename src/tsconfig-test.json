@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES5",
-    "module": "commonjs",
+    "module": "system",
     "moduleResolution": "node",
     "sourceMap": true,
     "emitDecoratorMetadata": true,
@@ -9,7 +9,7 @@
     "removeComments": true,
     "noImplicitAny": false,
     "declaration": true,
-    "outDir": "../dist"
+    "outFile": "../bundles/vstack-graph.js"
   }
 }
 

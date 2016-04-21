@@ -33,8 +33,4 @@ export declare abstract class RestCollection<T extends Dto> {
     protected _addCollectionItem(item: any): void;
     protected _updateCollectionItem(id: any, data: any): void;
     protected _removeCollectionItem(id: any): void;
-    private _clone(obj);
-    private _slimify(item);
-    private _deepmerge(target, src);
-    private _isPrimitive(item);
 }

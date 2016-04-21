@@ -13,6 +13,7 @@ var core_1 = require('angular2/core');
 var Subject_1 = require('rxjs/Subject');
 var BehaviorSubject_1 = require('rxjs/subject/BehaviorSubject');
 require('rxjs/add/operator/map');
+var utilities_1 = require('./utilities');
 var RestCollection = (function () {
     function RestCollection(_baseUrl, _http) {
         this._baseUrl = _baseUrl;
@@ -67,7 +68,7 @@ var RestCollection = (function () {
         var _this = this;
         if (options === void 0) { options = ''; }
         var completion$ = new Subject_1.Subject();
-        this._apiPost(this._baseUrl, this._slimify(item)).subscribe(function (data) {
+        this._apiPost(this._baseUrl, utilities_1.slimify(item)).subscribe(function (data) {
             _this._addCollectionItem(data);
             _this._recordHistory('CREATE');
             _this._collection$.next(_this._store.collection);
@@ -79,7 +80,7 @@ var RestCollection = (function () {
     RestCollection.prototype.update = function (item) {
         var _this = this;
         var completion$ = new Subject_1.Subject();
-        this._apiPut(this._baseUrl + "/" + item.id, this._slimify(item)).subscribe(function (data) {
+        this._apiPut(this._baseUrl + "/" + item.id, utilities_1.slimify(item)).subscribe(function (data) {
             _this._updateCollectionItem(item.id, data);
             _this._recordHistory('UPDATE');
             _this._collection$.next(_this._store.collection);
@@ -147,13 +148,12 @@ var RestCollection = (function () {
         this._store = { collection: this._store.collection.concat([item]) };
     };
     RestCollection.prototype._updateCollectionItem = function (id, data) {
-        var _this = this;
         var notFound = true;
         this._store = Object.assign({}, this._store, {
             collection: this._store.collection.map(function (item, index) {
                 if (item.id === id) {
                     notFound = false;
-                    return Object.assign({}, _this._deepmerge(item, data));
+                    return Object.assign({}, utilities_1.deepmerge(item, data));
                 }
                 return item;
             })
@@ -166,90 +166,6 @@ var RestCollection = (function () {
         this._store = Object.assign({}, this._store, {
             collection: this._store.collection.filter(function (item) { return item.id !== id; })
         });
-    };
-    RestCollection.prototype._clone = function (obj) {
-        var copy;
-        if (null == obj || "object" != typeof obj)
-            return obj;
-        if (obj instanceof Date) {
-            copy = new Date();
-            copy.setTime(obj.getTime());
-            return copy;
-        }
-        if (obj instanceof Array) {
-            copy = [];
-            for (var i = 0, len = obj.length; i < len; i++) {
-                copy[i] = this._clone(obj[i]);
-            }
-            return copy;
-        }
-        if (obj instanceof Object) {
-            copy = {};
-            for (var attr in obj) {
-                if (obj.hasOwnProperty(attr))
-                    copy[attr] = this._clone(obj[attr]);
-            }
-            return copy;
-        }
-        throw new Error('Unable to copy');
-    };
-    RestCollection.prototype._slimify = function (item) {
-        var newItem = {};
-        for (var prop in item) {
-            if (this._isPrimitive(item[prop])) {
-                newItem[prop] = item[prop];
-            }
-            else {
-                newItem[prop] = null;
-            }
-        }
-        return newItem;
-    };
-    RestCollection.prototype._deepmerge = function (target, src) {
-        var array = Array.isArray(src);
-        var dst = array && [] || {};
-        if (array) {
-            target = target || [];
-            dst = dst.concat(target);
-            src.forEach(function (e, i) {
-                if (typeof dst[i] === 'undefined') {
-                    dst[i] = e;
-                }
-                else if (typeof e === 'object') {
-                    dst[i] = this._deepmerge(target[i], e);
-                }
-                else {
-                    if (target.indexOf(e) === -1) {
-                        dst.push(e);
-                    }
-                }
-            });
-        }
-        else {
-            if (target && typeof target === 'object') {
-                Object.keys(target).forEach(function (key) {
-                    dst[key] = target[key];
-                });
-            }
-            Object.keys(src).forEach(function (key) {
-                if (typeof src[key] !== 'object' || !src[key]) {
-                    dst[key] = src[key];
-                }
-                else {
-                    if (!target[key]) {
-                        dst[key] = src[key];
-                    }
-                    else {
-                        dst[key] = this._deepmerge(target[key], src[key]);
-                    }
-                }
-            });
-        }
-        return dst;
-    };
-    RestCollection.prototype._isPrimitive = function (item) {
-        return Object.prototype.toString.call(item) === '[object Date]'
-            || typeof item !== 'object';
     };
     RestCollection.debug = false;
     RestCollection = __decorate([

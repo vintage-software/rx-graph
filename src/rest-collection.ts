@@ -7,6 +7,8 @@ import {Subject} from 'rxjs/Subject';
 import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject';
 import 'rxjs/add/operator/map';
 
+import {deepmerge, slimify} from './utilities';
+
 export interface Dto {
     id: any;
 }
@@ -71,7 +73,7 @@ export abstract class RestCollection<T extends Dto> {
     create(item: any, options: string = ''): Observable<T> {
         let completion$ = new Subject();
 
-        this._apiPost(this._baseUrl, this._slimify(item)).subscribe(data => {
+        this._apiPost(this._baseUrl, slimify(item)).subscribe(data => {
             this._addCollectionItem(data);
             this._recordHistory('CREATE');
             this._collection$.next(this._store.collection);
@@ -85,7 +87,7 @@ export abstract class RestCollection<T extends Dto> {
     update(item: any): Observable<T> {
         let completion$ = new Subject();
 
-        this._apiPut(`${this._baseUrl}/${item.id}`, this._slimify(item)).subscribe(data => {
+        this._apiPut(`${this._baseUrl}/${item.id}`, slimify(item)).subscribe(data => {
             this._updateCollectionItem(item.id, data);
             this._recordHistory('UPDATE');
             this._collection$.next(this._store.collection);
@@ -169,7 +171,7 @@ export abstract class RestCollection<T extends Dto> {
             collection: this._store.collection.map((item, index) => {
                 if (item.id === id) {
                     notFound = false;
-                    return Object.assign({}, this._deepmerge(item, data));
+                    return Object.assign({}, deepmerge(item, data));
                 }
                 return item;
             })
@@ -184,95 +186,5 @@ export abstract class RestCollection<T extends Dto> {
         this._store = Object.assign({}, this._store, {
             collection: this._store.collection.filter(item => item.id !== id)
         });
-    }
-
-    private _clone(obj) {
-        let copy;
-
-        if (null == obj || "object" != typeof obj) return obj;
-
-        if (obj instanceof Date) {
-            copy = new Date();
-            copy.setTime(obj.getTime());
-            return copy;
-        }
-
-        if (obj instanceof Array) {
-            copy = [];
-            for (let i = 0, len = obj.length; i < len; i++) {
-                copy[i] = this._clone(obj[i]);
-            }
-            return copy;
-        }
-
-        if (obj instanceof Object) {
-            copy = {};
-            for (let attr in obj) {
-                if (obj.hasOwnProperty(attr)) copy[attr] = this._clone(obj[attr]);
-            }
-            return copy;
-        }
-
-        throw new Error('Unable to copy');
-    }
-
-    private _slimify(item: any): any {
-        let newItem = {};
-
-        for (let prop in item) {
-            if (this._isPrimitive(item[prop])) {
-                newItem[prop] = item[prop];
-            } else {
-                newItem[prop] = null;
-            }
-        }
-
-        return newItem;
-    }
-
-    private _deepmerge(target, src) {
-        let array = Array.isArray(src);
-        let dst: any = array && [] || {};
-
-        if (array) {
-            target = target || [];
-            dst = dst.concat(target);
-            src.forEach(function (e, i) {
-                if (typeof dst[i] === 'undefined') {
-                    dst[i] = e;
-                } else if (typeof e === 'object') {
-                    dst[i] = this._deepmerge(target[i], e);
-                } else {
-                    if (target.indexOf(e) === -1) {
-                        dst.push(e);
-                    }
-                }
-            });
-        } else {
-            if (target && typeof target === 'object') {
-                Object.keys(target).forEach(function (key) {
-                    dst[key] = target[key];
-                })
-            }
-            Object.keys(src).forEach(function (key) {
-                if (typeof src[key] !== 'object' || !src[key]) {
-                    dst[key] = src[key];
-                }
-                else {
-                    if (!target[key]) {
-                        dst[key] = src[key];
-                    } else {
-                        dst[key] = this._deepmerge(target[key], src[key]);
-                    }
-                }
-            });
-        }
-
-        return dst;
-    }
-
-    private _isPrimitive(item: any) {
-        return Object.prototype.toString.call(item) === '[object Date]'
-            || typeof item !== 'object';
     }
 }
