@@ -88,4 +88,14 @@ describe('MyService Tests', () => {
             expect(items.length).toBe(0);
         });
     }));
+    
+    it('should allow a subscription of errors', inject([MockBackend, MockItemService], (mockBackend: MockBackend, mockItemService: MockItemService) => {
+        mockBackend.connections.subscribe((connection: MockConnection) => {
+            connection.mockRespond(new Response(new ResponseOptions({ body: { id: 1, value: 'value 1' }, status: 404 })));
+        });
+        
+        mockItemService.errors$.subscribe(err => {
+           expect(err).toBeDefined(); 
+        });
+    }));
 });

@@ -85,5 +85,13 @@ testing_1.describe('MyService Tests', function () {
             testing_1.expect(items.length).toBe(0);
         });
     }));
+    testing_1.it('should allow a subscription of errors', testing_1.inject([testing_2.MockBackend, MockItemService], function (mockBackend, mockItemService) {
+        mockBackend.connections.subscribe(function (connection) {
+            connection.mockRespond(new http_1.Response(new http_1.ResponseOptions({ body: { id: 1, value: 'value 1' }, status: 404 })));
+        });
+        mockItemService.errors$.subscribe(function (err) {
+            testing_1.expect(err).toBeDefined();
+        });
+    }));
 });
 //# sourceMappingURL=rest-collection.spec.js.map
