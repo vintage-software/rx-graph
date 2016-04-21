@@ -1,7 +1,7 @@
 /// <reference path="../typings/browser/ambient/jasmine/jasmine.d.ts" />
 
 import {describe, expect, beforeEach, it, inject, injectAsync, beforeEachProviders} from 'angular2/testing';
-import {Headers, HTTP_PROVIDERS, BaseRequestOptions, XHRBackend, Response, ResponseOptions, Http, ResponseType} from 'angular2/http';
+import {Headers, HTTP_PROVIDERS, BaseRequestOptions, XHRBackend, Response, ResponseOptions, Http, ResponseType, RequestOptionsArgs} from 'angular2/http';
 import {provide, Injectable, Injector} from 'angular2/core';
 import {MockBackend} from 'angular2/http/testing';
 import {MockConnection} from 'angular2/src/http/backends/mock_backend';
@@ -9,14 +9,13 @@ import {RestCollection} from './rest-collection';
 
 interface item {
     id: any;
-    createdAt: number;
     value: string;
 }
 
 @Injectable()
 class MockItemService extends RestCollection<item> {
     constructor(http: Http) {
-        super('http://56e05c3213da80110013eba3.mockapi.io/api/items', http);
+        super({ baseUrl: 'http://56e05c3213da80110013eba3.mockapi.io/api/items', options: {}, http });
     }
 }
 

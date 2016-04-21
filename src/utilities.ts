@@ -1,7 +1,7 @@
-import { Observable, } from 'rxjs/Observable';
-import { RestCollection } from './rest-collection';
+import {Observable} from 'rxjs/Observable';
+import {RestCollection} from './rest-collection';
 
-export interface Dto {
+export interface CollectionItem {
   id: any;
 }
 
@@ -21,8 +21,8 @@ export class Mapping {
   constructor(public collectionProperty: string, public to: IService, public mappingId: string, public many: boolean) { }
 }
 
-export class ServiceConfig<TDto extends Dto, TGraph> implements IServiceConfig<TGraph> {
-  constructor(public service: RestCollection<TDto>, public func: (graph: TGraph, collection: TDto[]) => void, public mappings: Mapping[]) { }
+export class ServiceConfig<TCollectionItem extends CollectionItem, TGraph> implements IServiceConfig<TGraph> {
+  constructor(public service: RestCollection<TCollectionItem>, public func: (graph: TGraph, collection: TCollectionItem[]) => void, public mappings: Mapping[]) { }
 }
 
 export function clone(obj) {

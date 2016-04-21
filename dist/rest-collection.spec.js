@@ -21,7 +21,7 @@ var rest_collection_1 = require('./rest-collection');
 var MockItemService = (function (_super) {
     __extends(MockItemService, _super);
     function MockItemService(http) {
-        _super.call(this, 'http://56e05c3213da80110013eba3.mockapi.io/api/items', http);
+        _super.call(this, { baseUrl: 'http://56e05c3213da80110013eba3.mockapi.io/api/items', options: {}, http: http });
     }
     MockItemService = __decorate([
         core_1.Injectable(), 

@@ -8,20 +8,20 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var http_1 = require('angular2/http');
 var core_1 = require('angular2/core');
 var Subject_1 = require('rxjs/Subject');
 var BehaviorSubject_1 = require('rxjs/subject/BehaviorSubject');
 require('rxjs/add/operator/map');
 var utilities_1 = require('./utilities');
 var RestCollection = (function () {
-    function RestCollection(_baseUrl, _http) {
-        this._baseUrl = _baseUrl;
-        this._http = _http;
+    function RestCollection(restCollectionConfig) {
         this._collection$ = new BehaviorSubject_1.BehaviorSubject([]);
         this._errors$ = new BehaviorSubject_1.BehaviorSubject({});
         this._history$ = new BehaviorSubject_1.BehaviorSubject({});
         this._history$.subscribe();
+        this._baseUrl = restCollectionConfig.baseUrl;
+        this._requestOptionsArgs = restCollectionConfig.options;
+        this._http = restCollectionConfig.http;
         this._dataStore = { collection: [] };
         this._historyStore = [];
         this._recordHistory('INIT');
@@ -168,7 +168,7 @@ var RestCollection = (function () {
     };
     RestCollection = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [String, http_1.Http])
+        __metadata('design:paramtypes', [Object])
     ], RestCollection);
     return RestCollection;
 }());

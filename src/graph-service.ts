@@ -2,7 +2,7 @@ import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/combineLatest';
 
-import {Dto, IServiceConfig} from './utilities';
+import {CollectionItem, IServiceConfig} from './utilities';
 
 export class GraphService<TGraph> {
     private _debug: boolean = true;

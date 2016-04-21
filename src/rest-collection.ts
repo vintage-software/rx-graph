@@ -7,23 +7,33 @@ import {Subject} from 'rxjs/Subject';
 import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject';
 import 'rxjs/add/operator/map';
 
-import {deepmerge, slimify, Dto} from './utilities';
+import {deepmerge, slimify, CollectionItem} from './utilities';
 
 @Injectable()
-export abstract class RestCollection<T extends Dto> {
+export abstract class RestCollection<T extends CollectionItem> {
+    protected _baseUrl: string;
     protected _requestOptionsArgs: RequestOptionsArgs;
+    private _http: Http;
     private _collection$: BehaviorSubject<T[]>;
     private _errors$: BehaviorSubject<any>;
     private _history$: Subject<any>;
     private _dataStore: { collection: T[] };
     private _historyStore: any[];
 
-    constructor(protected _baseUrl: string, private _http: Http) {
+    constructor(restCollectionConfig: {
+        baseUrl: string;
+        http: Http;
+        options?: RequestOptionsArgs;
+    }) {
         this._collection$ = new BehaviorSubject(<T[]>[]);
         this._errors$ = new BehaviorSubject(<any>{});
         this._history$ = new BehaviorSubject(<any>{});
         this._history$.subscribe();
-        
+
+        this._baseUrl = restCollectionConfig.baseUrl;
+        this._requestOptionsArgs = restCollectionConfig.options;
+        this._http = restCollectionConfig.http;
+
         this._dataStore = { collection: [] };
         this._historyStore = [];
         this._recordHistory('INIT');

@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs/Observable';
 import { RestCollection } from './rest-collection';
-export interface Dto {
+export interface CollectionItem {
     id: any;
 }
 export interface IService {
@@ -20,11 +20,11 @@ export declare class Mapping {
     many: boolean;
     constructor(collectionProperty: string, to: IService, mappingId: string, many: boolean);
 }
-export declare class ServiceConfig<TDto extends Dto, TGraph> implements IServiceConfig<TGraph> {
-    service: RestCollection<TDto>;
-    func: (graph: TGraph, collection: TDto[]) => void;
+export declare class ServiceConfig<TCollectionItem extends CollectionItem, TGraph> implements IServiceConfig<TGraph> {
+    service: RestCollection<TCollectionItem>;
+    func: (graph: TGraph, collection: TCollectionItem[]) => void;
     mappings: Mapping[];
-    constructor(service: RestCollection<TDto>, func: (graph: TGraph, collection: TDto[]) => void, mappings: Mapping[]);
+    constructor(service: RestCollection<TCollectionItem>, func: (graph: TGraph, collection: TCollectionItem[]) => void, mappings: Mapping[]);
 }
 export declare function clone(obj: any): any;
 export declare function deepmerge(target: any, src: any): any;

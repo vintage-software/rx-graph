@@ -4,17 +4,21 @@ declare module "rest-collection" {
     import { Http, RequestOptionsArgs } from 'angular2/http';
     import { Observable } from 'rxjs/Observable';
     import 'rxjs/add/operator/map';
-    import { Dto } from "utilities";
-    export abstract class RestCollection<T extends Dto> {
+    import { CollectionItem } from "utilities";
+    export abstract class RestCollection<T extends CollectionItem> {
         protected _baseUrl: string;
-        private _http;
         protected _requestOptionsArgs: RequestOptionsArgs;
+        private _http;
         private _collection$;
         private _errors$;
         private _history$;
         private _dataStore;
         private _historyStore;
-        constructor(_baseUrl: string, _http: Http);
+        constructor(restCollectionConfig: {
+            baseUrl: string;
+            http: Http;
+            options?: RequestOptionsArgs;
+        });
         collection$: Observable<T[]>;
         errors$: Observable<any>;
         history$: Observable<any>;
@@ -38,7 +42,7 @@ declare module "rest-collection" {
 declare module "utilities" {
     import { Observable } from 'rxjs/Observable';
     import { RestCollection } from "rest-collection";
-    export interface Dto {
+    export interface CollectionItem {
         id: any;
     }
     export interface IService {
@@ -58,11 +62,11 @@ declare module "utilities" {
         many: boolean;
         constructor(collectionProperty: string, to: IService, mappingId: string, many: boolean);
     }
-    export class ServiceConfig<TDto extends Dto, TGraph> implements IServiceConfig<TGraph> {
-        service: RestCollection<TDto>;
-        func: (graph: TGraph, collection: TDto[]) => void;
+    export class ServiceConfig<TCollectionItem extends CollectionItem, TGraph> implements IServiceConfig<TGraph> {
+        service: RestCollection<TCollectionItem>;
+        func: (graph: TGraph, collection: TCollectionItem[]) => void;
         mappings: Mapping[];
-        constructor(service: RestCollection<TDto>, func: (graph: TGraph, collection: TDto[]) => void, mappings: Mapping[]);
+        constructor(service: RestCollection<TCollectionItem>, func: (graph: TGraph, collection: TCollectionItem[]) => void, mappings: Mapping[]);
     }
     export function clone(obj: any): any;
     export function deepmerge(target: any, src: any): any;
