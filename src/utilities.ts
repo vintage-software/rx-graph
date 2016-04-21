@@ -7,7 +7,8 @@ export interface Dto {
 
 export interface IService {
   collection$: Observable<any[]>;
-  updateCollection(items: any[]): void;
+  errors$: Observable<any>;
+  _dangerousGraphUpdateCollection: any;
 }
 
 export interface IServiceConfig<TGraph> {
@@ -17,15 +18,11 @@ export interface IServiceConfig<TGraph> {
 }
 
 export class Mapping {
-  constructor(public collectionProperty: string, public to: IService, public mappingId: string, public many: boolean) {
-
-  }
+  constructor(public collectionProperty: string, public to: IService, public mappingId: string, public many: boolean) { }
 }
 
 export class ServiceConfig<TDto extends Dto, TGraph> implements IServiceConfig<TGraph> {
-  constructor(public service: RestCollection<TDto>, public func: (graph: TGraph, collection: TDto[]) => void, public mappings: Mapping[]) {
-
-  }
+  constructor(public service: RestCollection<TDto>, public func: (graph: TGraph, collection: TDto[]) => void, public mappings: Mapping[]) { }
 }
 
 export function clone(obj) {

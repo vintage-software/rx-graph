@@ -5,7 +5,8 @@ export interface Dto {
 }
 export interface IService {
     collection$: Observable<any[]>;
-    updateCollection(items: any[]): void;
+    errors$: Observable<any>;
+    _dangerousGraphUpdateCollection: any;
 }
 export interface IServiceConfig<TGraph> {
     service: IService;

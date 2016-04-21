@@ -7,30 +7,25 @@ import {Subject} from 'rxjs/Subject';
 import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject';
 import 'rxjs/add/operator/map';
 
-import {deepmerge, slimify} from './utilities';
-
-export interface Dto {
-    id: any;
-}
+import {deepmerge, slimify, Dto} from './utilities';
 
 @Injectable()
 export abstract class RestCollection<T extends Dto> {
     protected _requestOptionsArgs: RequestOptionsArgs;
-    protected _collection$: BehaviorSubject<T[]>;
+    private _collection$: BehaviorSubject<T[]>;
     private _errors$: BehaviorSubject<any>;
-    private _store: { collection: T[] };
-    private _history: any[];
+    private _history$: Subject<any>;
+    private _dataStore: { collection: T[] };
+    private _historyStore: any[];
 
-    static debug = false;
-
-    constructor(
-        protected _baseUrl: string,
-        private _http: Http) {
+    constructor(protected _baseUrl: string, private _http: Http) {
         this._collection$ = new BehaviorSubject(<T[]>[]);
         this._errors$ = new BehaviorSubject(<any>{});
-
-        this._store = { collection: [] };
-        this._history = [];
+        this._history$ = new BehaviorSubject(<any>{});
+        this._history$.subscribe();
+        
+        this._dataStore = { collection: [] };
+        this._historyStore = [];
         this._recordHistory('INIT');
     }
 
@@ -42,16 +37,20 @@ export abstract class RestCollection<T extends Dto> {
         return this._errors$;
     }
 
+    get history$(): Observable<any> {
+        return this._history$;
+    }
+
     loadAll(options = ''): Observable<Array<T>> {
         let completion$ = new Subject();
 
         this._apiGet(`${this._baseUrl}?${options}`).subscribe(data => {
             this._updateCollection(data);
             this._recordHistory('LOAD_ALL');
-            this._collection$.next(this._store.collection);
+            this._collection$.next(this._dataStore.collection);
             completion$.next(data);
             completion$.complete();
-        }, error => {  this._errors$.next(error); completion$.error(error); });
+        }, error => { this._errors$.next(error); completion$.error(error); });
 
         return completion$;
     }
@@ -62,7 +61,7 @@ export abstract class RestCollection<T extends Dto> {
         this._apiGet(`${this._baseUrl}/${id}?${options}`).subscribe(data => {
             this._updateCollectionItem(data.id, data);
             this._recordHistory('LOAD');
-            this._collection$.next(this._store.collection);
+            this._collection$.next(this._dataStore.collection);
             completion$.next(data);
             completion$.complete();
         }, error => { this._errors$.next(error); completion$.error(error); });
@@ -76,7 +75,7 @@ export abstract class RestCollection<T extends Dto> {
         this._apiPost(this._baseUrl, slimify(item)).subscribe(data => {
             this._addCollectionItem(data);
             this._recordHistory('CREATE');
-            this._collection$.next(this._store.collection);
+            this._collection$.next(this._dataStore.collection);
             completion$.next(data);
             completion$.complete();
         }, error => { this._errors$.next(error); completion$.error(error); });
@@ -90,7 +89,7 @@ export abstract class RestCollection<T extends Dto> {
         this._apiPut(`${this._baseUrl}/${item.id}`, slimify(item)).subscribe(data => {
             this._updateCollectionItem(item.id, data);
             this._recordHistory('UPDATE');
-            this._collection$.next(this._store.collection);
+            this._collection$.next(this._dataStore.collection);
             completion$.next(data);
             completion$.complete();
         }, error => { this._errors$.next(error); completion$.error(error); });
@@ -104,7 +103,7 @@ export abstract class RestCollection<T extends Dto> {
         this._apiDelete(`${this._baseUrl}/${id}`).subscribe(response => {
             this._removeCollectionItem(id);
             this._recordHistory('REMOVE');
-            this._collection$.next(this._store.collection);
+            this._collection$.next(this._dataStore.collection);
             completion$.next(null);
             completion$.complete();
         }, error => { this._errors$.next(error); completion$.error(error); });
@@ -112,63 +111,46 @@ export abstract class RestCollection<T extends Dto> {
         return completion$;
     }
 
-    updateCollection(items: T[]) {
-        if (items.length) {
-            items.forEach(i => this._updateCollectionItem(i.id, i));
-            this._recordHistory('MASTER-UPDATE');
-        }
-    }
-
     protected _apiGet(url: string, opt?) {
-        let options = Object.assign({}, this._requestOptionsArgs, opt);
-        return this._http.get(url, options)
-            .map(res => res.json());
+        return this._http.get(url, Object.assign({}, this._requestOptionsArgs, opt)).map(res => res.json());
     }
 
     protected _apiPost(url: string, val, opt?) {
-        let options = Object.assign({}, this._requestOptionsArgs, opt);
         let body = typeof val === 'object' ? JSON.stringify(val) : val;
-        return this._http.post(url, body, options)
-            .map(res => res.json());
+        return this._http.post(url, body, Object.assign({}, this._requestOptionsArgs, opt)).map(res => res.json());
     }
 
     protected _apiPut(url: string, val, opt?) {
-        let options = Object.assign({}, this._requestOptionsArgs, opt);
         let body = typeof val === 'object' ? JSON.stringify(val) : val;
-        return this._http.put(url, body, options)
-            .map(res => res.json());
+        return this._http.put(url, body, Object.assign({}, this._requestOptionsArgs, opt)).map(res => res.json());
     }
 
     protected _apiDelete(url: string, opt?) {
-        let options = Object.assign({}, this._requestOptionsArgs, opt);
-        return this._http.delete(url, options)
-            .map(res => res.status);
+        return this._http.delete(url, Object.assign({}, this._requestOptionsArgs, opt)).map(res => res.status);
     }
 
     protected _recordHistory(action: string) {
-        if (RestCollection.debug) {
-            if (this._history.length >= 100) {
-                this._history.shift();
-            } else {
-                this._history.push({ action, state: this._store, resource: this._baseUrl });
-            }
-            console.log(this._history.slice(-1)[0]);
+        if (this._historyStore.length >= 100) {
+            this._historyStore.shift();
+        } else {
+            this._historyStore.push({ action, state: this._dataStore, resource: this._baseUrl });
+            this._history$.next(this._historyStore);
         }
     }
 
     protected _updateCollection(collection: any[]) {
-        this._store = Object.assign({}, this._store, { collection }); // need to add/merge not replace
+        this._dataStore = Object.assign({}, this._dataStore, { collection }); // need to add/merge not replace
     }
 
     protected _addCollectionItem(item: any) {
-        this._store = { collection: [...this._store.collection, item] };
+        this._dataStore = { collection: [...this._dataStore.collection, item] };
     }
 
     protected _updateCollectionItem(id: any, data: any) {
         let notFound = true;
 
-        this._store = Object.assign({}, this._store, {
-            collection: this._store.collection.map((item, index) => {
+        this._dataStore = Object.assign({}, this._dataStore, {
+            collection: this._dataStore.collection.map((item, index) => {
                 if (item.id === id) {
                     notFound = false;
                     return Object.assign({}, deepmerge(item, data));
@@ -178,13 +160,21 @@ export abstract class RestCollection<T extends Dto> {
         });
 
         if (notFound) {
-            this._store = { collection: [...this._store.collection, data] };
+            this._dataStore = { collection: [...this._dataStore.collection, data] };
         }
     }
 
     protected _removeCollectionItem(id: any) {
-        this._store = Object.assign({}, this._store, {
-            collection: this._store.collection.filter(item => item.id !== id)
+        this._dataStore = Object.assign({}, this._dataStore, {
+            collection: this._dataStore.collection.filter(item => item.id !== id)
         });
+    }
+
+    _dangerousGraphUpdateCollection(items: T[]) {
+        // Exposed as a hook for the GraphService, need better solution for this...
+        if (items.length) {
+            items.forEach(i => this._updateCollectionItem(i.id, i));
+            this._recordHistory('GRAPH-UPDATE');
+        }
     }
 }

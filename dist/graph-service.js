@@ -50,7 +50,7 @@ var GraphService = (function () {
                     });
                 });
             }
-            arr.forEach(function (value, index) { return value && _this._serviceConfigs[index].service.updateCollection(value); });
+            arr.forEach(function (value, index) { return value && _this._serviceConfigs[index].service._dangerousGraphUpdateCollection(value); });
             _this._debug && console.log('master', master);
             return master;
         });

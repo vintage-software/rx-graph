@@ -20,8 +20,10 @@ var RestCollection = (function () {
         this._http = _http;
         this._collection$ = new BehaviorSubject_1.BehaviorSubject([]);
         this._errors$ = new BehaviorSubject_1.BehaviorSubject({});
-        this._store = { collection: [] };
-        this._history = [];
+        this._history$ = new BehaviorSubject_1.BehaviorSubject({});
+        this._history$.subscribe();
+        this._dataStore = { collection: [] };
+        this._historyStore = [];
         this._recordHistory('INIT');
     }
     Object.defineProperty(RestCollection.prototype, "collection$", {
@@ -38,6 +40,13 @@ var RestCollection = (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(RestCollection.prototype, "history$", {
+        get: function () {
+            return this._history$;
+        },
+        enumerable: true,
+        configurable: true
+    });
     RestCollection.prototype.loadAll = function (options) {
         var _this = this;
         if (options === void 0) { options = ''; }
@@ -45,7 +54,7 @@ var RestCollection = (function () {
         this._apiGet(this._baseUrl + "?" + options).subscribe(function (data) {
             _this._updateCollection(data);
             _this._recordHistory('LOAD_ALL');
-            _this._collection$.next(_this._store.collection);
+            _this._collection$.next(_this._dataStore.collection);
             completion$.next(data);
             completion$.complete();
         }, function (error) { _this._errors$.next(error); completion$.error(error); });
@@ -58,7 +67,7 @@ var RestCollection = (function () {
         this._apiGet(this._baseUrl + "/" + id + "?" + options).subscribe(function (data) {
             _this._updateCollectionItem(data.id, data);
             _this._recordHistory('LOAD');
-            _this._collection$.next(_this._store.collection);
+            _this._collection$.next(_this._dataStore.collection);
             completion$.next(data);
             completion$.complete();
         }, function (error) { _this._errors$.next(error); completion$.error(error); });
@@ -71,7 +80,7 @@ var RestCollection = (function () {
         this._apiPost(this._baseUrl, utilities_1.slimify(item)).subscribe(function (data) {
             _this._addCollectionItem(data);
             _this._recordHistory('CREATE');
-            _this._collection$.next(_this._store.collection);
+            _this._collection$.next(_this._dataStore.collection);
             completion$.next(data);
             completion$.complete();
         }, function (error) { _this._errors$.next(error); completion$.error(error); });
@@ -83,7 +92,7 @@ var RestCollection = (function () {
         this._apiPut(this._baseUrl + "/" + item.id, utilities_1.slimify(item)).subscribe(function (data) {
             _this._updateCollectionItem(item.id, data);
             _this._recordHistory('UPDATE');
-            _this._collection$.next(_this._store.collection);
+            _this._collection$.next(_this._dataStore.collection);
             completion$.next(data);
             completion$.complete();
         }, function (error) { _this._errors$.next(error); completion$.error(error); });
@@ -95,62 +104,45 @@ var RestCollection = (function () {
         this._apiDelete(this._baseUrl + "/" + id).subscribe(function (response) {
             _this._removeCollectionItem(id);
             _this._recordHistory('REMOVE');
-            _this._collection$.next(_this._store.collection);
+            _this._collection$.next(_this._dataStore.collection);
             completion$.next(null);
             completion$.complete();
         }, function (error) { _this._errors$.next(error); completion$.error(error); });
         return completion$;
     };
-    RestCollection.prototype.updateCollection = function (items) {
-        var _this = this;
-        if (items.length) {
-            items.forEach(function (i) { return _this._updateCollectionItem(i.id, i); });
-            this._recordHistory('MASTER-UPDATE');
-        }
-    };
     RestCollection.prototype._apiGet = function (url, opt) {
-        var options = Object.assign({}, this._requestOptionsArgs, opt);
-        return this._http.get(url, options)
-            .map(function (res) { return res.json(); });
+        return this._http.get(url, Object.assign({}, this._requestOptionsArgs, opt)).map(function (res) { return res.json(); });
     };
     RestCollection.prototype._apiPost = function (url, val, opt) {
-        var options = Object.assign({}, this._requestOptionsArgs, opt);
         var body = typeof val === 'object' ? JSON.stringify(val) : val;
-        return this._http.post(url, body, options)
-            .map(function (res) { return res.json(); });
+        return this._http.post(url, body, Object.assign({}, this._requestOptionsArgs, opt)).map(function (res) { return res.json(); });
     };
     RestCollection.prototype._apiPut = function (url, val, opt) {
-        var options = Object.assign({}, this._requestOptionsArgs, opt);
         var body = typeof val === 'object' ? JSON.stringify(val) : val;
-        return this._http.put(url, body, options)
-            .map(function (res) { return res.json(); });
+        return this._http.put(url, body, Object.assign({}, this._requestOptionsArgs, opt)).map(function (res) { return res.json(); });
     };
     RestCollection.prototype._apiDelete = function (url, opt) {
-        var options = Object.assign({}, this._requestOptionsArgs, opt);
-        return this._http.delete(url, options)
-            .map(function (res) { return res.status; });
+        return this._http.delete(url, Object.assign({}, this._requestOptionsArgs, opt)).map(function (res) { return res.status; });
     };
     RestCollection.prototype._recordHistory = function (action) {
-        if (RestCollection.debug) {
-            if (this._history.length >= 100) {
-                this._history.shift();
-            }
-            else {
-                this._history.push({ action: action, state: this._store, resource: this._baseUrl });
-            }
-            console.log(this._history.slice(-1)[0]);
+        if (this._historyStore.length >= 100) {
+            this._historyStore.shift();
+        }
+        else {
+            this._historyStore.push({ action: action, state: this._dataStore, resource: this._baseUrl });
+            this._history$.next(this._historyStore);
         }
     };
     RestCollection.prototype._updateCollection = function (collection) {
-        this._store = Object.assign({}, this._store, { collection: collection });
+        this._dataStore = Object.assign({}, this._dataStore, { collection: collection });
     };
     RestCollection.prototype._addCollectionItem = function (item) {
-        this._store = { collection: this._store.collection.concat([item]) };
+        this._dataStore = { collection: this._dataStore.collection.concat([item]) };
     };
     RestCollection.prototype._updateCollectionItem = function (id, data) {
         var notFound = true;
-        this._store = Object.assign({}, this._store, {
-            collection: this._store.collection.map(function (item, index) {
+        this._dataStore = Object.assign({}, this._dataStore, {
+            collection: this._dataStore.collection.map(function (item, index) {
                 if (item.id === id) {
                     notFound = false;
                     return Object.assign({}, utilities_1.deepmerge(item, data));
@@ -159,15 +151,21 @@ var RestCollection = (function () {
             })
         });
         if (notFound) {
-            this._store = { collection: this._store.collection.concat([data]) };
+            this._dataStore = { collection: this._dataStore.collection.concat([data]) };
         }
     };
     RestCollection.prototype._removeCollectionItem = function (id) {
-        this._store = Object.assign({}, this._store, {
-            collection: this._store.collection.filter(function (item) { return item.id !== id; })
+        this._dataStore = Object.assign({}, this._dataStore, {
+            collection: this._dataStore.collection.filter(function (item) { return item.id !== id; })
         });
     };
-    RestCollection.debug = false;
+    RestCollection.prototype._dangerousGraphUpdateCollection = function (items) {
+        var _this = this;
+        if (items.length) {
+            items.forEach(function (i) { return _this._updateCollectionItem(i.id, i); });
+            this._recordHistory('GRAPH-UPDATE');
+        }
+    };
     RestCollection = __decorate([
         core_1.Injectable(), 
         __metadata('design:paramtypes', [String, http_1.Http])

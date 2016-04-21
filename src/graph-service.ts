@@ -52,7 +52,7 @@ export class GraphService<TGraph> {
                 });
             }
 
-            arr.forEach((value, index) => value && this._serviceConfigs[index].service.updateCollection(value));
+            arr.forEach((value, index) => value && this._serviceConfigs[index].service._dangerousGraphUpdateCollection(value));
 
             this._debug && console.log('master', master);
             return master;
