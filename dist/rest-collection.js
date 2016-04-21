@@ -18,7 +18,7 @@ var RestCollection = (function () {
         this._baseUrl = _baseUrl;
         this._http = _http;
         this._collection$ = new BehaviorSubject_1.BehaviorSubject([]);
-        this._errors$ = new BehaviorSubject_1.BehaviorSubject([]);
+        this._errors$ = new BehaviorSubject_1.BehaviorSubject({});
         this._store = { collection: [] };
         this._history = [];
         this._recordHistory('INIT');

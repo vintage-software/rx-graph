@@ -17,7 +17,7 @@ export declare abstract class RestCollection<T extends Dto> {
     static debug: boolean;
     constructor(_baseUrl: string, _http: Http);
     collection$: Observable<T[]>;
-    errors$: Observable<T[]>;
+    errors$: Observable<any>;
     loadAll(options?: string): Observable<Array<T>>;
     load(id: any, options?: string): Observable<T>;
     create(item: any, options?: string): Observable<T>;

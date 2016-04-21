@@ -15,7 +15,7 @@ export interface Dto {
 export abstract class RestCollection<T extends Dto> {
     protected _requestOptionsArgs: RequestOptionsArgs;
     protected _collection$: BehaviorSubject<T[]>;
-    private _errors$: BehaviorSubject<any[]>;
+    private _errors$: BehaviorSubject<any>;
     private _store: { collection: T[] };
     private _history: any[];
 
@@ -25,7 +25,7 @@ export abstract class RestCollection<T extends Dto> {
         protected _baseUrl: string,
         private _http: Http) {
         this._collection$ = new BehaviorSubject(<T[]>[]);
-        this._errors$ = new BehaviorSubject([]);
+        this._errors$ = new BehaviorSubject(<any>{});
 
         this._store = { collection: [] };
         this._history = [];
@@ -36,7 +36,7 @@ export abstract class RestCollection<T extends Dto> {
         return this._collection$; //.map(collection => this._clone(this._store.collection));
     }
 
-    get errors$(): Observable<T[]> {
+    get errors$(): Observable<any> {
         return this._errors$;
     }
 
@@ -49,7 +49,7 @@ export abstract class RestCollection<T extends Dto> {
             this._collection$.next(this._store.collection);
             completion$.next(data);
             completion$.complete();
-        }, error => { this._errors$.next(error); completion$.error(error); });
+        }, error => {  this._errors$.next(error); completion$.error(error); });
 
         return completion$;
     }
