@@ -1,5 +1,14 @@
 /// <reference path="../typings/browser/ambient/es6-shim/es6-shim.d.ts" />
 /// <reference path="../typings/browser/ambient/jasmine/jasmine.d.ts" />
+declare module "utilities" {
+    export interface CollectionItem {
+        id: any;
+    }
+    export function clone(obj: any): any;
+    export function mergeCollection(target: any[], src: any[]): void;
+    export function slimify(item: any): any;
+    export function isPrimitive(item: any): boolean;
+}
 declare module "rest-collection" {
     import { Http, RequestOptionsArgs } from 'angular2/http';
     import { Observable } from 'rxjs/Observable';
@@ -32,27 +41,22 @@ declare module "rest-collection" {
         protected _apiPut(url: string, val: any, opt?: any): Observable<any>;
         protected _apiDelete(url: string, opt?: any): Observable<number>;
         protected _recordHistory(action: string): void;
-        protected _updateCollection(collection: any[]): void;
-        protected _addCollectionItem(item: any): void;
-        protected _updateCollectionItem(id: any, data: any): void;
         protected _removeCollectionItem(id: any): void;
         _dangerousGraphUpdateCollection(items: T[]): void;
+        protected _updateCollectionItem(id: any, data: any): void;
     }
 }
-declare module "utilities" {
+declare module "graph-helpers" {
     import { Observable } from 'rxjs/Observable';
     import { RestCollection } from "rest-collection";
-    export interface CollectionItem {
-        id: any;
-    }
+    import { CollectionItem } from "utilities";
     export interface IService {
-        collection$: Observable<any[]>;
+        collection$: Observable<CollectionItem[]>;
         errors$: Observable<any>;
-        _dangerousGraphUpdateCollection: any;
     }
     export interface IServiceConfig<TGraph> {
         service: IService;
-        func: (graph: TGraph, collection: any[]) => void;
+        func: (graph: TGraph, collection: CollectionItem[]) => void;
         mappings: Mapping[];
     }
     export class Mapping {
@@ -68,26 +72,25 @@ declare module "utilities" {
         mappings: Mapping[];
         constructor(service: RestCollection<TCollectionItem>, func: (graph: TGraph, collection: TCollectionItem[]) => void, mappings: Mapping[]);
     }
-    export function clone(obj: any): any;
-    export function deepmerge(target: any, src: any): any;
-    export function slimify(item: any): any;
-    export function isPrimitive(item: any): boolean;
 }
 declare module "graph-service" {
     import { Observable } from 'rxjs/Observable';
     import 'rxjs/add/operator/combineLatest';
-    import { IServiceConfig } from "utilities";
+    import 'rxjs/add/operator/startWith';
+    import 'rxjs/Rx';
+    import { IServiceConfig } from "graph-helpers";
     export class GraphService<TGraph> {
         private _serviceConfigs;
         private _debug;
-        private _master$;
-        constructor(_serviceConfigs: IServiceConfig<TGraph>[]);
         graph$: Observable<TGraph>;
-        private _slimify(masterObs);
+        constructor(_serviceConfigs: IServiceConfig<TGraph>[]);
+        private _slimify(master);
         private _combine(arr1, arr2);
         private _copy(masterObs);
-        private _toGraph(masterObs);
+        private _toGraph(master);
     }
+}
+declare module "graph-service.spec" {
 }
 declare module "rest-collection.spec" {
 }

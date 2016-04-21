@@ -1,23 +1,4 @@
 "use strict";
-var Mapping = (function () {
-    function Mapping(collectionProperty, to, mappingId, many) {
-        this.collectionProperty = collectionProperty;
-        this.to = to;
-        this.mappingId = mappingId;
-        this.many = many;
-    }
-    return Mapping;
-}());
-exports.Mapping = Mapping;
-var ServiceConfig = (function () {
-    function ServiceConfig(service, func, mappings) {
-        this.service = service;
-        this.func = func;
-        this.mappings = mappings;
-    }
-    return ServiceConfig;
-}());
-exports.ServiceConfig = ServiceConfig;
 function clone(obj) {
     var copy;
     if (null == obj || "object" != typeof obj)
@@ -45,49 +26,18 @@ function clone(obj) {
     throw new Error('Unable to copy');
 }
 exports.clone = clone;
-function deepmerge(target, src) {
-    var array = Array.isArray(src);
-    var dst = array && [] || {};
-    if (array) {
-        target = target || [];
-        dst = dst.concat(target);
-        src.forEach(function (e, i) {
-            if (typeof dst[i] === 'undefined') {
-                dst[i] = e;
-            }
-            else if (typeof e === 'object') {
-                dst[i] = deepmerge(target[i], e);
-            }
-            else {
-                if (target.indexOf(e) === -1) {
-                    dst.push(e);
-                }
-            }
-        });
-    }
-    else {
-        if (target && typeof target === 'object') {
-            Object.keys(target).forEach(function (key) {
-                dst[key] = target[key];
-            });
+function mergeCollection(target, src) {
+    src.forEach(function (srcItem) {
+        var match = target.find(function (tItem) { return tItem.id === srcItem.id; });
+        if (match) {
+            Object.assign(match, srcItem);
         }
-        Object.keys(src).forEach(function (key) {
-            if (typeof src[key] !== 'object' || !src[key]) {
-                dst[key] = src[key];
-            }
-            else {
-                if (!target[key]) {
-                    dst[key] = src[key];
-                }
-                else {
-                    dst[key] = deepmerge(target[key], src[key]);
-                }
-            }
-        });
-    }
-    return dst;
+        else {
+            target.push(srcItem);
+        }
+    });
 }
-exports.deepmerge = deepmerge;
+exports.mergeCollection = mergeCollection;
 function slimify(item) {
     var newItem = {};
     for (var prop in item) {

@@ -30,9 +30,7 @@ export declare abstract class RestCollection<T extends CollectionItem> {
     protected _apiPut(url: string, val: any, opt?: any): Observable<any>;
     protected _apiDelete(url: string, opt?: any): Observable<number>;
     protected _recordHistory(action: string): void;
-    protected _updateCollection(collection: any[]): void;
-    protected _addCollectionItem(item: any): void;
-    protected _updateCollectionItem(id: any, data: any): void;
     protected _removeCollectionItem(id: any): void;
     _dangerousGraphUpdateCollection(items: T[]): void;
+    protected _updateCollectionItem(id: any, data: any): void;
 }

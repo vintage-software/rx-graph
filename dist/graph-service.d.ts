@@ -1,14 +1,15 @@
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/combineLatest';
-import { IServiceConfig } from './utilities';
+import 'rxjs/add/operator/startWith';
+import 'rxjs/Rx';
+import { IServiceConfig } from './graph-helpers';
 export declare class GraphService<TGraph> {
     private _serviceConfigs;
     private _debug;
-    private _master$;
-    constructor(_serviceConfigs: IServiceConfig<TGraph>[]);
     graph$: Observable<TGraph>;
-    private _slimify(masterObs);
+    constructor(_serviceConfigs: IServiceConfig<TGraph>[]);
+    private _slimify(master);
     private _combine(arr1, arr2);
     private _copy(masterObs);
-    private _toGraph(masterObs);
+    private _toGraph(master);
 }

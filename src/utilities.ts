@@ -5,26 +5,6 @@ export interface CollectionItem {
     id: any;
 }
 
-export interface IService {
-    collection$: Observable<any[]>;
-    errors$: Observable<any>;
-    _dangerousGraphUpdateCollection: any;
-}
-
-export interface IServiceConfig<TGraph> {
-    service: IService;
-    func: (graph: TGraph, collection: any[]) => void;
-    mappings: Mapping[];
-}
-
-export class Mapping {
-    constructor(public collectionProperty: string, public to: IService, public mappingId: string, public many: boolean) { }
-}
-
-export class ServiceConfig<TCollectionItem extends CollectionItem, TGraph> implements IServiceConfig<TGraph> {
-    constructor(public service: RestCollection<TCollectionItem>, public func: (graph: TGraph, collection: TCollectionItem[]) => void, public mappings: Mapping[]) { }
-}
-
 export function clone(obj) {
     let copy;
 
@@ -55,44 +35,15 @@ export function clone(obj) {
     throw new Error('Unable to copy');
 }
 
-export function deepmerge(target, src) {
-    let array = Array.isArray(src);
-    let dst: any = array && [] || {};
-
-    if (array) {
-        target = target || [];
-        dst = dst.concat(target);
-        src.forEach(function (e, i) {
-          if (typeof dst[i] === 'undefined') {
-              dst[i] = e;
-          } else if (typeof e === 'object') {
-              dst[i] = deepmerge(target[i], e);
-          } else {
-              if (target.indexOf(e) === -1) {
-                  dst.push(e);
-              }
-          }
-        });
-    } else {
-      if (target && typeof target === 'object') {
-          Object.keys(target).forEach(function (key) {
-              dst[key] = target[key];
-          })
-      }
-      Object.keys(src).forEach(function (key) {
-          if (typeof src[key] !== 'object' || !src[key]) {
-              dst[key] = src[key];
-          } else {
-              if (!target[key]) {
-                  dst[key] = src[key];
-              } else {
-                  dst[key] = deepmerge(target[key], src[key]);
-              }
-          }
-      });
-    }
-
-    return dst;
+export function mergeCollection(target: any[], src: any[]) {
+    src.forEach(srcItem => {
+        let match = target.find(tItem => tItem.id === srcItem.id);
+        if(match) {
+            Object.assign(match, srcItem)
+        } else {
+            target.push(srcItem);
+        }
+    });
 }
 
 export function slimify(item: any): any {

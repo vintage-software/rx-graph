@@ -27,7 +27,7 @@ var RestCollection = (function () {
     }
     Object.defineProperty(RestCollection.prototype, "collection$", {
         get: function () {
-            return this._collection$;
+            return this._collection$.map(function (collection) { return utilities_1.clone(collection); });
         },
         enumerable: true,
         configurable: true
@@ -51,11 +51,11 @@ var RestCollection = (function () {
         if (options === void 0) { options = ''; }
         var completion$ = new Subject_1.Subject();
         this._apiGet(this._baseUrl + "?" + options).subscribe(function (data) {
-            _this._updateCollection(data);
+            utilities_1.mergeCollection(_this._dataStore.collection, data);
             _this._recordHistory('LOAD_ALL');
-            _this._collection$.next(_this._dataStore.collection);
-            completion$.next(data);
+            completion$.next(utilities_1.clone(data));
             completion$.complete();
+            _this._collection$.next(_this._dataStore.collection);
         }, function (error) { _this._errors$.next(error); completion$.error(error); });
         return completion$;
     };
@@ -64,11 +64,11 @@ var RestCollection = (function () {
         if (options === void 0) { options = ''; }
         var completion$ = new Subject_1.Subject();
         this._apiGet(this._baseUrl + "/" + id + "?" + options).subscribe(function (data) {
-            _this._updateCollectionItem(data.id, data);
+            utilities_1.mergeCollection(_this._dataStore.collection, [data]);
             _this._recordHistory('LOAD');
-            _this._collection$.next(_this._dataStore.collection);
-            completion$.next(data);
+            completion$.next(utilities_1.clone(data));
             completion$.complete();
+            _this._collection$.next(_this._dataStore.collection);
         }, function (error) { _this._errors$.next(error); completion$.error(error); });
         return completion$;
     };
@@ -77,11 +77,11 @@ var RestCollection = (function () {
         if (options === void 0) { options = ''; }
         var completion$ = new Subject_1.Subject();
         this._apiPost(this._baseUrl, utilities_1.slimify(item)).subscribe(function (data) {
-            _this._addCollectionItem(data);
+            utilities_1.mergeCollection(_this._dataStore.collection, [data]);
             _this._recordHistory('CREATE');
-            _this._collection$.next(_this._dataStore.collection);
-            completion$.next(data);
+            completion$.next(utilities_1.clone(data));
             completion$.complete();
+            _this._collection$.next(_this._dataStore.collection);
         }, function (error) { _this._errors$.next(error); completion$.error(error); });
         return completion$;
     };
@@ -89,11 +89,11 @@ var RestCollection = (function () {
         var _this = this;
         var completion$ = new Subject_1.Subject();
         this._apiPut(this._baseUrl + "/" + item.id, utilities_1.slimify(item)).subscribe(function (data) {
-            _this._updateCollectionItem(item.id, data);
+            utilities_1.mergeCollection(_this._dataStore.collection, [data]);
             _this._recordHistory('UPDATE');
-            _this._collection$.next(_this._dataStore.collection);
-            completion$.next(data);
+            completion$.next(utilities_1.clone(data));
             completion$.complete();
+            _this._collection$.next(_this._dataStore.collection);
         }, function (error) { _this._errors$.next(error); completion$.error(error); });
         return completion$;
     };
@@ -103,9 +103,9 @@ var RestCollection = (function () {
         this._apiDelete(this._baseUrl + "/" + id).subscribe(function (response) {
             _this._removeCollectionItem(id);
             _this._recordHistory('REMOVE');
-            _this._collection$.next(_this._dataStore.collection);
             completion$.next(null);
             completion$.complete();
+            _this._collection$.next(_this._dataStore.collection);
         }, function (error) { _this._errors$.next(error); completion$.error(error); });
         return completion$;
     };
@@ -132,27 +132,6 @@ var RestCollection = (function () {
             this._history$.next(this._historyStore);
         }
     };
-    RestCollection.prototype._updateCollection = function (collection) {
-        this._dataStore = Object.assign({}, this._dataStore, { collection: collection });
-    };
-    RestCollection.prototype._addCollectionItem = function (item) {
-        this._dataStore = { collection: this._dataStore.collection.concat([item]) };
-    };
-    RestCollection.prototype._updateCollectionItem = function (id, data) {
-        var notFound = true;
-        this._dataStore = Object.assign({}, this._dataStore, {
-            collection: this._dataStore.collection.map(function (item, index) {
-                if (item.id === id) {
-                    notFound = false;
-                    return Object.assign({}, utilities_1.deepmerge(item, data));
-                }
-                return item;
-            })
-        });
-        if (notFound) {
-            this._dataStore = { collection: this._dataStore.collection.concat([data]) };
-        }
-    };
     RestCollection.prototype._removeCollectionItem = function (id) {
         this._dataStore = Object.assign({}, this._dataStore, {
             collection: this._dataStore.collection.filter(function (item) { return item.id !== id; })
@@ -163,6 +142,21 @@ var RestCollection = (function () {
         if (items.length) {
             items.forEach(function (i) { return _this._updateCollectionItem(i.id, i); });
             this._recordHistory('GRAPH-UPDATE');
+        }
+    };
+    RestCollection.prototype._updateCollectionItem = function (id, data) {
+        var notFound = true;
+        this._dataStore = Object.assign({}, this._dataStore, {
+            collection: this._dataStore.collection.map(function (item, index) {
+                if (item.id === id) {
+                    notFound = false;
+                    return Object.assign(item, data);
+                }
+                return item;
+            })
+        });
+        if (notFound) {
+            this._dataStore = { collection: this._dataStore.collection.concat([data]) };
         }
     };
     RestCollection = __decorate([

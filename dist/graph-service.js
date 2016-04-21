@@ -1,59 +1,50 @@
 "use strict";
-var BehaviorSubject_1 = require('rxjs/subject/BehaviorSubject');
 var Observable_1 = require('rxjs/Observable');
 require('rxjs/add/operator/combineLatest');
+require('rxjs/add/operator/startWith');
+require('rxjs/Rx');
+var utilities_1 = require('./utilities');
 var GraphService = (function () {
     function GraphService(_serviceConfigs) {
+        var _this = this;
         this._serviceConfigs = _serviceConfigs;
         this._debug = true;
-        Observable_1.Observable.create();
-        this._master$ = new BehaviorSubject_1.BehaviorSubject(this._serviceConfigs.map(function (i) { return []; }));
-        var obs$ = this._serviceConfigs[0].service.collection$;
-        if (this._serviceConfigs.length > 1) {
-            obs$ = obs$.combineLatest(this._serviceConfigs.slice(1).map(function (i) { return i.service.collection$; }));
-        }
-        this._slimify(obs$).subscribe(this._master$);
+        this.graph$ = Observable_1.Observable
+            .combineLatest(this._serviceConfigs.map(function (i) { return i.service.collection$; }))
+            .map(function (i) { return _this._slimify(i); })
+            .map(function (i) { return i.map(function (array) { return utilities_1.clone(array); }); })
+            .map(function (i) { return _this._toGraph(i); });
     }
-    Object.defineProperty(GraphService.prototype, "graph$", {
-        get: function () {
-            return this._toGraph(this._copy(this._master$));
-        },
-        enumerable: true,
-        configurable: true
-    });
-    GraphService.prototype._slimify = function (masterObs) {
+    GraphService.prototype._slimify = function (master) {
         var _this = this;
-        return masterObs.map(function (master) {
-            var arr = [];
-            var changes = true;
-            while (changes === true) {
-                changes = false;
-                _this._serviceConfigs.forEach(function (serviceConfig, index) {
-                    serviceConfig.mappings.forEach(function (mapping) {
-                        return master[index].forEach(function (dto) {
-                            var mappingService = _this._serviceConfigs.find(function (i) { return i.service === mapping.to; });
-                            var mappingIndex = _this._serviceConfigs.indexOf(mappingService);
-                            var toUpdate = [];
-                            if (dto[mapping.collectionProperty] !== null) {
-                                changes = true;
-                                if (mapping.many) {
-                                    toUpdate = dto[mapping.collectionProperty] || [];
-                                }
-                                else {
-                                    toUpdate.push(dto[mapping.collectionProperty]);
-                                }
-                                dto[mapping.collectionProperty] = null;
-                                arr[mappingIndex] = arr[mappingIndex] ? arr[mappingIndex].concat(toUpdate) : toUpdate;
-                                master[mappingIndex] = _this._combine(master[mappingIndex], toUpdate);
+        var arr = [];
+        var changes = true;
+        while (changes === true) {
+            changes = false;
+            this._serviceConfigs.forEach(function (serviceConfig, index) {
+                serviceConfig.mappings.forEach(function (mapping) {
+                    return master[index].forEach(function (dto) {
+                        var mappingService = _this._serviceConfigs.find(function (i) { return i.service === mapping.to; });
+                        var mappingIndex = _this._serviceConfigs.indexOf(mappingService);
+                        var toUpdate = [];
+                        if (dto[mapping.collectionProperty] !== null) {
+                            changes = true;
+                            if (mapping.many) {
+                                toUpdate = dto[mapping.collectionProperty] || [];
                             }
-                        });
+                            else {
+                                toUpdate.push(dto[mapping.collectionProperty]);
+                            }
+                            dto[mapping.collectionProperty] = null;
+                            arr[mappingIndex] = arr[mappingIndex] ? arr[mappingIndex].concat(toUpdate) : toUpdate;
+                            master[mappingIndex] = _this._combine(master[mappingIndex], toUpdate);
+                        }
                     });
                 });
-            }
-            arr.forEach(function (value, index) { return value && _this._serviceConfigs[index].service._dangerousGraphUpdateCollection(value); });
-            _this._debug && console.log('master', master);
-            return master;
-        });
+            });
+        }
+        this._debug && console.log('master', master);
+        return master;
     };
     GraphService.prototype._combine = function (arr1, arr2) {
         var arr = arr1.slice();
@@ -65,29 +56,27 @@ var GraphService = (function () {
         return arr;
     };
     GraphService.prototype._copy = function (masterObs) {
-        return masterObs.map(function (i) { return i.map(function (j) { return j.map(function (k) { return Object.assign({}, k); }); }); });
+        return masterObs.map(function (arrays) { return utilities_1.clone(arrays); });
     };
-    GraphService.prototype._toGraph = function (masterObs) {
+    GraphService.prototype._toGraph = function (master) {
         var _this = this;
-        return masterObs.map(function (master) {
-            var graph = {};
-            _this._serviceConfigs.forEach(function (serviceConfig, index) {
-                serviceConfig.mappings.forEach(function (mapping) {
-                    return master[index].forEach(function (dto) {
-                        var mappingService = _this._serviceConfigs.find(function (i) { return i.service === mapping.to; });
-                        var mappingIndex = _this._serviceConfigs.indexOf(mappingService);
-                        if (mapping.many) {
-                            dto[mapping.collectionProperty] = master[mappingIndex].filter(function (i) { return i[mapping.mappingId] === dto.id; });
-                        }
-                        else {
-                            dto[mapping.collectionProperty] = master[mappingIndex].find(function (i) { return i.id === dto[mapping.mappingId]; });
-                        }
-                    });
+        var graph = {};
+        this._serviceConfigs.forEach(function (serviceConfig, index) {
+            serviceConfig.mappings.forEach(function (mapping) {
+                return master[index].forEach(function (dto) {
+                    var mappingService = _this._serviceConfigs.find(function (i) { return i.service === mapping.to; });
+                    var mappingIndex = _this._serviceConfigs.indexOf(mappingService);
+                    if (mapping.many) {
+                        dto[mapping.collectionProperty] = master[mappingIndex].filter(function (i) { return i[mapping.mappingId] === dto.id; });
+                    }
+                    else {
+                        dto[mapping.collectionProperty] = master[mappingIndex].find(function (i) { return i.id === dto[mapping.mappingId]; });
+                    }
                 });
-                serviceConfig.func(graph, master[index]);
             });
-            return graph;
+            serviceConfig.func(graph, master[index]);
         });
+        return graph;
     };
     return GraphService;
 }());

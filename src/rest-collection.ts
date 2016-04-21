@@ -7,7 +7,7 @@ import {Subject} from 'rxjs/Subject';
 import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject';
 import 'rxjs/add/operator/map';
 
-import {deepmerge, slimify, CollectionItem} from './utilities';
+import {slimify, CollectionItem, clone, mergeCollection} from './utilities';
 
 @Injectable()
 export abstract class RestCollection<T extends CollectionItem> {
@@ -39,7 +39,7 @@ export abstract class RestCollection<T extends CollectionItem> {
     }
 
     get collection$(): Observable<T[]> {
-        return this._collection$; //.map(collection => this._clone(this._store.collection));
+        return this._collection$.map(collection => clone(collection));
     }
 
     get errors$(): Observable<any> {
@@ -54,11 +54,11 @@ export abstract class RestCollection<T extends CollectionItem> {
         let completion$ = new Subject();
 
         this._apiGet(`${this._baseUrl}?${options}`).subscribe(data => {
-            this._updateCollection(data);
+            mergeCollection(this._dataStore.collection, data);
             this._recordHistory('LOAD_ALL');
-            this._collection$.next(this._dataStore.collection);
-            completion$.next(data);
+            completion$.next(clone(data));
             completion$.complete();
+            this._collection$.next(this._dataStore.collection);
         }, error => { this._errors$.next(error); completion$.error(error); });
 
         return completion$;
@@ -68,11 +68,11 @@ export abstract class RestCollection<T extends CollectionItem> {
         let completion$ = new Subject();
 
         this._apiGet(`${this._baseUrl}/${id}?${options}`).subscribe(data => {
-            this._updateCollectionItem(data.id, data);
+            mergeCollection(this._dataStore.collection, [data]);
             this._recordHistory('LOAD');
-            this._collection$.next(this._dataStore.collection);
-            completion$.next(data);
+            completion$.next(clone(data));
             completion$.complete();
+            this._collection$.next(this._dataStore.collection);
         }, error => { this._errors$.next(error); completion$.error(error); });
 
         return completion$;
@@ -82,11 +82,11 @@ export abstract class RestCollection<T extends CollectionItem> {
         let completion$ = new Subject();
 
         this._apiPost(this._baseUrl, slimify(item)).subscribe(data => {
-            this._addCollectionItem(data);
+            mergeCollection(this._dataStore.collection, [data]);
             this._recordHistory('CREATE');
-            this._collection$.next(this._dataStore.collection);
-            completion$.next(data);
+            completion$.next(clone(data));
             completion$.complete();
+            this._collection$.next(this._dataStore.collection);
         }, error => { this._errors$.next(error); completion$.error(error); });
 
         return completion$;
@@ -96,11 +96,11 @@ export abstract class RestCollection<T extends CollectionItem> {
         let completion$ = new Subject();
 
         this._apiPut(`${this._baseUrl}/${item.id}`, slimify(item)).subscribe(data => {
-            this._updateCollectionItem(item.id, data);
+            mergeCollection(this._dataStore.collection, [data]);
             this._recordHistory('UPDATE');
-            this._collection$.next(this._dataStore.collection);
-            completion$.next(data);
+            completion$.next(clone(data));
             completion$.complete();
+            this._collection$.next(this._dataStore.collection);
         }, error => { this._errors$.next(error); completion$.error(error); });
 
         return completion$;
@@ -112,9 +112,9 @@ export abstract class RestCollection<T extends CollectionItem> {
         this._apiDelete(`${this._baseUrl}/${id}`).subscribe(response => {
             this._removeCollectionItem(id);
             this._recordHistory('REMOVE');
-            this._collection$.next(this._dataStore.collection);
             completion$.next(null);
             completion$.complete();
+            this._collection$.next(this._dataStore.collection);
         }, error => { this._errors$.next(error); completion$.error(error); });
 
         return completion$;
@@ -147,32 +147,6 @@ export abstract class RestCollection<T extends CollectionItem> {
         }
     }
 
-    protected _updateCollection(collection: any[]) {
-        this._dataStore = Object.assign({}, this._dataStore, { collection }); // need to add/merge not replace
-    }
-
-    protected _addCollectionItem(item: any) {
-        this._dataStore = { collection: [...this._dataStore.collection, item] };
-    }
-
-    protected _updateCollectionItem(id: any, data: any) {
-        let notFound = true;
-
-        this._dataStore = Object.assign({}, this._dataStore, {
-            collection: this._dataStore.collection.map((item, index) => {
-                if (item.id === id) {
-                    notFound = false;
-                    return Object.assign({}, deepmerge(item, data));
-                }
-                return item;
-            })
-        });
-
-        if (notFound) {
-            this._dataStore = { collection: [...this._dataStore.collection, data] };
-        }
-    }
-
     protected _removeCollectionItem(id: any) {
         this._dataStore = Object.assign({}, this._dataStore, {
             collection: this._dataStore.collection.filter(item => item.id !== id)
@@ -184,6 +158,25 @@ export abstract class RestCollection<T extends CollectionItem> {
         if (items.length) {
             items.forEach(i => this._updateCollectionItem(i.id, i));
             this._recordHistory('GRAPH-UPDATE');
+        }
+    }
+    
+    protected _updateCollectionItem(id: any, data: any) {
+        let notFound = true;
+
+        this._dataStore = Object.assign({}, this._dataStore, {
+            collection: this._dataStore.collection.map((item, index) => {
+                if (item.id === id) {
+                    notFound = false;
+                    return Object.assign(item, data);
+                }
+
+                return item;
+            })
+        });
+
+        if (notFound) {
+            this._dataStore = { collection: [...this._dataStore.collection, data] };
         }
     }
 }
