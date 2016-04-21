@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/vintage-software/vstack-graph.svg?branch=master)](https://travis-ci.org/vintage-software/vstack-graph)
+
 # VStack Graph
 
 ## Work in progress
