@@ -566,6 +566,26 @@ System.register("utilities.spec", ['angular2/testing', "utilities"], function(ex
                     testing_3.expect(utilities_2.isPrimitive({})).toBe(false);
                     testing_3.expect(utilities_2.isPrimitive([])).toBe(false);
                 });
+                testing_3.it('should be able to slimify objects', function () {
+                    var complexObject = {
+                        id: 1,
+                        name: 'John Doe',
+                        includedAccounts: ['Visa', 'Mastercard', 'Discover'],
+                        includedSession: { token: '1234' }
+                    };
+                    testing_3.expect(utilities_2.slimify(complexObject).includedAccounts).toBe(null);
+                    testing_3.expect(utilities_2.slimify(complexObject).includedSession).toBe(null);
+                });
+                testing_3.it('should be able to clone Dates, Objects and Arrays', function () {
+                    var testDate = new Date();
+                    var testObject = { id: 1, utcDate: new Date(), accounts: ['Visa', 'Discover'] };
+                    var testArray = [{ id: 1, utcDate: new Date(), accounts: ['Visa', 'Discover'] }, { id: 2, utcDate: new Date(), accounts: ['Visa', 'Discover'] }];
+                    testing_3.expect(utilities_2.clone(testDate).getTime()).toBe(testDate.getTime());
+                    testing_3.expect(utilities_2.clone(testObject).id).toBe(1);
+                    testing_3.expect(utilities_2.clone(testObject).utcDate.getTime()).toBe(testObject.utcDate.getTime());
+                    testing_3.expect(utilities_2.clone(testObject).accounts[0]).toBe('Visa');
+                    testing_3.expect(utilities_2.clone(testArray).length).toBe(2);
+                });
             });
         }
     }
