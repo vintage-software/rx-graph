@@ -102,8 +102,7 @@ function slimify(item) {
 }
 exports.slimify = slimify;
 function isPrimitive(item) {
-    return Object.prototype.toString.call(item) === '[object Date]'
-        || typeof item !== 'object';
+    return Object.prototype.toString.call(item) === '[object Date]' || typeof item !== 'object' || item === null;
 }
 exports.isPrimitive = isPrimitive;
 //# sourceMappingURL=utilities.js.map

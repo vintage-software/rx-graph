@@ -29,7 +29,7 @@ var MockItemService = (function (_super) {
     ], MockItemService);
     return MockItemService;
 }(rest_collection_1.RestCollection));
-testing_1.describe('MyService Tests', function () {
+testing_1.describe('RestCollection Specs', function () {
     testing_1.beforeEachProviders(function () {
         return [
             http_1.HTTP_PROVIDERS,

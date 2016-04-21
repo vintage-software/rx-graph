@@ -28,7 +28,6 @@ export abstract class RestCollection<T extends CollectionItem> {
         this._collection$ = new BehaviorSubject(<T[]>[]);
         this._errors$ = new BehaviorSubject(<any>{});
         this._history$ = new BehaviorSubject(<any>{});
-        this._history$.subscribe();
 
         this._baseUrl = restCollectionConfig.baseUrl;
         this._requestOptionsArgs = restCollectionConfig.options;

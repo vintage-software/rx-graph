@@ -38,7 +38,6 @@ System.register("rest-collection", ['angular2/core', 'rxjs/Subject', 'rxjs/subje
                     this._collection$ = new BehaviorSubject_1.BehaviorSubject([]);
                     this._errors$ = new BehaviorSubject_1.BehaviorSubject({});
                     this._history$ = new BehaviorSubject_1.BehaviorSubject({});
-                    this._history$.subscribe();
                     this._baseUrl = restCollectionConfig.baseUrl;
                     this._requestOptionsArgs = restCollectionConfig.options;
                     this._http = restCollectionConfig.http;
@@ -284,8 +283,7 @@ System.register("utilities", [], function(exports_2, context_2) {
     }
     exports_2("slimify", slimify);
     function isPrimitive(item) {
-        return Object.prototype.toString.call(item) === '[object Date]'
-            || typeof item !== 'object';
+        return Object.prototype.toString.call(item) === '[object Date]' || typeof item !== 'object' || item === null;
     }
     exports_2("isPrimitive", isPrimitive);
     return {
@@ -455,7 +453,7 @@ System.register("rest-collection.spec", ['angular2/testing', 'angular2/http', 'a
                 ], MockItemService);
                 return MockItemService;
             }(rest_collection_1.RestCollection));
-            testing_1.describe('MyService Tests', function () {
+            testing_1.describe('RestCollection Specs', function () {
                 testing_1.beforeEachProviders(function () {
                     return [
                         http_1.HTTP_PROVIDERS,
@@ -540,6 +538,34 @@ System.register("rest-collection.spec", ['angular2/testing', 'angular2/http', 'a
                     });
                     mockItemService.errors$.subscribe(function (err) { return testing_1.expect(err).toBeDefined(); });
                 }));
+            });
+        }
+    }
+});
+System.register("utilities.spec", ['angular2/testing', "utilities"], function(exports_5, context_5) {
+    "use strict";
+    var __moduleName = context_5 && context_5.id;
+    var testing_3, utilities_2;
+    return {
+        setters:[
+            function (testing_3_1) {
+                testing_3 = testing_3_1;
+            },
+            function (utilities_2_1) {
+                utilities_2 = utilities_2_1;
+            }],
+        execute: function() {
+            testing_3.describe('Utilities Specs', function () {
+                testing_3.it('should detect primitives', function () {
+                    testing_3.expect(utilities_2.isPrimitive('Hello World')).toBe(true);
+                    testing_3.expect(utilities_2.isPrimitive(true)).toBe(true);
+                    testing_3.expect(utilities_2.isPrimitive(42)).toBe(true);
+                    testing_3.expect(utilities_2.isPrimitive(null)).toBe(true);
+                    testing_3.expect(utilities_2.isPrimitive(undefined)).toBe(true);
+                    testing_3.expect(utilities_2.isPrimitive(new Date())).toBe(true);
+                    testing_3.expect(utilities_2.isPrimitive({})).toBe(false);
+                    testing_3.expect(utilities_2.isPrimitive([])).toBe(false);
+                });
             });
         }
     }

@@ -18,7 +18,6 @@ var RestCollection = (function () {
         this._collection$ = new BehaviorSubject_1.BehaviorSubject([]);
         this._errors$ = new BehaviorSubject_1.BehaviorSubject({});
         this._history$ = new BehaviorSubject_1.BehaviorSubject({});
-        this._history$.subscribe();
         this._baseUrl = restCollectionConfig.baseUrl;
         this._requestOptionsArgs = restCollectionConfig.options;
         this._http = restCollectionConfig.http;

@@ -111,8 +111,7 @@ export function slimify(item: any): any {
 }
 
 export function isPrimitive(item: any) {
-  return Object.prototype.toString.call(item) === '[object Date]'
-    || typeof item !== 'object';
+  return Object.prototype.toString.call(item) === '[object Date]' || typeof item !== 'object' || item === null;
 }
 
 /* tslint:disable */

@@ -7,19 +7,19 @@ import {MockBackend} from 'angular2/http/testing';
 import {MockConnection} from 'angular2/src/http/backends/mock_backend';
 import {RestCollection} from './rest-collection';
 
-interface item {
+interface TestCollectionItem {
     id: any;
     value: string;
 }
 
 @Injectable()
-class MockItemService extends RestCollection<item> {
+class MockItemService extends RestCollection<TestCollectionItem> {
     constructor(http: Http) {
         super({ baseUrl: 'http://56e05c3213da80110013eba3.mockapi.io/api/items', options: {}, http });
     }
 }
 
-describe('MyService Tests', () => {
+describe('RestCollection Specs', () => {
     beforeEachProviders(() => {
         return [
             HTTP_PROVIDERS,

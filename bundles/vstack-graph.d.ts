@@ -91,3 +91,5 @@ declare module "graph-service" {
 }
 declare module "rest-collection.spec" {
 }
+declare module "utilities.spec" {
+}
