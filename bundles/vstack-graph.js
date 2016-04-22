@@ -570,7 +570,7 @@ System.register("rest-collection.spec", ['angular2/testing', 'angular2/http', 'a
                         })
                     ];
                 });
-                testing_3.it('should load a list of items', testing_3.inject([testing_4.MockBackend, MockItemService], function (mockBackend, mockItemService) {
+                testing_3.it('should load a list of items', testing_3.injectAsync([testing_4.MockBackend, MockItemService], function (mockBackend, mockItemService) {
                     mockBackend.connections.subscribe(function (connection) {
                         connection.mockRespond(new http_2.Response(new http_2.ResponseOptions({
                             body: [
@@ -580,67 +580,133 @@ System.register("rest-collection.spec", ['angular2/testing', 'angular2/http', 'a
                             ]
                         })));
                     });
-                    mockItemService.loadAll();
-                    mockItemService.collection$.subscribe(function (items) { return testing_3.expect(items.length).toBe(3); });
+                    return new Promise(function (resolve) {
+                        mockItemService.collection$
+                            .skip(1)
+                            .do(function () { return resolve(); })
+                            .do(function (items) { return testing_3.expect(items.length).toBe(3); })
+                            .subscribe();
+                        mockItemService.loadAll();
+                    });
                 }));
-                testing_3.it('should handle loading a list of items failure', testing_3.inject([testing_4.MockBackend, MockItemService], function (mockBackend, mockItemService) {
+                testing_3.it('should handle loading a list of items failure', testing_3.injectAsync([testing_4.MockBackend, MockItemService], function (mockBackend, mockItemService) {
                     mockBackend.connections.subscribe(function (connection) { return connection.mockError(new Error('ERROR')); });
-                    mockItemService.loadAll();
-                    mockItemService.errors$.subscribe(function (err) { return testing_3.expect(err).toBeDefined(); });
+                    return new Promise(function (resolve) {
+                        mockItemService.errors$
+                            .skip(1)
+                            .do(function () { return resolve(); })
+                            .do(function (err) { return testing_3.expect(err).toBeDefined(); })
+                            .subscribe();
+                        mockItemService.loadAll();
+                    });
                 }));
-                testing_3.it('should load a single item', testing_3.inject([testing_4.MockBackend, MockItemService], function (mockBackend, mockItemService) {
+                testing_3.it('should load a single item', testing_3.injectAsync([testing_4.MockBackend, MockItemService], function (mockBackend, mockItemService) {
                     mockBackend.connections.subscribe(function (connection) {
                         connection.mockRespond(new http_2.Response(new http_2.ResponseOptions({ body: { id: 1, value: 'value 1' } })));
                     });
-                    mockItemService.load(1);
-                    mockItemService.collection$.subscribe(function (items) { return testing_3.expect(items.length).toBe(1); });
+                    return new Promise(function (resolve) {
+                        mockItemService.collection$
+                            .skip(1)
+                            .do(function () { return resolve(); })
+                            .do(function (items) { return testing_3.expect(items[1].id).toBe(1); })
+                            .subscribe();
+                        mockItemService.load(1);
+                    });
                 }));
-                testing_3.it('should handle loading a item failure', testing_3.inject([testing_4.MockBackend, MockItemService], function (mockBackend, mockItemService) {
+                testing_3.it('should handle loading a item failure', testing_3.injectAsync([testing_4.MockBackend, MockItemService], function (mockBackend, mockItemService) {
                     mockBackend.connections.subscribe(function (connection) { return connection.mockError(new Error('ERROR')); });
-                    mockItemService.load(1);
-                    mockItemService.errors$.subscribe(function (err) { return testing_3.expect(err).toBeDefined(); });
+                    return new Promise(function (resolve) {
+                        mockItemService.errors$
+                            .skip(1)
+                            .do(function () { return resolve(); })
+                            .do(function (err) { return testing_3.expect(err).toBeDefined(); })
+                            .subscribe();
+                        mockItemService.load(1);
+                    });
                 }));
-                testing_3.it('should create a item', testing_3.inject([testing_4.MockBackend, MockItemService], function (mockBackend, mockItemService) {
+                testing_3.it('should create a item', testing_3.injectAsync([testing_4.MockBackend, MockItemService], function (mockBackend, mockItemService) {
                     mockBackend.connections.subscribe(function (connection) {
                         connection.mockRespond(new http_2.Response(new http_2.ResponseOptions({ body: { id: 1, value: 'value 1' } })));
                     });
-                    mockItemService.create({ value: 'value 1' });
-                    mockItemService.collection$.subscribe(function (items) { return testing_3.expect(items.length).toBe(1); });
+                    return new Promise(function (resolve) {
+                        mockItemService.collection$
+                            .skip(1)
+                            .do(function () { return resolve(); })
+                            .do(function (items) { return testing_3.expect(items[1].value).toBe('value 1'); })
+                            .subscribe();
+                        mockItemService.create({ value: 'value 1' });
+                    });
                 }));
-                testing_3.it('should handle creating a item failure', testing_3.inject([testing_4.MockBackend, MockItemService], function (mockBackend, mockItemService) {
+                testing_3.it('should handle creating a item failure', testing_3.injectAsync([testing_4.MockBackend, MockItemService], function (mockBackend, mockItemService) {
                     mockBackend.connections.subscribe(function (connection) { return connection.mockError(new Error('ERROR')); });
-                    mockItemService.create({});
-                    mockItemService.errors$.subscribe(function (err) { return testing_3.expect(err).toBeDefined(); });
+                    return new Promise(function (resolve) {
+                        mockItemService.errors$
+                            .skip(1)
+                            .do(function () { return resolve(); })
+                            .do(function (err) { return testing_3.expect(err).toBeDefined(); })
+                            .subscribe();
+                        mockItemService.create({});
+                    });
                 }));
-                testing_3.it('should update a item', testing_3.inject([testing_4.MockBackend, MockItemService], function (mockBackend, mockItemService) {
+                testing_3.it('should update a item', testing_3.injectAsync([testing_4.MockBackend, MockItemService], function (mockBackend, mockItemService) {
                     mockBackend.connections.subscribe(function (connection) {
                         connection.mockRespond(new http_2.Response(new http_2.ResponseOptions({ body: { id: 1, value: 'value 2' } })));
                     });
-                    mockItemService.update({ id: 1, value: 'value 2' });
-                    mockItemService.collection$.subscribe(function (items) { return testing_3.expect(items[0].value).toBe('value 2'); });
+                    return new Promise(function (resolve) {
+                        mockItemService.collection$
+                            .skip(1)
+                            .do(function () { return resolve(); })
+                            .do(function (items) { return testing_3.expect(items[0].value).toBe('value 2'); })
+                            .subscribe();
+                        mockItemService.update({ id: 1, value: 'value 2' });
+                    });
                 }));
-                testing_3.it('should handle updating a item failure', testing_3.inject([testing_4.MockBackend, MockItemService], function (mockBackend, mockItemService) {
+                testing_3.it('should handle updating a item failure', testing_3.injectAsync([testing_4.MockBackend, MockItemService], function (mockBackend, mockItemService) {
                     mockBackend.connections.subscribe(function (connection) { return connection.mockError(new Error('ERROR')); });
-                    mockItemService.update({ id: 1 });
-                    mockItemService.errors$.subscribe(function (err) { return testing_3.expect(err).toBeDefined(); });
+                    return new Promise(function (resolve) {
+                        mockItemService.errors$
+                            .skip(1)
+                            .do(function () { return resolve(); })
+                            .do(function (err) { return testing_3.expect(err).toBeDefined(); })
+                            .subscribe();
+                        mockItemService.update({ id: 1 });
+                    });
                 }));
-                testing_3.it('should remove a item', testing_3.inject([testing_4.MockBackend, MockItemService], function (mockBackend, mockItemService) {
+                testing_3.it('should remove a item', testing_3.injectAsync([testing_4.MockBackend, MockItemService], function (mockBackend, mockItemService) {
                     mockBackend.connections.subscribe(function (connection) {
                         connection.mockRespond(new http_2.Response(new http_2.ResponseOptions({ body: { id: 1, value: 'value 1' } })));
                     });
-                    mockItemService.remove(1);
-                    mockItemService.collection$.subscribe(function (items) { return testing_3.expect(items.length).toBe(0); });
+                    return new Promise(function (resolve) {
+                        mockItemService.collection$
+                            .skip(1)
+                            .do(function () { return resolve(); })
+                            .do(function (items) { return testing_3.expect(items.length).toBe(0); })
+                            .subscribe();
+                        mockItemService.remove(1);
+                    });
                 }));
-                testing_3.it('should handle removing a item failure', testing_3.inject([testing_4.MockBackend, MockItemService], function (mockBackend, mockItemService) {
+                testing_3.it('should handle removing a item failure', testing_3.injectAsync([testing_4.MockBackend, MockItemService], function (mockBackend, mockItemService) {
                     mockBackend.connections.subscribe(function (connection) { return connection.mockError(new Error('ERROR')); });
-                    mockItemService.remove(1);
-                    mockItemService.errors$.subscribe(function (err) { return testing_3.expect(err).toBeDefined(); });
+                    return new Promise(function (resolve) {
+                        mockItemService.errors$
+                            .skip(1)
+                            .do(function () { return resolve(); })
+                            .do(function (err) { return testing_3.expect(err).toBeDefined(); })
+                            .subscribe();
+                        mockItemService.remove(1);
+                    });
                 }));
-                testing_3.it('should allow a subscription of errors', testing_3.inject([testing_4.MockBackend, MockItemService], function (mockBackend, mockItemService) {
+                testing_3.it('should allow a subscription of errors', testing_3.injectAsync([testing_4.MockBackend, MockItemService], function (mockBackend, mockItemService) {
                     mockBackend.connections.subscribe(function (connection) {
                         connection.mockRespond(new http_2.Response(new http_2.ResponseOptions({ body: { id: 1, value: 'value 1' }, status: 404 })));
                     });
-                    mockItemService.errors$.subscribe(function (err) { return testing_3.expect(err).toBeDefined(); });
+                    return new Promise(function (resolve) {
+                        mockItemService.errors$
+                            .do(function () { return resolve(); })
+                            .do(function (err) { return testing_3.expect(err).toBeDefined(); })
+                            .subscribe();
+                        mockItemService.remove(1);
+                    });
                 }));
             });
         }

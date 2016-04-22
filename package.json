@@ -34,7 +34,8 @@
     "remap-istanbul": "0.5.1",
     "systemjs": "0.19.17",
     "typescript": "^1.7.5",
-    "typings": "^0.6.8"
+    "typings": "^0.6.8",
+    "codecov.io": "0.1.6"
   },
   "repository": {
     "type": "git",

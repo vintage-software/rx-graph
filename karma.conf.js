@@ -38,7 +38,7 @@ module.exports = function(config) {
 
         autoWatch: true,
 
-        browsers: ['Firefox'],
+        browsers: ['Firefox'],  // target Firefox for travis support
 
         // Karma plugins loaded
         plugins: [

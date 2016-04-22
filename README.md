@@ -18,4 +18,13 @@ as well as features such as state history tracking, error logging and Flux like 
 Work in progress. Will allow defined relationships between Restfull collections created with 
 the `RestCollection` allowing data deduping and graph like structures in client apps.
 
+
+### Getting Started
+
+This project is in alpha and a work in progress. To get started run `npm install` in the root directory.
+
+- `npm run build` create distributables and bundles
+- `npm run test` build and run tests
+- `npm run coverage` build and run test coverage
+
 Temp Demo: http://plnkr.co/edit/HoITeJwPxWGimPkrWAL9?p=preview
