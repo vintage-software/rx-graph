@@ -18,8 +18,8 @@ export declare class Mapping {
     constructor(collectionProperty: string, to: IService, mappingId: string, many: boolean);
 }
 export declare class ServiceConfig<TCollectionItem extends CollectionItem, TGraph> implements IServiceConfig<TGraph> {
-    service: RestCollection<TCollectionItem>;
+    service: RestCollection<TCollectionItem, any>;
     func: (graph: TGraph, collection: TCollectionItem[]) => void;
     mappings: Mapping[];
-    constructor(service: RestCollection<TCollectionItem>, func: (graph: TGraph, collection: TCollectionItem[]) => void, mappings: Mapping[]);
+    constructor(service: RestCollection<TCollectionItem, any>, func: (graph: TGraph, collection: TCollectionItem[]) => void, mappings: Mapping[]);
 }

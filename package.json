@@ -6,17 +6,18 @@
   "scripts": {
     "postinstall": "npm run typings",
     "typings": "typings install",
-    "start": "npm run test && http-server -c-1 -o -p 8875 .",
+    "start": "npm run test",
     "build": "rm -rf dist && tsc -p src && tsc -p src/tsconfig-test.json",
     "pretest": "npm run build",
     "test": "karma start karma.conf.js",
-    "posttest": "node_modules/.bin/remap-istanbul -i coverage/coverage-final.json -o coverage -t html",
-    "coverage": "http-server -c-1 -o -p 9875 ./coverage"
+    "posttest": "",
+    "coverage": "remap-istanbul -i coverage/coverage-final.json -o coverage -t html && http-server -c-1 -o -p 9875 ./coverage",
+    "report-coverage": "cat ./coverage/lcov.info | codecov"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "angular2": "2.0.0-beta.14",
+    "angular2": "2.0.0-beta.15",
     "es6-promise": "^3.0.2",
     "es6-shim": "^0.35.0",
     "reflect-metadata": "0.1.2",

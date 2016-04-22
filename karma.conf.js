@@ -59,7 +59,8 @@ module.exports = function(config) {
 
         coverageReporter: {
             reporters:[
-                {type: 'json', subdir: '.', file: 'coverage-final.json'}
+                {type: 'json', subdir: '.', file: 'coverage-final.json'},
+                {type: 'lcov', subdir: '.', file: 'lcov.info'},
             ]
         },
 

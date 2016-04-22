@@ -1,40 +1,37 @@
 /// <reference path="../typings/browser/ambient/es6-shim/es6-shim.d.ts" />
 
-import {Http, RequestOptionsArgs} from 'angular2/http';
-import {Injectable} from 'angular2/core';
 import {Observable} from 'rxjs/Observable';
-import {Subject} from 'rxjs/Subject';
+import {ReplaySubject} from 'rxjs/subject/ReplaySubject';
 import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject';
 import 'rxjs/add/operator/map';
 
-import {slimify, CollectionItem, clone, mergeCollection} from './utilities';
+import {slimify, CollectionItem, clone, mergeCollection, IHttp} from './utilities';
 
-@Injectable()
-export abstract class RestCollection<T extends CollectionItem> {
+export abstract class RestCollection<TItem extends CollectionItem, TOptions> {
     protected _baseUrl: string;
-    protected _requestOptionsArgs: RequestOptionsArgs;
-    private _http: Http;
-    private _collection$: BehaviorSubject<T[]>;
+    protected _requestOptionsArgs: any;
+    private _http: IHttp<TOptions>;
+    private _collection$: BehaviorSubject<TItem[]>;
     private _errors$: BehaviorSubject<any>;
-    private _history$: Subject<any>;
-    private _dataStore: { collection: T[] };
+    private _history$: BehaviorSubject<any>;
+    private _dataStore: { collection: TItem[] };
     private _historyStore: any[];
 
-    constructor({ baseUrl, http, options } : { baseUrl: string, http: Http, options?: RequestOptionsArgs }) {
-        this._collection$ = new BehaviorSubject(<T[]>[]);
+    constructor({ baseUrl, http, options } : { baseUrl: string, http: IHttp<TOptions>, options?: TOptions }) {
+        this._collection$ = new BehaviorSubject(<TItem[]>[]);
         this._errors$ = new BehaviorSubject(<any>{});
         this._history$ = new BehaviorSubject(<any>{});
 
         this._baseUrl = baseUrl;
         this._requestOptionsArgs = options;
         this._http = http;
-
+       
         this._dataStore = { collection: [] };
         this._historyStore = [];
         this._recordHistory('INIT');
     }
 
-    get collection$(): Observable<T[]> {
+    get collection$(): Observable<TItem[]> {
         return this._collection$.map(collection => clone(collection));
     }
 
@@ -46,8 +43,8 @@ export abstract class RestCollection<T extends CollectionItem> {
         return this._history$;
     }
 
-    loadAll(options = ''): Observable<Array<T>> {
-        let completion$ = new Subject();
+    loadAll(options = ''): Observable<Array<TItem>> {
+        let completion$ = new ReplaySubject(1);
 
         this._apiGet(`${this._baseUrl}?${options}`).subscribe(data => {
             mergeCollection(this._dataStore.collection, data);
@@ -60,8 +57,8 @@ export abstract class RestCollection<T extends CollectionItem> {
         return completion$;
     }
 
-    load(id: any, options = ''): Observable<T> {
-        let completion$ = new Subject();
+    load(id: any, options = ''): Observable<TItem> {
+        let completion$ = new ReplaySubject(1);
 
         this._apiGet(`${this._baseUrl}/${id}?${options}`).subscribe(data => {
             mergeCollection(this._dataStore.collection, [data]);
@@ -74,8 +71,8 @@ export abstract class RestCollection<T extends CollectionItem> {
         return completion$;
     }
 
-    create(item: any, options: string = ''): Observable<T> {
-        let completion$ = new Subject();
+    create(item: any, options: string = ''): Observable<TItem> {
+        let completion$ = new ReplaySubject(1);
 
         this._apiPost(this._baseUrl, slimify(item)).subscribe(data => {
             mergeCollection(this._dataStore.collection, [data]);
@@ -88,8 +85,8 @@ export abstract class RestCollection<T extends CollectionItem> {
         return completion$;
     }
 
-    update(item: any): Observable<T> {
-        let completion$ = new Subject();
+    update(item: any): Observable<TItem> {
+        let completion$ = new ReplaySubject(1);
 
         this._apiPut(`${this._baseUrl}/${item.id}`, slimify(item)).subscribe(data => {
             mergeCollection(this._dataStore.collection, [data]);
@@ -102,8 +99,8 @@ export abstract class RestCollection<T extends CollectionItem> {
         return completion$;
     }
 
-    remove(id: any): Observable<T> {
-        let completion$ = new Subject();
+    remove(id: any): Observable<TItem> {
+        let completion$ = new ReplaySubject(1);
 
         this._apiDelete(`${this._baseUrl}/${id}`).subscribe(response => {
             this._removeCollectionItem(id);
@@ -149,7 +146,7 @@ export abstract class RestCollection<T extends CollectionItem> {
         });
     }
 
-    _dangerousGraphUpdateCollection(items: T[]) {
+    _dangerousGraphUpdateCollection(items: TItem[]) {
         // Exposed as a hook for the GraphService, need better solution for this...
         if (items.length) {
             items.forEach(i => this._updateCollectionItem(i.id, i));

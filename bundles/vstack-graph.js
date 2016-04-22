@@ -1,3 +1,8 @@
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -6,11 +11,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 System.register("utilities", [], function(exports_1, context_1) {
     "use strict";
@@ -78,18 +78,15 @@ System.register("utilities", [], function(exports_1, context_1) {
         }
     }
 });
-System.register("rest-collection", ['angular2/core', 'rxjs/Subject', 'rxjs/subject/BehaviorSubject', 'rxjs/add/operator/map', "utilities"], function(exports_2, context_2) {
+System.register("rest-collection", ['rxjs/subject/ReplaySubject', 'rxjs/subject/BehaviorSubject', 'rxjs/add/operator/map', "utilities"], function(exports_2, context_2) {
     "use strict";
     var __moduleName = context_2 && context_2.id;
-    var core_1, Subject_1, BehaviorSubject_1, utilities_1;
+    var ReplaySubject_1, BehaviorSubject_1, utilities_1;
     var RestCollection;
     return {
         setters:[
-            function (core_1_1) {
-                core_1 = core_1_1;
-            },
-            function (Subject_1_1) {
-                Subject_1 = Subject_1_1;
+            function (ReplaySubject_1_1) {
+                ReplaySubject_1 = ReplaySubject_1_1;
             },
             function (BehaviorSubject_1_1) {
                 BehaviorSubject_1 = BehaviorSubject_1_1;
@@ -136,7 +133,7 @@ System.register("rest-collection", ['angular2/core', 'rxjs/Subject', 'rxjs/subje
                 RestCollection.prototype.loadAll = function (options) {
                     var _this = this;
                     if (options === void 0) { options = ''; }
-                    var completion$ = new Subject_1.Subject();
+                    var completion$ = new ReplaySubject_1.ReplaySubject(1);
                     this._apiGet(this._baseUrl + "?" + options).subscribe(function (data) {
                         utilities_1.mergeCollection(_this._dataStore.collection, data);
                         _this._recordHistory('LOAD_ALL');
@@ -149,7 +146,7 @@ System.register("rest-collection", ['angular2/core', 'rxjs/Subject', 'rxjs/subje
                 RestCollection.prototype.load = function (id, options) {
                     var _this = this;
                     if (options === void 0) { options = ''; }
-                    var completion$ = new Subject_1.Subject();
+                    var completion$ = new ReplaySubject_1.ReplaySubject(1);
                     this._apiGet(this._baseUrl + "/" + id + "?" + options).subscribe(function (data) {
                         utilities_1.mergeCollection(_this._dataStore.collection, [data]);
                         _this._recordHistory('LOAD');
@@ -162,7 +159,7 @@ System.register("rest-collection", ['angular2/core', 'rxjs/Subject', 'rxjs/subje
                 RestCollection.prototype.create = function (item, options) {
                     var _this = this;
                     if (options === void 0) { options = ''; }
-                    var completion$ = new Subject_1.Subject();
+                    var completion$ = new ReplaySubject_1.ReplaySubject(1);
                     this._apiPost(this._baseUrl, utilities_1.slimify(item)).subscribe(function (data) {
                         utilities_1.mergeCollection(_this._dataStore.collection, [data]);
                         _this._recordHistory('CREATE');
@@ -174,7 +171,7 @@ System.register("rest-collection", ['angular2/core', 'rxjs/Subject', 'rxjs/subje
                 };
                 RestCollection.prototype.update = function (item) {
                     var _this = this;
-                    var completion$ = new Subject_1.Subject();
+                    var completion$ = new ReplaySubject_1.ReplaySubject(1);
                     this._apiPut(this._baseUrl + "/" + item.id, utilities_1.slimify(item)).subscribe(function (data) {
                         utilities_1.mergeCollection(_this._dataStore.collection, [data]);
                         _this._recordHistory('UPDATE');
@@ -186,7 +183,7 @@ System.register("rest-collection", ['angular2/core', 'rxjs/Subject', 'rxjs/subje
                 };
                 RestCollection.prototype.remove = function (id) {
                     var _this = this;
-                    var completion$ = new Subject_1.Subject();
+                    var completion$ = new ReplaySubject_1.ReplaySubject(1);
                     this._apiDelete(this._baseUrl + "/" + id).subscribe(function (response) {
                         _this._removeCollectionItem(id);
                         _this._recordHistory('REMOVE');
@@ -246,10 +243,6 @@ System.register("rest-collection", ['angular2/core', 'rxjs/Subject', 'rxjs/subje
                         this._dataStore = { collection: this._dataStore.collection.concat([data]) };
                     }
                 };
-                RestCollection = __decorate([
-                    core_1.Injectable(), 
-                    __metadata('design:paramtypes', [Object])
-                ], RestCollection);
                 return RestCollection;
             }());
             exports_2("RestCollection", RestCollection);
@@ -385,7 +378,7 @@ System.register("graph-service", ['rxjs/Observable', 'rxjs/add/operator/combineL
 System.register("graph-service.spec", ['angular2/testing', 'angular2/http', 'angular2/core', 'angular2/http/testing', 'rxjs/Observable', "rest-collection", "graph-service", "graph-helpers"], function(exports_5, context_5) {
     "use strict";
     var __moduleName = context_5 && context_5.id;
-    var testing_1, http_1, core_2, testing_2, Observable_2, rest_collection_1, graph_service_1, graph_helpers_1;
+    var testing_1, http_1, core_1, testing_2, Observable_2, rest_collection_1, graph_service_1, graph_helpers_1;
     var TestUserService, TestItemService, TestGraphService, TestGraph;
     return {
         setters:[
@@ -395,8 +388,8 @@ System.register("graph-service.spec", ['angular2/testing', 'angular2/http', 'ang
             function (http_1_1) {
                 http_1 = http_1_1;
             },
-            function (core_2_1) {
-                core_2 = core_2_1;
+            function (core_1_1) {
+                core_1 = core_1_1;
             },
             function (testing_2_1) {
                 testing_2 = testing_2_1;
@@ -420,7 +413,7 @@ System.register("graph-service.spec", ['angular2/testing', 'angular2/http', 'ang
                     _super.call(this, { baseUrl: '/xyz', options: {}, http: http });
                 }
                 TestUserService = __decorate([
-                    core_2.Injectable(), 
+                    core_1.Injectable(), 
                     __metadata('design:paramtypes', [http_1.Http])
                 ], TestUserService);
                 return TestUserService;
@@ -431,7 +424,7 @@ System.register("graph-service.spec", ['angular2/testing', 'angular2/http', 'ang
                     _super.call(this, { baseUrl: '/xyz', options: {}, http: http });
                 }
                 TestItemService = __decorate([
-                    core_2.Injectable(), 
+                    core_1.Injectable(), 
                     __metadata('design:paramtypes', [http_1.Http])
                 ], TestItemService);
                 return TestItemService;
@@ -445,7 +438,7 @@ System.register("graph-service.spec", ['angular2/testing', 'angular2/http', 'ang
                     ]);
                 }
                 TestGraphService = __decorate([
-                    core_2.Injectable(), 
+                    core_1.Injectable(), 
                     __metadata('design:paramtypes', [TestUserService, TestItemService])
                 ], TestGraphService);
                 return TestGraphService;
@@ -464,7 +457,7 @@ System.register("graph-service.spec", ['angular2/testing', 'angular2/http', 'ang
                         TestUserService,
                         TestItemService,
                         TestGraphService,
-                        core_2.provide(http_1.Http, {
+                        core_1.provide(http_1.Http, {
                             useFactory: function (backend, defaultOptions) { return new http_1.Http(backend, defaultOptions); },
                             deps: [testing_2.MockBackend, http_1.BaseRequestOptions]
                         })
@@ -483,35 +476,30 @@ System.register("graph-service.spec", ['angular2/testing', 'angular2/http', 'ang
                     });
                 }));
                 testing_1.it('should be populated graph', testing_1.injectAsync([testing_2.MockBackend, TestItemService, TestGraphService], function (mockBackend, testItemService, graphService) {
-                    setupMockBackend(mockBackend, [
-                        { id: 1, value: 'value 1' },
-                        { id: 2, value: 'value 2' },
-                        { id: 3, value: 'value 3' }
-                    ]);
                     return new Promise(function (resolve) {
                         graphService.graph$
                             .skip(1)
                             .do(function (graph) { return testing_1.expect(graph.testItems.length).toBe(3); })
                             .do(function (graph) { return resolve(); })
                             .subscribe();
+                        setupItems(mockBackend);
                         testItemService.loadAll();
                     });
                 }));
-                testing_1.it('should have items on user', testing_1.injectAsync([testing_2.MockBackend, TestItemService, TestGraphService], function (mockBackend, testItemService, graphService) {
+                function setupUsers(mockBackend) {
                     setupMockBackend(mockBackend, [
-                        { id: 1, value: 'value 1' },
-                        { id: 2, value: 'value 2' },
-                        { id: 3, value: 'value 3' }
+                        { id: 1, name: 'user 1' },
+                        { id: 2, name: 'user 2' },
+                        { id: 3, name: 'user 3' }
                     ]);
-                    return new Promise(function (resolve) {
-                        graphService.graph$
-                            .skip(1)
-                            .do(function (graph) { return testing_1.expect(graph.testItems.length).toBe(3); })
-                            .do(function (graph) { return resolve(); })
-                            .subscribe();
-                        testItemService.loadAll();
-                    });
-                }));
+                }
+                function setupItems(mockBackend) {
+                    setupMockBackend(mockBackend, [
+                        { id: 1, value: 'item 1', userId: 1 },
+                        { id: 2, value: 'item 2', userId: 1 },
+                        { id: 3, value: 'item 3', userId: 3 }
+                    ]);
+                }
                 function setupMockBackend(mockBackend, body) {
                     mockBackend.connections.subscribe(function (connection) {
                         connection.mockRespond(new http_1.Response(new http_1.ResponseOptions({
@@ -526,7 +514,7 @@ System.register("graph-service.spec", ['angular2/testing', 'angular2/http', 'ang
 System.register("rest-collection.spec", ['angular2/testing', 'angular2/http', 'angular2/core', 'angular2/http/testing', "rest-collection"], function(exports_6, context_6) {
     "use strict";
     var __moduleName = context_6 && context_6.id;
-    var testing_3, http_2, core_3, testing_4, rest_collection_2;
+    var testing_3, http_2, core_2, testing_4, rest_collection_2;
     var MockItemService;
     return {
         setters:[
@@ -536,8 +524,8 @@ System.register("rest-collection.spec", ['angular2/testing', 'angular2/http', 'a
             function (http_2_1) {
                 http_2 = http_2_1;
             },
-            function (core_3_1) {
-                core_3 = core_3_1;
+            function (core_2_1) {
+                core_2 = core_2_1;
             },
             function (testing_4_1) {
                 testing_4 = testing_4_1;
@@ -552,7 +540,7 @@ System.register("rest-collection.spec", ['angular2/testing', 'angular2/http', 'a
                     _super.call(this, { baseUrl: 'http://56e05c3213da80110013eba3.mockapi.io/api/items', options: {}, http: http });
                 }
                 MockItemService = __decorate([
-                    core_3.Injectable(), 
+                    core_2.Injectable(), 
                     __metadata('design:paramtypes', [http_2.Http])
                 ], MockItemService);
                 return MockItemService;
@@ -564,7 +552,7 @@ System.register("rest-collection.spec", ['angular2/testing', 'angular2/http', 'a
                         testing_4.MockBackend,
                         http_2.BaseRequestOptions,
                         MockItemService,
-                        core_3.provide(http_2.Http, {
+                        core_2.provide(http_2.Http, {
                             useFactory: function (backend, defaultOptions) { return new http_2.Http(backend, defaultOptions); },
                             deps: [testing_4.MockBackend, http_2.BaseRequestOptions]
                         })

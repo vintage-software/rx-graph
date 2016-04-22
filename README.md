@@ -4,14 +4,15 @@
 
 ## Work in progress
 
-A Reactive Http REST library for Angular 2 with relational data structure support.
+A Reactive Http REST library with relational data structure support. Supports Angular 2 out of the box. Adding
+Angular 1 and generic browser support as well. 
 
 ### RestCollection
 
 `RestCollection` is a base class to extend rest services from. This base class will add CRUD functionality
 as well as features such as state history tracking, error logging and Flux like collection streams.
 
-`RestCollection` has a peer dependency on Angular 2 HttpService and RxJS 5.
+`RestCollection` has a peer dependency on RxJS 5.
 
 ### GraphService
 
@@ -27,4 +28,4 @@ This project is in alpha and a work in progress. To get started run `npm install
 - `npm run test` build and run tests
 - `npm run coverage` build and run test coverage
 
-Temp Demo: http://plnkr.co/edit/HoITeJwPxWGimPkrWAL9?p=preview
+Temp Demo: http://plnkr.co/edit/RcQO38Bztxnhnch1I12W?p=preview

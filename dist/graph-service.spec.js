@@ -90,35 +90,30 @@ testing_1.describe('GraphService Specs', function () {
         });
     }));
     testing_1.it('should be populated graph', testing_1.injectAsync([testing_2.MockBackend, TestItemService, TestGraphService], function (mockBackend, testItemService, graphService) {
-        setupMockBackend(mockBackend, [
-            { id: 1, value: 'value 1' },
-            { id: 2, value: 'value 2' },
-            { id: 3, value: 'value 3' }
-        ]);
         return new Promise(function (resolve) {
             graphService.graph$
                 .skip(1)
                 .do(function (graph) { return testing_1.expect(graph.testItems.length).toBe(3); })
                 .do(function (graph) { return resolve(); })
                 .subscribe();
+            setupItems(mockBackend);
             testItemService.loadAll();
         });
     }));
-    testing_1.it('should have items on user', testing_1.injectAsync([testing_2.MockBackend, TestItemService, TestGraphService], function (mockBackend, testItemService, graphService) {
+    function setupUsers(mockBackend) {
         setupMockBackend(mockBackend, [
-            { id: 1, value: 'value 1' },
-            { id: 2, value: 'value 2' },
-            { id: 3, value: 'value 3' }
+            { id: 1, name: 'user 1' },
+            { id: 2, name: 'user 2' },
+            { id: 3, name: 'user 3' }
         ]);
-        return new Promise(function (resolve) {
-            graphService.graph$
-                .skip(1)
-                .do(function (graph) { return testing_1.expect(graph.testItems.length).toBe(3); })
-                .do(function (graph) { return resolve(); })
-                .subscribe();
-            testItemService.loadAll();
-        });
-    }));
+    }
+    function setupItems(mockBackend) {
+        setupMockBackend(mockBackend, [
+            { id: 1, value: 'item 1', userId: 1 },
+            { id: 2, value: 'item 2', userId: 1 },
+            { id: 3, value: 'item 3', userId: 3 }
+        ]);
+    }
     function setupMockBackend(mockBackend, body) {
         mockBackend.connections.subscribe(function (connection) {
             connection.mockRespond(new http_1.Response(new http_1.ResponseOptions({

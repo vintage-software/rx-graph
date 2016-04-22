@@ -64,3 +64,10 @@ export function slimify(item: any): any {
 export function isPrimitive(item: any) {
     return Object.prototype.toString.call(item) === '[object Date]' || typeof item !== 'object' || item === null;
 }
+
+export interface IHttp<T> {
+    get(url: string, options?: T): Observable<any>
+    post(url: string, body: string, options?: T): Observable<any>
+    put(url: string, body: string, options?: T): Observable<any>
+    delete(url: string, options?: T): Observable<any>
+}

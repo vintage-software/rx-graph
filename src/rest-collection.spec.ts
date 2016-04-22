@@ -13,7 +13,7 @@ interface TestCollectionItem {
 }
 
 @Injectable()
-class MockItemService extends RestCollection<TestCollectionItem> {
+class MockItemService extends RestCollection<TestCollectionItem, any> {
     constructor(http: Http) {
         super({ baseUrl: 'http://56e05c3213da80110013eba3.mockapi.io/api/items', options: {}, http });
     }
