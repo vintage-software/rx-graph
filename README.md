@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/vintage-software/vstack-graph.svg?branch=master)](https://travis-ci.org/vintage-software/vstack-graph)
+[![codecov.io](https://codecov.io/github/vintage-software/vstack-graph/coverage.svg?branch=master)](https://codecov.io/github/vintage-software/vstack-graph?branch=master)
 
 # VStack Graph
 
