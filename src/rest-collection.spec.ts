@@ -1,206 +1,166 @@
 /// <reference path="../typings/browser/ambient/jasmine/jasmine.d.ts" />
 
-import {describe, expect, beforeEach, it, inject, injectAsync, beforeEachProviders} from 'angular2/testing';
-import {Headers, HTTP_PROVIDERS, BaseRequestOptions, XHRBackend, Response, ResponseOptions, Http, ResponseType, RequestOptionsArgs} from 'angular2/http';
-import {provide, Injectable, Injector} from 'angular2/core';
-import {MockBackend} from 'angular2/http/testing';
-import {MockConnection} from 'angular2/src/http/backends/mock_backend';
+import {describe, expect, beforeEach, it} from 'angular2/testing';
+import {Response, ResponseOptions} from 'angular2/http';
+
 import {RestCollection} from './rest-collection';
+import {MockHttp} from './testing/mock-http';
+import {IHttp} from './interfaces/http';
 
 interface TestCollectionItem {
     id: any;
     value: string;
 }
 
-@Injectable()
-class MockItemService extends RestCollection<TestCollectionItem, any> {
-    constructor(http: Http) {
+class MockCollectionService extends RestCollection<TestCollectionItem> {
+    constructor(http: IHttp) {
         super({ baseUrl: 'http://56e05c3213da80110013eba3.mockapi.io/api/items', options: {}, http });
     }
 }
 
-describe('RestCollection Specs', () => {
-    beforeEachProviders(() => {
-        return [
-            HTTP_PROVIDERS,
-            MockBackend,
-            BaseRequestOptions,
-            MockItemService,
-            provide(Http, {
-                useFactory: (backend: MockBackend, defaultOptions: BaseRequestOptions) => new Http(backend, defaultOptions),
-                deps: [MockBackend, BaseRequestOptions]
-            })
-        ];
+describe('RestCollection Specs New', () => {
+    it('should load a list of items', () => {
+        let response = new Response(new ResponseOptions({
+            body: [
+                { id: 1, value: 'value 1' },
+                { id: 2, value: 'value 2' },
+                { id: 3, value: 'value 3' }
+            ]
+        }));
+
+        let mockCollectionService = new MockCollectionService(new MockHttp(response));
+
+        mockCollectionService.collection$
+            .skip(1)
+            .do(items => expect(items.length).toBe(3))
+            .subscribe();
+
+        mockCollectionService.loadAll();
     });
 
-    it('should load a list of items', injectAsync([MockBackend, MockItemService], (mockBackend: MockBackend, mockItemService: MockItemService) => {
-        mockBackend.connections.subscribe((connection: MockConnection) => {
-            connection.mockRespond(new Response(new ResponseOptions({
-                body: [
-                    { id: 1, value: 'value 1' },
-                    { id: 2, value: 'value 2' },
-                    { id: 3, value: 'value 3' }
-                ]
-            })));
-        });
+    it('should handle loading a list of items failure', () => {
+        let response = new Response(new ResponseOptions({ status: 404 }));
+        let mockCollectionService = new MockCollectionService(new MockHttp(new Error('ERROR')));
 
-        return new Promise(resolve => {
-            mockItemService.collection$
-                .skip(1)
-                .do(() => resolve())
-                .do(items => expect(items.length).toBe(3))
-                .subscribe();
+        mockCollectionService.errors$
+            .skip(1)
+            .do(err => expect(err).toBeDefined())
+            .subscribe();
 
-            mockItemService.loadAll();
-        });
-    }));
+        mockCollectionService.loadAll();
+    });
 
-    it('should handle loading a list of items failure', injectAsync([MockBackend, MockItemService], (mockBackend: MockBackend, mockItemService: MockItemService) => {
-        mockBackend.connections.subscribe((connection: MockConnection) => connection.mockError(new Error('ERROR')));
+    it('should load a single item', () => {
+        let response = new Response(new ResponseOptions({ body: { id: 1, value: 'value 1' } }));
+        let mockCollectionService = new MockCollectionService(new MockHttp(response));
 
-        return new Promise(resolve => {
-            mockItemService.errors$
-                .skip(1)
-                .do(() => resolve())
-                .do(err => expect(err).toBeDefined())
-                .subscribe();
+        mockCollectionService.collection$
+            .skip(1)
+            .do(items => expect(items[0].id).toBe(1))
+            .subscribe();
 
-            mockItemService.loadAll();
-        });
-    }));
+        mockCollectionService.load(1);
+    });
 
-    it('should load a single item', injectAsync([MockBackend, MockItemService], (mockBackend: MockBackend, mockItemService: MockItemService) => {
-        mockBackend.connections.subscribe((connection: MockConnection) => {
-            connection.mockRespond(new Response(new ResponseOptions({ body: { id: 1, value: 'value 1' } })));
-        });
+    it('should handle loading a item failure', () => {
+        let response = new Response(new ResponseOptions({ status: 404 }));
+        let mockCollectionService = new MockCollectionService(new MockHttp(new Error('ERROR')));
 
-        return new Promise(resolve => {
-            mockItemService.collection$
-                .skip(1)
-                .do(() => resolve())
-                .do(items => expect(items[1].id).toBe(1))
-                .subscribe();
+        mockCollectionService.errors$
+            .skip(1)
+            .do(err => expect(err).toBeDefined())
+            .subscribe();
 
-            mockItemService.load(1);
-        });
-    }));
+        mockCollectionService.load(1);
+    });
 
-    it('should handle loading a item failure', injectAsync([MockBackend, MockItemService], (mockBackend: MockBackend, mockItemService: MockItemService) => {
-        mockBackend.connections.subscribe((connection: MockConnection) => connection.mockError(new Error('ERROR')));
+    it('should create a item', () => {
+        let response = new Response(new ResponseOptions({ body: { id: 1, value: 'value 1' } }));
+        let mockCollectionService = new MockCollectionService(new MockHttp(response));
 
-        return new Promise(resolve => {
-            mockItemService.errors$
-                .skip(1)
-                .do(() => resolve())
-                .do(err => expect(err).toBeDefined())
-                .subscribe();
+        mockCollectionService.collection$
+            .skip(1)
+            .do(items => expect(items[0].id).toBe(1))
+            .subscribe();
 
-            mockItemService.load(1);
-        });
-    }));
+        mockCollectionService.create({ value: 'value 1' });
+    });
 
-    it('should create a item', injectAsync([MockBackend, MockItemService], (mockBackend: MockBackend, mockItemService: MockItemService) => {
-        mockBackend.connections.subscribe((connection: MockConnection) => {
-            connection.mockRespond(new Response(new ResponseOptions({ body: { id: 1, value: 'value 1' } })));
-        });
+    it('should handle creating a item failure', () => {
+        let response = new Response(new ResponseOptions({ status: 404 }));
+        let mockCollectionService = new MockCollectionService(new MockHttp(new Error('ERROR')));
 
-        return new Promise(resolve => {
-            mockItemService.collection$
-                .skip(1)
-                .do(() => resolve())
-                .do(items => expect(items[1].value).toBe('value 1'))
-                .subscribe();
+        mockCollectionService.errors$
+            .skip(1)
+            .do(err => expect(err).toBeDefined())
+            .subscribe();
 
-            mockItemService.create({ value: 'value 1' });
-        });
-    }));
+        mockCollectionService.create({});
+    });
 
-    it('should handle creating a item failure', injectAsync([MockBackend, MockItemService], (mockBackend: MockBackend, mockItemService: MockItemService) => {
-        mockBackend.connections.subscribe((connection: MockConnection) => connection.mockError(new Error('ERROR')));
+    it('should update a item', () => {
+        let response = new Response(new ResponseOptions({ body: { id: 1, value: 'value 2' } }));
+        let mockCollectionService = new MockCollectionService(new MockHttp(response));
 
-        return new Promise(resolve => {
-            mockItemService.errors$
-                .skip(1)
-                .do(() => resolve())
-                .do(err => expect(err).toBeDefined())
-                .subscribe();
+        mockCollectionService.collection$
+            .skip(1)
+            .do(items => expect(items[0].value).toBe('value 2'))
+            .subscribe();
 
-            mockItemService.create({});
-        });
-    }));
+        mockCollectionService.update({ id: 1, value: 'value 2' });
+    });
 
-    it('should update a item', injectAsync([MockBackend, MockItemService], (mockBackend: MockBackend, mockItemService: MockItemService) => {
-        mockBackend.connections.subscribe((connection: MockConnection) => {
-            connection.mockRespond(new Response(new ResponseOptions({ body: { id: 1, value: 'value 2' } })));
-        });
+    it('should handle updating a item failure', () => {
+        let response = new Response(new ResponseOptions({ status: 404 }));
+        let mockCollectionService = new MockCollectionService(new MockHttp(new Error('ERROR')));
 
-        return new Promise(resolve => {
-            mockItemService.collection$
-                .skip(1)
-                .do(() => resolve())
-                .do(items => expect(items[0].value).toBe('value 2'))
-                .subscribe();
+        mockCollectionService.errors$
+            .skip(1)
+            .do(err => expect(err).toBeDefined())
+            .subscribe();
 
-            mockItemService.update({ id: 1, value: 'value 2' });
-        });
-    }));
+        mockCollectionService.update({ id: 1 });
+    });
 
-    it('should handle updating a item failure', injectAsync([MockBackend, MockItemService], (mockBackend: MockBackend, mockItemService: MockItemService) => {
-        mockBackend.connections.subscribe((connection: MockConnection) => connection.mockError(new Error('ERROR')));
-        
-        return new Promise(resolve => {
-            mockItemService.errors$
-                .skip(1)
-                .do(() => resolve())
-                .do(err => expect(err).toBeDefined())
-                .subscribe();
+    it('should remove a item', () => {
+        let response = new Response(new ResponseOptions({ body: null }));
+        let mockCollectionService = new MockCollectionService(new MockHttp(response));
 
-            mockItemService.update({ id: 1 });
-        });
-    }));
+        mockCollectionService.collection$
+            .skip(1)
+            .do(items => expect(items.length).toBe(0))
+            .subscribe();
 
-    it('should remove a item', injectAsync([MockBackend, MockItemService], (mockBackend: MockBackend, mockItemService: MockItemService) => {
-        mockBackend.connections.subscribe((connection: MockConnection) => {
-            connection.mockRespond(new Response(new ResponseOptions({ body: { id: 1, value: 'value 1' } })));
-        });
-        
-        return new Promise(resolve => {
-            mockItemService.collection$
-                .skip(1)
-                .do(() => resolve())
-                .do(items => expect(items.length).toBe(0))
-                .subscribe();
+        mockCollectionService.remove(1);
+    });
 
-            mockItemService.remove(1);
-        });
-    }));
+    it('should handle removing a item failure', () => {
+        let response = new Response(new ResponseOptions({ status: 404 }));
+        let mockCollectionService = new MockCollectionService(new MockHttp(new Error('ERROR')));
 
-    it('should handle removing a item failure', injectAsync([MockBackend, MockItemService], (mockBackend: MockBackend, mockItemService: MockItemService) => {
-        mockBackend.connections.subscribe((connection: MockConnection) => connection.mockError(new Error('ERROR')));
-        
-        return new Promise(resolve => {
-            mockItemService.errors$
-                .skip(1)
-                .do(() => resolve())
-                .do(err => expect(err).toBeDefined())
-                .subscribe();
+        mockCollectionService.errors$
+            .skip(1)
+            .do(err => expect(err).toBeDefined())
+            .subscribe();
 
-            mockItemService.remove(1);
-        });
-    }));
+        mockCollectionService.remove(1);
+    });
 
-    it('should allow a subscription of errors', injectAsync([MockBackend, MockItemService], (mockBackend: MockBackend, mockItemService: MockItemService) => {
-        mockBackend.connections.subscribe((connection: MockConnection) => {
-            connection.mockRespond(new Response(new ResponseOptions({ body: { id: 1, value: 'value 1' }, status: 404 })));
-        });
-        
-        return new Promise(resolve => {
-            mockItemService.errors$
-                .do(() => resolve())
-                .do(err => expect(err).toBeDefined())
-                .subscribe();
+    it('should allow a subscription of errors', () => {
+        let response = new Response(new ResponseOptions({}));
+        let mockCollectionService = new MockCollectionService(new MockHttp(response));
 
-            mockItemService.remove(1);
-        });
-    }));
+        mockCollectionService.errors$
+            .do(err => expect(err).toBeDefined())
+            .subscribe();
+    });
+
+    it('should allow a subscription of history', () => {
+        let response = new Response(new ResponseOptions({}));
+        let mockCollectionService = new MockCollectionService(new MockHttp(response));
+
+        mockCollectionService.history$
+            .do(err => expect(err).toBeDefined())
+            .subscribe();
+    });
 });

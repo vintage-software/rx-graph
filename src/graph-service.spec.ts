@@ -24,14 +24,14 @@ interface TestItem {
 }
 
 @Injectable()
-class TestUserService extends RestCollection<TestUser, any> {
+class TestUserService extends RestCollection<TestUser> {
     constructor(http: Http) {
         super({ baseUrl: '/xyz', options: {}, http });
     }
 }
 
 @Injectable()
-class TestItemService extends RestCollection<TestItem, any> {
+class TestItemService extends RestCollection<TestItem> {
     constructor(http: Http) {
         super({ baseUrl: '/xyz', options: {}, http });
     }

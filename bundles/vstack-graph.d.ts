@@ -1,7 +1,6 @@
 /// <reference path="../typings/browser/ambient/es6-shim/es6-shim.d.ts" />
 /// <reference path="../typings/browser/ambient/jasmine/jasmine.d.ts" />
 declare module "utilities" {
-    import { Observable } from 'rxjs/Observable';
     export interface CollectionItem {
         id: any;
     }
@@ -9,18 +8,67 @@ declare module "utilities" {
     export function mergeCollection(target: any[], src: any[]): void;
     export function slimify(item: any): any;
     export function isPrimitive(item: any): boolean;
-    export interface IHttp<T> {
-        get(url: string, options?: T): Observable<any>;
-        post(url: string, body: string, options?: T): Observable<any>;
-        put(url: string, body: string, options?: T): Observable<any>;
-        delete(url: string, options?: T): Observable<any>;
+}
+declare module "interfaces/http" {
+    import { Observable } from 'rxjs/Observable';
+    export interface IHttp {
+        get(url: string, options?: any): Observable<Response>;
+        post(url: string, body: string, options?: any): Observable<Response>;
+        put(url: string, body: string, options?: any): Observable<Response>;
+        delete(url: string, options?: any): Observable<Response>;
+    }
+    export interface Response {
+        type: any;
+        ok: boolean;
+        url: string;
+        status: number;
+        statusText: string;
+        bytesLoaded: number;
+        totalBytes: number;
+        headers: any;
+        blob(): any;
+        json(): any;
+        text(): string;
+        arrayBuffer(): any;
+    }
+    export enum ResponseType {
+        basic = 0,
+        cors = 1,
+        default = 2,
+        error = 3,
+        opaque = 4,
+        opaqueredirect = 5,
+    }
+    export interface Headers {
+        fromResponseHeaderString(headersString: string): Headers;
+        append(name: string, value: string): void;
+        delete(name: string): void;
+        forEach(fn: (values: string[], name: string, headers: Map<string, string[]>) => void): void;
+        get(header: string): string;
+        has(header: string): boolean;
+        keys(): string[];
+        set(header: string, value: string | string[]): void;
+        values(): string[][];
+        toJSON(): {
+            [key: string]: any;
+        };
+        getAll(header: string): string[];
+        entries(): any;
+    }
+    export interface RequestOptionsArgs {
+        url: string;
+        method: string;
+        search: string;
+        headers: Headers;
+        body: string;
     }
 }
 declare module "rest-collection" {
     import { Observable } from 'rxjs/Observable';
     import 'rxjs/add/operator/map';
-    import { CollectionItem, IHttp } from "utilities";
-    export abstract class RestCollection<TItem extends CollectionItem, TOptions> {
+    import { CollectionItem } from "utilities";
+    import { IHttp, RequestOptionsArgs } from "interfaces/http";
+    export abstract class RestCollection<TItem extends CollectionItem> {
         protected _baseUrl: string;
         protected _requestOptionsArgs: any;
         private _http;
@@ -31,8 +79,8 @@ declare module "rest-collection" {
         private _historyStore;
         constructor({baseUrl, http, options}: {
             baseUrl: string;
-            http: IHttp<TOptions>;
-            options?: TOptions;
+            http: IHttp;
+            options?: RequestOptionsArgs | {};
         });
         collection$: Observable<TItem[]>;
         errors$: Observable<any>;
@@ -45,7 +93,7 @@ declare module "rest-collection" {
         protected _apiGet(url: string, opt?: any): Observable<any>;
         protected _apiPost(url: string, val: any, opt?: any): Observable<any>;
         protected _apiPut(url: string, val: any, opt?: any): Observable<any>;
-        protected _apiDelete(url: string, opt?: any): Observable<any>;
+        protected _apiDelete(url: string, opt?: any): Observable<number>;
         protected _recordHistory(action: string): void;
         protected _removeCollectionItem(id: any): void;
         _dangerousGraphUpdateCollection(items: TItem[]): void;
@@ -73,10 +121,10 @@ declare module "graph-helpers" {
         constructor(collectionProperty: string, to: IService, mappingId: string, many: boolean);
     }
     export class ServiceConfig<TCollectionItem extends CollectionItem, TGraph> implements IServiceConfig<TGraph> {
-        service: RestCollection<TCollectionItem, any>;
+        service: RestCollection<TCollectionItem>;
         func: (graph: TGraph, collection: TCollectionItem[]) => void;
         mappings: Mapping[];
-        constructor(service: RestCollection<TCollectionItem, any>, func: (graph: TGraph, collection: TCollectionItem[]) => void, mappings: Mapping[]);
+        constructor(service: RestCollection<TCollectionItem>, func: (graph: TGraph, collection: TCollectionItem[]) => void, mappings: Mapping[]);
     }
 }
 declare module "graph-service" {
@@ -97,6 +145,18 @@ declare module "graph-service" {
     }
 }
 declare module "graph-service.spec" {
+}
+declare module "testing/mock-http" {
+    import { IHttp } from "interfaces/http";
+    import { Observable } from 'rxjs/Observable';
+    export class MockHttp implements IHttp {
+        private _mockResponse;
+        constructor(_mockResponse: any);
+        get(url: string, options?: string): Observable<any>;
+        post(url: string, body: string, options?: string): Observable<any>;
+        put(url: string, body: string, options?: string): Observable<any>;
+        delete(url: string, options?: string): Observable<any>;
+    }
 }
 declare module "rest-collection.spec" {
 }

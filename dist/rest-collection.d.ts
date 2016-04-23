@@ -1,8 +1,9 @@
 /// <reference path="../typings/browser/ambient/es6-shim/es6-shim.d.ts" />
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
-import { CollectionItem, IHttp } from './utilities';
-export declare abstract class RestCollection<TItem extends CollectionItem, TOptions> {
+import { CollectionItem } from './utilities';
+import { IHttp, RequestOptionsArgs } from './interfaces/http';
+export declare abstract class RestCollection<TItem extends CollectionItem> {
     protected _baseUrl: string;
     protected _requestOptionsArgs: any;
     private _http;
@@ -13,8 +14,8 @@ export declare abstract class RestCollection<TItem extends CollectionItem, TOpti
     private _historyStore;
     constructor({baseUrl, http, options}: {
         baseUrl: string;
-        http: IHttp<TOptions>;
-        options?: TOptions;
+        http: IHttp;
+        options?: RequestOptionsArgs | {};
     });
     collection$: Observable<TItem[]>;
     errors$: Observable<any>;
@@ -27,7 +28,7 @@ export declare abstract class RestCollection<TItem extends CollectionItem, TOpti
     protected _apiGet(url: string, opt?: any): Observable<any>;
     protected _apiPost(url: string, val: any, opt?: any): Observable<any>;
     protected _apiPut(url: string, val: any, opt?: any): Observable<any>;
-    protected _apiDelete(url: string, opt?: any): Observable<any>;
+    protected _apiDelete(url: string, opt?: any): Observable<number>;
     protected _recordHistory(action: string): void;
     protected _removeCollectionItem(id: any): void;
     _dangerousGraphUpdateCollection(items: TItem[]): void;

@@ -19,5 +19,5 @@ export class Mapping {
 }
 
 export class ServiceConfig<TCollectionItem extends CollectionItem, TGraph> implements IServiceConfig<TGraph> {
-    constructor(public service: RestCollection<TCollectionItem, any>, public func: (graph: TGraph, collection: TCollectionItem[]) => void, public mappings: Mapping[]) { }
+    constructor(public service: RestCollection<TCollectionItem>, public func: (graph: TGraph, collection: TCollectionItem[]) => void, public mappings: Mapping[]) { }
 }

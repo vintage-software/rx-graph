@@ -5,19 +5,20 @@ import {ReplaySubject} from 'rxjs/subject/ReplaySubject';
 import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject';
 import 'rxjs/add/operator/map';
 
-import {slimify, CollectionItem, clone, mergeCollection, IHttp} from './utilities';
+import {slimify, CollectionItem, clone, mergeCollection} from './utilities';
+import {IHttp, RequestOptionsArgs} from './interfaces/http';
 
-export abstract class RestCollection<TItem extends CollectionItem, TOptions> {
+export abstract class RestCollection<TItem extends CollectionItem> {
     protected _baseUrl: string;
     protected _requestOptionsArgs: any;
-    private _http: IHttp<TOptions>;
+    private _http: IHttp;
     private _collection$: BehaviorSubject<TItem[]>;
     private _errors$: BehaviorSubject<any>;
     private _history$: BehaviorSubject<any>;
     private _dataStore: { collection: TItem[] };
     private _historyStore: any[];
 
-    constructor({ baseUrl, http, options } : { baseUrl: string, http: IHttp<TOptions>, options?: TOptions }) {
+    constructor({ baseUrl, http, options } : { baseUrl: string, http: IHttp, options?: RequestOptionsArgs | {} }) {
         this._collection$ = new BehaviorSubject(<TItem[]>[]);
         this._errors$ = new BehaviorSubject(<any>{});
         this._history$ = new BehaviorSubject(<any>{});
