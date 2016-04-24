@@ -81,12 +81,14 @@ describe('GraphService Specs', () => {
     });
 
     it('should be populated graph', () => {
-        mockHttp.setMockResponse(new Response(new ResponseOptions({ body: [
-            { id: 1, value: 'user 1' },
-            { id: 2, value: 'user 2' },
-            { id: 3, value: 'user 3' }
-        ]})));
-        
+        mockHttp.setMockResponse(new Response(new ResponseOptions({
+            body: [
+                { id: 1, value: 'user 1' },
+                { id: 2, value: 'user 2' },
+                { id: 3, value: 'user 3' }
+            ]
+        })));
+
         testGraphService.graph$
             .skip(1)
             .do(graph => expect(graph.testItems.length).toBe(3))
@@ -95,48 +97,37 @@ describe('GraphService Specs', () => {
         testItemService.loadAll();
     });
 
-    // it('should have items on user', () => {
-    //         let test = graphService.graph$
-    //             .do(graph => {
-    //                 //expect(graph.testUsers.length).toBe(3);
-    //                 // expect(graph.testItems.length).toBe(3);
-    //                 // graph.testItems.map(i => expect(!!i.testUser).toBe(false));
-    //                 // expect(graph.testUsers.find(i => i.id === 1).testItems.length).toBe(2);
-    //                 // expect(graph.testUsers.find(i => i.id === 2).testItems.length).toBe(0);
-    //                 // expect(graph.testUsers.find(i => i.id === 3).testItems.length).toBe(1);
-    //             })
-    //             .do(graph => resolve());
+    it('should have items on user', () => {
+        testGraphService.graph$
+            .skip(2)
+            .do(graph => {
+                expect(graph.testUsers.length).toBe(3);
+                expect(graph.testItems.length).toBe(3);
+                graph.testItems.map(i => expect(!!i.testUser).toBe(false));
+                // expect(graph.testUsers.find(i => i.id === 1).testItems.length).toBe(2);
+                // expect(graph.testUsers.find(i => i.id === 2).testItems.length).toBe(0);
+                // expect(graph.testUsers.find(i => i.id === 3).testItems.length).toBe(1);
+            })
+            .subscribe();
 
-    //         setupUsers(mockBackend);
-    //         testUserService.loadAll();
+        mockHttp.setMockResponse(new Response(new ResponseOptions({
+            body: [
+                { id: 1, value: 'user 1' },
+                { id: 2, value: 'user 2' },
+                { id: 3, value: 'user 3' }
+            ]
+        })));
 
-    //         setupItems(mockBackend);
-    //         testItemService.loadAll();
+        testUserService.loadAll();
 
-    //         setTimeout(i => test.subscribe(), 0);
-    // });
+        mockHttp.setMockResponse(new Response(new ResponseOptions({
+            body: [
+                { id: 1, value: 'item 1' },
+                { id: 2, value: 'item 2' },
+                { id: 3, value: 'item 3' }
+            ]
+        })));
 
-    // function setupUsers(mockBackend: MockBackend) {
-    //     setupMockBackend(mockBackend, [
-    //         { id: 1, name: 'user 1' },
-    //         { id: 2, name: 'user 2' },
-    //         { id: 3, name: 'user 3' }
-    //     ]);
-    // }
-
-    // function setupItems(mockBackend: MockBackend) {
-    //     setupMockBackend(mockBackend, [
-    //         { id: 1, value: 'item 1', userId: 1 },
-    //         { id: 2, value: 'item 2', userId: 1 },
-    //         { id: 3, value: 'item 3', userId: 3 }
-    //     ]);
-    // }
-
-    // function setupMockBackend(mockBackend: MockBackend, body: any) {
-    //     mockBackend.connections.subscribe((connection: MockConnection) => {
-    //         connection.mockRespond(new Response(new ResponseOptions({
-    //             body
-    //         })));
-    //     });
-    // }
+        testItemService.loadAll();
+    });
 });

@@ -504,15 +504,43 @@ System.register("graph-service.spec", ['angular2/testing', 'angular2/http', 'rxj
                         .subscribe();
                 });
                 testing_1.it('should be populated graph', function () {
-                    mockHttp.setMockResponse(new http_1.Response(new http_1.ResponseOptions({ body: [
+                    mockHttp.setMockResponse(new http_1.Response(new http_1.ResponseOptions({
+                        body: [
                             { id: 1, value: 'user 1' },
                             { id: 2, value: 'user 2' },
                             { id: 3, value: 'user 3' }
-                        ] })));
+                        ]
+                    })));
                     testGraphService.graph$
                         .skip(1)
                         .do(function (graph) { return testing_1.expect(graph.testItems.length).toBe(3); })
                         .subscribe();
+                    testItemService.loadAll();
+                });
+                testing_1.it('should have items on user', function () {
+                    testGraphService.graph$
+                        .skip(2)
+                        .do(function (graph) {
+                        testing_1.expect(graph.testUsers.length).toBe(3);
+                        testing_1.expect(graph.testItems.length).toBe(3);
+                        graph.testItems.map(function (i) { return testing_1.expect(!!i.testUser).toBe(false); });
+                    })
+                        .subscribe();
+                    mockHttp.setMockResponse(new http_1.Response(new http_1.ResponseOptions({
+                        body: [
+                            { id: 1, value: 'user 1' },
+                            { id: 2, value: 'user 2' },
+                            { id: 3, value: 'user 3' }
+                        ]
+                    })));
+                    testUserService.loadAll();
+                    mockHttp.setMockResponse(new http_1.Response(new http_1.ResponseOptions({
+                        body: [
+                            { id: 1, value: 'item 1' },
+                            { id: 2, value: 'item 2' },
+                            { id: 3, value: 'item 3' }
+                        ]
+                    })));
                     testItemService.loadAll();
                 });
             });
