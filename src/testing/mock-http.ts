@@ -1,5 +1,6 @@
 import {IHttp} from '../interfaces/http';
 import {Observable} from 'rxjs/Observable';
+// import 'rxjs/add/operator/of';
 
 export class MockHttp implements IHttp {
     constructor(private _mockResponse: any) {
@@ -20,5 +21,9 @@ export class MockHttp implements IHttp {
     
     delete(url: string, options = '') {
         return Observable.of(this._mockResponse);
+    }
+    
+    setMockResponse(response: any) {
+        this._mockResponse = response;
     }
 }

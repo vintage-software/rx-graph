@@ -1,6 +1,8 @@
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/combineLatest';
 import 'rxjs/add/operator/startWith';
+import 'rxjs/add/operator/skip';
+import 'rxjs/add/operator/do';
 import 'rxjs/Rx';
 import { IServiceConfig } from './graph-helpers';
 export declare class GraphService<TGraph> {

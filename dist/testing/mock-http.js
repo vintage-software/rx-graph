@@ -20,6 +20,9 @@ var MockHttp = (function () {
         if (options === void 0) { options = ''; }
         return Observable_1.Observable.of(this._mockResponse);
     };
+    MockHttp.prototype.setMockResponse = function (response) {
+        this._mockResponse = response;
+    };
     return MockHttp;
 }());
 exports.MockHttp = MockHttp;

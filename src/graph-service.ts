@@ -2,6 +2,9 @@ import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/combineLatest';
 import 'rxjs/add/operator/startWith';
+import 'rxjs/add/operator/skip';
+import 'rxjs/add/operator/do';
+
 import 'rxjs/Rx'; //TODO: we just want combineLatest
 
 import {CollectionItem, clone} from './utilities';

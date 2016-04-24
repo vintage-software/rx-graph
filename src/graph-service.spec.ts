@@ -9,6 +9,8 @@ import {Observable} from 'rxjs/Observable';
 import {RestCollection} from './rest-collection';
 import {GraphService} from './graph-service';
 import {ServiceConfig} from './graph-helpers';
+import {MockHttp} from './testing/mock-http';
+import {IHttp} from './interfaces/http';
 
 interface TestUser {
     id: any;
@@ -23,21 +25,18 @@ interface TestItem {
     testUser: TestUser;
 }
 
-@Injectable()
 class TestUserService extends RestCollection<TestUser> {
-    constructor(http: Http) {
+    constructor(http: IHttp) {
         super({ baseUrl: '/xyz', options: {}, http });
     }
 }
 
-@Injectable()
 class TestItemService extends RestCollection<TestItem> {
-    constructor(http: Http) {
+    constructor(http: IHttp) {
         super({ baseUrl: '/xyz', options: {}, http });
     }
 }
 
-@Injectable()
 class TestGraphService extends GraphService<TestGraph> {
     constructor(testUserService: TestUserService, testItemService: TestItemService) {
         super([
@@ -61,51 +60,42 @@ class TestGraph {
 }
 
 describe('GraphService Specs', () => {
-    beforeEachProviders(() => {
-        return [
-            HTTP_PROVIDERS,
-            MockBackend,
-            BaseRequestOptions,
-            TestUserService,
-            TestItemService,
-            TestGraphService,
-            provide(Http, {
-                useFactory: (backend: MockBackend, defaultOptions: BaseRequestOptions) => new Http(backend, defaultOptions),
-                deps: [MockBackend, BaseRequestOptions]
-            })
-        ];
+    let testGraphService, testUserService, testItemService, mockHttp;
+
+    beforeEach(() => {
+        mockHttp = new MockHttp({});
+        testUserService = new TestUserService(mockHttp);
+        testItemService = new TestItemService(mockHttp);
+        testGraphService = new TestGraphService(testUserService, testItemService);
     });
 
-    it('tests a dummy Observable', injectAsync([], () => {
+    it('tests a dummy Observable', () => {
         return Observable.of(5).delay(500).toPromise()
             .then((val) => { expect(val).toEqual(5) });
-    }));
+    });
 
-    it('should be empty graph', injectAsync([TestGraphService], (graphService: TestGraphService) => {
-        return new Promise(resolve => {
-            graphService.graph$
-                .do(graph => expect(graph.testItems.length).toBe(0))
-                .do(graph => resolve())
-                .subscribe();
-        });
-    }));
+    it('should be empty graph', () => {
+        testGraphService.graph$
+            .do(graph => expect(graph.testItems.length).toBe(0))
+            .subscribe();
+    });
 
-    it('should be populated graph', injectAsync([MockBackend, TestItemService, TestGraphService], (mockBackend: MockBackend, testItemService: TestItemService, graphService: TestGraphService) => {
-        return new Promise(resolve => {
-            graphService.graph$
-                .skip(1)
-                .do(graph => expect(graph.testItems.length).toBe(3))
-                .do(graph => resolve())
-                .subscribe();
+    it('should be populated graph', () => {
+        mockHttp.setMockResponse(new Response(new ResponseOptions({ body: [
+            { id: 1, value: 'user 1' },
+            { id: 2, value: 'user 2' },
+            { id: 3, value: 'user 3' }
+        ]})));
+        
+        testGraphService.graph$
+            .skip(1)
+            .do(graph => expect(graph.testItems.length).toBe(3))
+            .subscribe();
 
-            setupItems(mockBackend);
-            testItemService.loadAll();
-        });
-    }));
+        testItemService.loadAll();
+    });
 
-    // it('should have items on user', injectAsync([MockBackend, TestItemService, TestUserService, TestGraphService], (mockBackend: MockBackend, testItemService: TestItemService, testUserService: TestUserService, graphService: TestGraphService) => {
-    //     console.log('0');
-    //     return new Promise(resolve => {
+    // it('should have items on user', () => {
     //         let test = graphService.graph$
     //             .do(graph => {
     //                 //expect(graph.testUsers.length).toBe(3);
@@ -124,30 +114,29 @@ describe('GraphService Specs', () => {
     //         testItemService.loadAll();
 
     //         setTimeout(i => test.subscribe(), 0);
-    //      });
-    // }));
+    // });
 
-    function setupUsers(mockBackend: MockBackend) {
-        setupMockBackend(mockBackend, [
-            { id: 1, name: 'user 1' },
-            { id: 2, name: 'user 2' },
-            { id: 3, name: 'user 3' }
-        ]);
-    }
+    // function setupUsers(mockBackend: MockBackend) {
+    //     setupMockBackend(mockBackend, [
+    //         { id: 1, name: 'user 1' },
+    //         { id: 2, name: 'user 2' },
+    //         { id: 3, name: 'user 3' }
+    //     ]);
+    // }
 
-    function setupItems(mockBackend: MockBackend) {
-        setupMockBackend(mockBackend, [
-            { id: 1, value: 'item 1', userId: 1 },
-            { id: 2, value: 'item 2', userId: 1 },
-            { id: 3, value: 'item 3', userId: 3 }
-        ]);
-    }
+    // function setupItems(mockBackend: MockBackend) {
+    //     setupMockBackend(mockBackend, [
+    //         { id: 1, value: 'item 1', userId: 1 },
+    //         { id: 2, value: 'item 2', userId: 1 },
+    //         { id: 3, value: 'item 3', userId: 3 }
+    //     ]);
+    // }
 
-    function setupMockBackend(mockBackend: MockBackend, body: any) {
-        mockBackend.connections.subscribe((connection: MockConnection) => {
-            connection.mockRespond(new Response(new ResponseOptions({
-                body
-            })));
-        });
-    }
+    // function setupMockBackend(mockBackend: MockBackend, body: any) {
+    //     mockBackend.connections.subscribe((connection: MockConnection) => {
+    //         connection.mockRespond(new Response(new ResponseOptions({
+    //             body
+    //         })));
+    //     });
+    // }
 });

@@ -7,4 +7,5 @@ export declare class MockHttp implements IHttp {
     post(url: string, body: string, options?: string): Observable<any>;
     put(url: string, body: string, options?: string): Observable<any>;
     delete(url: string, options?: string): Observable<any>;
+    setMockResponse(response: any): void;
 }

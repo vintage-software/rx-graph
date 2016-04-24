@@ -131,6 +131,8 @@ declare module "graph-service" {
     import { Observable } from 'rxjs/Observable';
     import 'rxjs/add/operator/combineLatest';
     import 'rxjs/add/operator/startWith';
+    import 'rxjs/add/operator/skip';
+    import 'rxjs/add/operator/do';
     import 'rxjs/Rx';
     import { IServiceConfig } from "graph-helpers";
     export class GraphService<TGraph> {
@@ -144,8 +146,6 @@ declare module "graph-service" {
         private _toGraph(master);
     }
 }
-declare module "graph-service.spec" {
-}
 declare module "testing/mock-http" {
     import { IHttp } from "interfaces/http";
     import { Observable } from 'rxjs/Observable';
@@ -156,7 +156,10 @@ declare module "testing/mock-http" {
         post(url: string, body: string, options?: string): Observable<any>;
         put(url: string, body: string, options?: string): Observable<any>;
         delete(url: string, options?: string): Observable<any>;
+        setMockResponse(response: any): void;
     }
+}
+declare module "graph-service.spec" {
 }
 declare module "rest-collection.spec" {
 }

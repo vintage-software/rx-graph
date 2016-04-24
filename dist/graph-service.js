@@ -2,6 +2,8 @@
 var Observable_1 = require('rxjs/Observable');
 require('rxjs/add/operator/combineLatest');
 require('rxjs/add/operator/startWith');
+require('rxjs/add/operator/skip');
+require('rxjs/add/operator/do');
 require('rxjs/Rx');
 var utilities_1 = require('./utilities');
 var GraphService = (function () {

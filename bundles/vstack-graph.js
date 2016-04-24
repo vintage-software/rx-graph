@@ -3,15 +3,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
 System.register("utilities", [], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
@@ -298,7 +289,7 @@ System.register("graph-helpers", [], function(exports_4, context_4) {
         }
     }
 });
-System.register("graph-service", ['rxjs/Observable', 'rxjs/add/operator/combineLatest', 'rxjs/add/operator/startWith', 'rxjs/Rx', "utilities"], function(exports_5, context_5) {
+System.register("graph-service", ['rxjs/Observable', 'rxjs/add/operator/combineLatest', 'rxjs/add/operator/startWith', 'rxjs/add/operator/skip', 'rxjs/add/operator/do', 'rxjs/Rx', "utilities"], function(exports_5, context_5) {
     "use strict";
     var __moduleName = context_5 && context_5.id;
     var Observable_1, utilities_2;
@@ -311,6 +302,8 @@ System.register("graph-service", ['rxjs/Observable', 'rxjs/add/operator/combineL
             function (_2) {},
             function (_3) {},
             function (_4) {},
+            function (_5) {},
+            function (_6) {},
             function (utilities_2_1) {
                 utilities_2 = utilities_2_1;
             }],
@@ -395,10 +388,50 @@ System.register("graph-service", ['rxjs/Observable', 'rxjs/add/operator/combineL
         }
     }
 });
-System.register("graph-service.spec", ['angular2/testing', 'angular2/http', 'angular2/core', 'angular2/http/testing', 'rxjs/Observable', "rest-collection", "graph-service", "graph-helpers"], function(exports_6, context_6) {
+System.register("testing/mock-http", ['rxjs/Observable'], function(exports_6, context_6) {
     "use strict";
     var __moduleName = context_6 && context_6.id;
-    var testing_1, http_1, core_1, testing_2, Observable_2, rest_collection_1, graph_service_1, graph_helpers_1;
+    var Observable_2;
+    var MockHttp;
+    return {
+        setters:[
+            function (Observable_2_1) {
+                Observable_2 = Observable_2_1;
+            }],
+        execute: function() {
+            MockHttp = (function () {
+                function MockHttp(_mockResponse) {
+                    this._mockResponse = _mockResponse;
+                }
+                MockHttp.prototype.get = function (url, options) {
+                    if (options === void 0) { options = ''; }
+                    return Observable_2.Observable.of(this._mockResponse);
+                };
+                MockHttp.prototype.post = function (url, body, options) {
+                    if (options === void 0) { options = ''; }
+                    return Observable_2.Observable.of(this._mockResponse);
+                };
+                MockHttp.prototype.put = function (url, body, options) {
+                    if (options === void 0) { options = ''; }
+                    return Observable_2.Observable.of(this._mockResponse);
+                };
+                MockHttp.prototype.delete = function (url, options) {
+                    if (options === void 0) { options = ''; }
+                    return Observable_2.Observable.of(this._mockResponse);
+                };
+                MockHttp.prototype.setMockResponse = function (response) {
+                    this._mockResponse = response;
+                };
+                return MockHttp;
+            }());
+            exports_6("MockHttp", MockHttp);
+        }
+    }
+});
+System.register("graph-service.spec", ['angular2/testing', 'angular2/http', 'rxjs/Observable', "rest-collection", "graph-service", "graph-helpers", "testing/mock-http"], function(exports_7, context_7) {
+    "use strict";
+    var __moduleName = context_7 && context_7.id;
+    var testing_1, http_1, Observable_3, rest_collection_1, graph_service_1, graph_helpers_1, mock_http_1;
     var TestUserService, TestItemService, TestGraphService, TestGraph;
     return {
         setters:[
@@ -408,14 +441,8 @@ System.register("graph-service.spec", ['angular2/testing', 'angular2/http', 'ang
             function (http_1_1) {
                 http_1 = http_1_1;
             },
-            function (core_1_1) {
-                core_1 = core_1_1;
-            },
-            function (testing_2_1) {
-                testing_2 = testing_2_1;
-            },
-            function (Observable_2_1) {
-                Observable_2 = Observable_2_1;
+            function (Observable_3_1) {
+                Observable_3 = Observable_3_1;
             },
             function (rest_collection_1_1) {
                 rest_collection_1 = rest_collection_1_1;
@@ -425,6 +452,9 @@ System.register("graph-service.spec", ['angular2/testing', 'angular2/http', 'ang
             },
             function (graph_helpers_1_1) {
                 graph_helpers_1 = graph_helpers_1_1;
+            },
+            function (mock_http_1_1) {
+                mock_http_1 = mock_http_1_1;
             }],
         execute: function() {
             TestUserService = (function (_super) {
@@ -432,10 +462,6 @@ System.register("graph-service.spec", ['angular2/testing', 'angular2/http', 'ang
                 function TestUserService(http) {
                     _super.call(this, { baseUrl: '/xyz', options: {}, http: http });
                 }
-                TestUserService = __decorate([
-                    core_1.Injectable(), 
-                    __metadata('design:paramtypes', [http_1.Http])
-                ], TestUserService);
                 return TestUserService;
             }(rest_collection_1.RestCollection));
             TestItemService = (function (_super) {
@@ -443,10 +469,6 @@ System.register("graph-service.spec", ['angular2/testing', 'angular2/http', 'ang
                 function TestItemService(http) {
                     _super.call(this, { baseUrl: '/xyz', options: {}, http: http });
                 }
-                TestItemService = __decorate([
-                    core_1.Injectable(), 
-                    __metadata('design:paramtypes', [http_1.Http])
-                ], TestItemService);
                 return TestItemService;
             }(rest_collection_1.RestCollection));
             TestGraphService = (function (_super) {
@@ -457,10 +479,6 @@ System.register("graph-service.spec", ['angular2/testing', 'angular2/http', 'ang
                         new graph_helpers_1.ServiceConfig(testItemService, function (graph, collection) { return graph.testItems = collection; }, [])
                     ]);
                 }
-                TestGraphService = __decorate([
-                    core_1.Injectable(), 
-                    __metadata('design:paramtypes', [TestUserService, TestItemService])
-                ], TestGraphService);
                 return TestGraphService;
             }(graph_service_1.GraphService));
             TestGraph = (function () {
@@ -469,114 +487,47 @@ System.register("graph-service.spec", ['angular2/testing', 'angular2/http', 'ang
                 return TestGraph;
             }());
             testing_1.describe('GraphService Specs', function () {
-                testing_1.beforeEachProviders(function () {
-                    return [
-                        http_1.HTTP_PROVIDERS,
-                        testing_2.MockBackend,
-                        http_1.BaseRequestOptions,
-                        TestUserService,
-                        TestItemService,
-                        TestGraphService,
-                        core_1.provide(http_1.Http, {
-                            useFactory: function (backend, defaultOptions) { return new http_1.Http(backend, defaultOptions); },
-                            deps: [testing_2.MockBackend, http_1.BaseRequestOptions]
-                        })
-                    ];
+                var testGraphService, testUserService, testItemService, mockHttp;
+                testing_1.beforeEach(function () {
+                    mockHttp = new mock_http_1.MockHttp({});
+                    testUserService = new TestUserService(mockHttp);
+                    testItemService = new TestItemService(mockHttp);
+                    testGraphService = new TestGraphService(testUserService, testItemService);
                 });
-                testing_1.it('tests a dummy Observable', testing_1.injectAsync([], function () {
-                    return Observable_2.Observable.of(5).delay(500).toPromise()
+                testing_1.it('tests a dummy Observable', function () {
+                    return Observable_3.Observable.of(5).delay(500).toPromise()
                         .then(function (val) { testing_1.expect(val).toEqual(5); });
-                }));
-                testing_1.it('should be empty graph', testing_1.injectAsync([TestGraphService], function (graphService) {
-                    return new Promise(function (resolve) {
-                        graphService.graph$
-                            .do(function (graph) { return testing_1.expect(graph.testItems.length).toBe(0); })
-                            .do(function (graph) { return resolve(); })
-                            .subscribe();
-                    });
-                }));
-                testing_1.it('should be populated graph', testing_1.injectAsync([testing_2.MockBackend, TestItemService, TestGraphService], function (mockBackend, testItemService, graphService) {
-                    return new Promise(function (resolve) {
-                        graphService.graph$
-                            .skip(1)
-                            .do(function (graph) { return testing_1.expect(graph.testItems.length).toBe(3); })
-                            .do(function (graph) { return resolve(); })
-                            .subscribe();
-                        setupItems(mockBackend);
-                        testItemService.loadAll();
-                    });
-                }));
-                function setupUsers(mockBackend) {
-                    setupMockBackend(mockBackend, [
-                        { id: 1, name: 'user 1' },
-                        { id: 2, name: 'user 2' },
-                        { id: 3, name: 'user 3' }
-                    ]);
-                }
-                function setupItems(mockBackend) {
-                    setupMockBackend(mockBackend, [
-                        { id: 1, value: 'item 1', userId: 1 },
-                        { id: 2, value: 'item 2', userId: 1 },
-                        { id: 3, value: 'item 3', userId: 3 }
-                    ]);
-                }
-                function setupMockBackend(mockBackend, body) {
-                    mockBackend.connections.subscribe(function (connection) {
-                        connection.mockRespond(new http_1.Response(new http_1.ResponseOptions({
-                            body: body
-                        })));
-                    });
-                }
+                });
+                testing_1.it('should be empty graph', function () {
+                    testGraphService.graph$
+                        .do(function (graph) { return testing_1.expect(graph.testItems.length).toBe(0); })
+                        .subscribe();
+                });
+                testing_1.it('should be populated graph', function () {
+                    mockHttp.setMockResponse(new http_1.Response(new http_1.ResponseOptions({ body: [
+                            { id: 1, value: 'user 1' },
+                            { id: 2, value: 'user 2' },
+                            { id: 3, value: 'user 3' }
+                        ] })));
+                    testGraphService.graph$
+                        .skip(1)
+                        .do(function (graph) { return testing_1.expect(graph.testItems.length).toBe(3); })
+                        .subscribe();
+                    testItemService.loadAll();
+                });
             });
-        }
-    }
-});
-System.register("testing/mock-http", ['rxjs/Observable'], function(exports_7, context_7) {
-    "use strict";
-    var __moduleName = context_7 && context_7.id;
-    var Observable_3;
-    var MockHttp;
-    return {
-        setters:[
-            function (Observable_3_1) {
-                Observable_3 = Observable_3_1;
-            }],
-        execute: function() {
-            MockHttp = (function () {
-                function MockHttp(_mockResponse) {
-                    this._mockResponse = _mockResponse;
-                }
-                MockHttp.prototype.get = function (url, options) {
-                    if (options === void 0) { options = ''; }
-                    return Observable_3.Observable.of(this._mockResponse);
-                };
-                MockHttp.prototype.post = function (url, body, options) {
-                    if (options === void 0) { options = ''; }
-                    return Observable_3.Observable.of(this._mockResponse);
-                };
-                MockHttp.prototype.put = function (url, body, options) {
-                    if (options === void 0) { options = ''; }
-                    return Observable_3.Observable.of(this._mockResponse);
-                };
-                MockHttp.prototype.delete = function (url, options) {
-                    if (options === void 0) { options = ''; }
-                    return Observable_3.Observable.of(this._mockResponse);
-                };
-                return MockHttp;
-            }());
-            exports_7("MockHttp", MockHttp);
         }
     }
 });
 System.register("rest-collection.spec", ['angular2/testing', 'angular2/http', "rest-collection", "testing/mock-http"], function(exports_8, context_8) {
     "use strict";
     var __moduleName = context_8 && context_8.id;
-    var testing_3, http_2, rest_collection_2, mock_http_1;
+    var testing_2, http_2, rest_collection_2, mock_http_2;
     var MockCollectionService;
     return {
         setters:[
-            function (testing_3_1) {
-                testing_3 = testing_3_1;
+            function (testing_2_1) {
+                testing_2 = testing_2_1;
             },
             function (http_2_1) {
                 http_2 = http_2_1;
@@ -584,8 +535,8 @@ System.register("rest-collection.spec", ['angular2/testing', 'angular2/http', "r
             function (rest_collection_2_1) {
                 rest_collection_2 = rest_collection_2_1;
             },
-            function (mock_http_1_1) {
-                mock_http_1 = mock_http_1_1;
+            function (mock_http_2_1) {
+                mock_http_2 = mock_http_2_1;
             }],
         execute: function() {
             MockCollectionService = (function (_super) {
@@ -595,8 +546,8 @@ System.register("rest-collection.spec", ['angular2/testing', 'angular2/http', "r
                 }
                 return MockCollectionService;
             }(rest_collection_2.RestCollection));
-            testing_3.describe('RestCollection Specs New', function () {
-                testing_3.it('should load a list of items', function () {
+            testing_2.describe('RestCollection Specs New', function () {
+                testing_2.it('should load a list of items', function () {
                     var response = new http_2.Response(new http_2.ResponseOptions({
                         body: [
                             { id: 1, value: 'value 1' },
@@ -604,106 +555,106 @@ System.register("rest-collection.spec", ['angular2/testing', 'angular2/http', "r
                             { id: 3, value: 'value 3' }
                         ]
                     }));
-                    var mockCollectionService = new MockCollectionService(new mock_http_1.MockHttp(response));
+                    var mockCollectionService = new MockCollectionService(new mock_http_2.MockHttp(response));
                     mockCollectionService.collection$
                         .skip(1)
-                        .do(function (items) { return testing_3.expect(items.length).toBe(3); })
+                        .do(function (items) { return testing_2.expect(items.length).toBe(3); })
                         .subscribe();
                     mockCollectionService.loadAll();
                 });
-                testing_3.it('should handle loading a list of items failure', function () {
+                testing_2.it('should handle loading a list of items failure', function () {
                     var response = new http_2.Response(new http_2.ResponseOptions({ status: 404 }));
-                    var mockCollectionService = new MockCollectionService(new mock_http_1.MockHttp(new Error('ERROR')));
+                    var mockCollectionService = new MockCollectionService(new mock_http_2.MockHttp(new Error('ERROR')));
                     mockCollectionService.errors$
                         .skip(1)
-                        .do(function (err) { return testing_3.expect(err).toBeDefined(); })
+                        .do(function (err) { return testing_2.expect(err).toBeDefined(); })
                         .subscribe();
                     mockCollectionService.loadAll();
                 });
-                testing_3.it('should load a single item', function () {
+                testing_2.it('should load a single item', function () {
                     var response = new http_2.Response(new http_2.ResponseOptions({ body: { id: 1, value: 'value 1' } }));
-                    var mockCollectionService = new MockCollectionService(new mock_http_1.MockHttp(response));
+                    var mockCollectionService = new MockCollectionService(new mock_http_2.MockHttp(response));
                     mockCollectionService.collection$
                         .skip(1)
-                        .do(function (items) { return testing_3.expect(items[0].id).toBe(1); })
+                        .do(function (items) { return testing_2.expect(items[0].id).toBe(1); })
                         .subscribe();
                     mockCollectionService.load(1);
                 });
-                testing_3.it('should handle loading a item failure', function () {
+                testing_2.it('should handle loading a item failure', function () {
                     var response = new http_2.Response(new http_2.ResponseOptions({ status: 404 }));
-                    var mockCollectionService = new MockCollectionService(new mock_http_1.MockHttp(new Error('ERROR')));
+                    var mockCollectionService = new MockCollectionService(new mock_http_2.MockHttp(new Error('ERROR')));
                     mockCollectionService.errors$
                         .skip(1)
-                        .do(function (err) { return testing_3.expect(err).toBeDefined(); })
+                        .do(function (err) { return testing_2.expect(err).toBeDefined(); })
                         .subscribe();
                     mockCollectionService.load(1);
                 });
-                testing_3.it('should create a item', function () {
+                testing_2.it('should create a item', function () {
                     var response = new http_2.Response(new http_2.ResponseOptions({ body: { id: 1, value: 'value 1' } }));
-                    var mockCollectionService = new MockCollectionService(new mock_http_1.MockHttp(response));
+                    var mockCollectionService = new MockCollectionService(new mock_http_2.MockHttp(response));
                     mockCollectionService.collection$
                         .skip(1)
-                        .do(function (items) { return testing_3.expect(items[0].id).toBe(1); })
+                        .do(function (items) { return testing_2.expect(items[0].id).toBe(1); })
                         .subscribe();
                     mockCollectionService.create({ value: 'value 1' });
                 });
-                testing_3.it('should handle creating a item failure', function () {
+                testing_2.it('should handle creating a item failure', function () {
                     var response = new http_2.Response(new http_2.ResponseOptions({ status: 404 }));
-                    var mockCollectionService = new MockCollectionService(new mock_http_1.MockHttp(new Error('ERROR')));
+                    var mockCollectionService = new MockCollectionService(new mock_http_2.MockHttp(new Error('ERROR')));
                     mockCollectionService.errors$
                         .skip(1)
-                        .do(function (err) { return testing_3.expect(err).toBeDefined(); })
+                        .do(function (err) { return testing_2.expect(err).toBeDefined(); })
                         .subscribe();
                     mockCollectionService.create({});
                 });
-                testing_3.it('should update a item', function () {
+                testing_2.it('should update a item', function () {
                     var response = new http_2.Response(new http_2.ResponseOptions({ body: { id: 1, value: 'value 2' } }));
-                    var mockCollectionService = new MockCollectionService(new mock_http_1.MockHttp(response));
+                    var mockCollectionService = new MockCollectionService(new mock_http_2.MockHttp(response));
                     mockCollectionService.collection$
                         .skip(1)
-                        .do(function (items) { return testing_3.expect(items[0].value).toBe('value 2'); })
+                        .do(function (items) { return testing_2.expect(items[0].value).toBe('value 2'); })
                         .subscribe();
                     mockCollectionService.update({ id: 1, value: 'value 2' });
                 });
-                testing_3.it('should handle updating a item failure', function () {
+                testing_2.it('should handle updating a item failure', function () {
                     var response = new http_2.Response(new http_2.ResponseOptions({ status: 404 }));
-                    var mockCollectionService = new MockCollectionService(new mock_http_1.MockHttp(new Error('ERROR')));
+                    var mockCollectionService = new MockCollectionService(new mock_http_2.MockHttp(new Error('ERROR')));
                     mockCollectionService.errors$
                         .skip(1)
-                        .do(function (err) { return testing_3.expect(err).toBeDefined(); })
+                        .do(function (err) { return testing_2.expect(err).toBeDefined(); })
                         .subscribe();
                     mockCollectionService.update({ id: 1 });
                 });
-                testing_3.it('should remove a item', function () {
+                testing_2.it('should remove a item', function () {
                     var response = new http_2.Response(new http_2.ResponseOptions({ body: null }));
-                    var mockCollectionService = new MockCollectionService(new mock_http_1.MockHttp(response));
+                    var mockCollectionService = new MockCollectionService(new mock_http_2.MockHttp(response));
                     mockCollectionService.collection$
                         .skip(1)
-                        .do(function (items) { return testing_3.expect(items.length).toBe(0); })
+                        .do(function (items) { return testing_2.expect(items.length).toBe(0); })
                         .subscribe();
                     mockCollectionService.remove(1);
                 });
-                testing_3.it('should handle removing a item failure', function () {
+                testing_2.it('should handle removing a item failure', function () {
                     var response = new http_2.Response(new http_2.ResponseOptions({ status: 404 }));
-                    var mockCollectionService = new MockCollectionService(new mock_http_1.MockHttp(new Error('ERROR')));
+                    var mockCollectionService = new MockCollectionService(new mock_http_2.MockHttp(new Error('ERROR')));
                     mockCollectionService.errors$
                         .skip(1)
-                        .do(function (err) { return testing_3.expect(err).toBeDefined(); })
+                        .do(function (err) { return testing_2.expect(err).toBeDefined(); })
                         .subscribe();
                     mockCollectionService.remove(1);
                 });
-                testing_3.it('should allow a subscription of errors', function () {
+                testing_2.it('should allow a subscription of errors', function () {
                     var response = new http_2.Response(new http_2.ResponseOptions({}));
-                    var mockCollectionService = new MockCollectionService(new mock_http_1.MockHttp(response));
+                    var mockCollectionService = new MockCollectionService(new mock_http_2.MockHttp(response));
                     mockCollectionService.errors$
-                        .do(function (err) { return testing_3.expect(err).toBeDefined(); })
+                        .do(function (err) { return testing_2.expect(err).toBeDefined(); })
                         .subscribe();
                 });
-                testing_3.it('should allow a subscription of history', function () {
+                testing_2.it('should allow a subscription of history', function () {
                     var response = new http_2.Response(new http_2.ResponseOptions({}));
-                    var mockCollectionService = new MockCollectionService(new mock_http_1.MockHttp(response));
+                    var mockCollectionService = new MockCollectionService(new mock_http_2.MockHttp(response));
                     mockCollectionService.history$
-                        .do(function (err) { return testing_3.expect(err).toBeDefined(); })
+                        .do(function (err) { return testing_2.expect(err).toBeDefined(); })
                         .subscribe();
                 });
             });
@@ -713,46 +664,46 @@ System.register("rest-collection.spec", ['angular2/testing', 'angular2/http', "r
 System.register("utilities.spec", ['angular2/testing', "utilities"], function(exports_9, context_9) {
     "use strict";
     var __moduleName = context_9 && context_9.id;
-    var testing_4, utilities_3;
+    var testing_3, utilities_3;
     return {
         setters:[
-            function (testing_4_1) {
-                testing_4 = testing_4_1;
+            function (testing_3_1) {
+                testing_3 = testing_3_1;
             },
             function (utilities_3_1) {
                 utilities_3 = utilities_3_1;
             }],
         execute: function() {
-            testing_4.describe('Utilities Specs', function () {
-                testing_4.it('should detect primitives', function () {
-                    testing_4.expect(utilities_3.isPrimitive('Hello World')).toBe(true);
-                    testing_4.expect(utilities_3.isPrimitive(true)).toBe(true);
-                    testing_4.expect(utilities_3.isPrimitive(42)).toBe(true);
-                    testing_4.expect(utilities_3.isPrimitive(null)).toBe(true);
-                    testing_4.expect(utilities_3.isPrimitive(undefined)).toBe(true);
-                    testing_4.expect(utilities_3.isPrimitive(new Date())).toBe(true);
-                    testing_4.expect(utilities_3.isPrimitive({})).toBe(false);
-                    testing_4.expect(utilities_3.isPrimitive([])).toBe(false);
+            testing_3.describe('Utilities Specs', function () {
+                testing_3.it('should detect primitives', function () {
+                    testing_3.expect(utilities_3.isPrimitive('Hello World')).toBe(true);
+                    testing_3.expect(utilities_3.isPrimitive(true)).toBe(true);
+                    testing_3.expect(utilities_3.isPrimitive(42)).toBe(true);
+                    testing_3.expect(utilities_3.isPrimitive(null)).toBe(true);
+                    testing_3.expect(utilities_3.isPrimitive(undefined)).toBe(true);
+                    testing_3.expect(utilities_3.isPrimitive(new Date())).toBe(true);
+                    testing_3.expect(utilities_3.isPrimitive({})).toBe(false);
+                    testing_3.expect(utilities_3.isPrimitive([])).toBe(false);
                 });
-                testing_4.it('should be able to slimify objects', function () {
+                testing_3.it('should be able to slimify objects', function () {
                     var complexObject = {
                         id: 1,
                         name: 'John Doe',
                         includedAccounts: ['Visa', 'Mastercard', 'Discover'],
                         includedSession: { token: '1234' }
                     };
-                    testing_4.expect(utilities_3.slimify(complexObject).includedAccounts).toBe(null);
-                    testing_4.expect(utilities_3.slimify(complexObject).includedSession).toBe(null);
+                    testing_3.expect(utilities_3.slimify(complexObject).includedAccounts).toBe(null);
+                    testing_3.expect(utilities_3.slimify(complexObject).includedSession).toBe(null);
                 });
-                testing_4.it('should be able to clone Dates, Objects and Arrays', function () {
+                testing_3.it('should be able to clone Dates, Objects and Arrays', function () {
                     var testDate = new Date();
                     var testObject = { id: 1, utcDate: new Date(), accounts: ['Visa', 'Discover'] };
                     var testArray = [{ id: 1, utcDate: new Date(), accounts: ['Visa', 'Discover'] }, { id: 2, utcDate: new Date(), accounts: ['Visa', 'Discover'] }];
-                    testing_4.expect(utilities_3.clone(testDate).getTime()).toBe(testDate.getTime());
-                    testing_4.expect(utilities_3.clone(testObject).id).toBe(1);
-                    testing_4.expect(utilities_3.clone(testObject).utcDate.getTime()).toBe(testObject.utcDate.getTime());
-                    testing_4.expect(utilities_3.clone(testObject).accounts[0]).toBe('Visa');
-                    testing_4.expect(utilities_3.clone(testArray).length).toBe(2);
+                    testing_3.expect(utilities_3.clone(testDate).getTime()).toBe(testDate.getTime());
+                    testing_3.expect(utilities_3.clone(testObject).id).toBe(1);
+                    testing_3.expect(utilities_3.clone(testObject).utcDate.getTime()).toBe(testObject.utcDate.getTime());
+                    testing_3.expect(utilities_3.clone(testObject).accounts[0]).toBe('Visa');
+                    testing_3.expect(utilities_3.clone(testArray).length).toBe(2);
                 });
             });
         }
