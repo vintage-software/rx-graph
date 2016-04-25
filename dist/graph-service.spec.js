@@ -59,7 +59,7 @@ testing_1.describe('GraphService Specs', function () {
             .do(function (graph) { return testing_1.expect(graph.testItems.length).toBe(0); })
             .subscribe();
     });
-    testing_1.it('should be populated graph', function () {
+    testing_1.it('should populate graph', function () {
         mockHttp.setMockResponse(new http_1.Response(new http_1.ResponseOptions({
             body: [
                 { id: 1, value: 'user 1' },

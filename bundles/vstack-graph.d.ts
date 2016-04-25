@@ -1,5 +1,4 @@
 /// <reference path="../typings/browser/ambient/es6-shim/es6-shim.d.ts" />
-/// <reference path="../typings/browser/ambient/jasmine/jasmine.d.ts" />
 declare module "utilities" {
     export interface CollectionItem {
         id: any;
@@ -146,22 +145,5 @@ declare module "graph-service" {
         private _toGraph(master);
     }
 }
-declare module "testing/mock-http" {
-    import { IHttp } from "interfaces/http";
-    import { Observable } from 'rxjs/Observable';
-    export class MockHttp implements IHttp {
-        private _mockResponse;
-        constructor(_mockResponse: any);
-        get(url: string, options?: string): Observable<any>;
-        post(url: string, body: string, options?: string): Observable<any>;
-        put(url: string, body: string, options?: string): Observable<any>;
-        delete(url: string, options?: string): Observable<any>;
-        setMockResponse(response: any): void;
-    }
-}
-declare module "graph-service.spec" {
-}
-declare module "rest-collection.spec" {
-}
-declare module "utilities.spec" {
+declare module "main" {
 }

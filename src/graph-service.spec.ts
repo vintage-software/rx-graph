@@ -1,10 +1,8 @@
 /// <reference path="../typings/browser/ambient/jasmine/jasmine.d.ts" />
 
 import {describe, expect, beforeEach, it, inject, injectAsync, beforeEachProviders} from 'angular2/testing';
-import {Headers, HTTP_PROVIDERS, BaseRequestOptions, XHRBackend, Response, ResponseOptions, Http, ResponseType, RequestOptionsArgs} from 'angular2/http';
-import {provide, Injectable, Injector} from 'angular2/core';
-import {MockBackend} from 'angular2/http/testing';
-import {MockConnection} from 'angular2/src/http/backends/mock_backend';
+import {Headers, Response, ResponseOptions, RequestOptionsArgs} from 'angular2/http';
+
 import {Observable} from 'rxjs/Observable';
 import {RestCollection} from './rest-collection';
 import {GraphService} from './graph-service';
@@ -80,7 +78,7 @@ describe('GraphService Specs', () => {
             .subscribe();
     });
 
-    it('should be populated graph', () => {
+    it('should populate graph', () => {
         mockHttp.setMockResponse(new Response(new ResponseOptions({
             body: [
                 { id: 1, value: 'user 1' },
