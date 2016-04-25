@@ -475,7 +475,9 @@ System.register("graph-service.spec", ['angular2/testing', 'angular2/http', 'rxj
                 __extends(TestGraphService, _super);
                 function TestGraphService(testUserService, testItemService) {
                     _super.call(this, [
-                        new graph_helpers_1.ServiceConfig(testUserService, function (graph, collection) { return graph.testUsers = collection; }, []),
+                        new graph_helpers_1.ServiceConfig(testUserService, function (graph, collection) { return graph.testUsers = collection; }, [
+                            new graph_helpers_1.Mapping('testItems', testItemService, 'userId', true)
+                        ]),
                         new graph_helpers_1.ServiceConfig(testItemService, function (graph, collection) { return graph.testItems = collection; }, [])
                     ]);
                 }
@@ -517,13 +519,16 @@ System.register("graph-service.spec", ['angular2/testing', 'angular2/http', 'rxj
                         .subscribe();
                     testItemService.loadAll();
                 });
-                testing_1.it('should have items on user', function () {
+                testing_1.it('should have users should have items mapping', function () {
                     testGraphService.graph$
                         .skip(2)
                         .do(function (graph) {
                         testing_1.expect(graph.testUsers.length).toBe(3);
                         testing_1.expect(graph.testItems.length).toBe(3);
                         graph.testItems.map(function (i) { return testing_1.expect(!!i.testUser).toBe(false); });
+                        testing_1.expect(graph.testUsers.find(function (i) { return i.id === 1; }).testItems.length).toBe(2);
+                        testing_1.expect(graph.testUsers.find(function (i) { return i.id === 2; }).testItems.length).toBe(1);
+                        testing_1.expect(graph.testUsers.find(function (i) { return i.id === 3; }).testItems.length).toBe(0);
                     })
                         .subscribe();
                     mockHttp.setMockResponse(new http_1.Response(new http_1.ResponseOptions({
@@ -536,9 +541,9 @@ System.register("graph-service.spec", ['angular2/testing', 'angular2/http', 'rxj
                     testUserService.loadAll();
                     mockHttp.setMockResponse(new http_1.Response(new http_1.ResponseOptions({
                         body: [
-                            { id: 1, value: 'item 1' },
-                            { id: 2, value: 'item 2' },
-                            { id: 3, value: 'item 3' }
+                            { id: 1, value: 'item 1', userId: 1 },
+                            { id: 2, value: 'item 2', userId: 1 },
+                            { id: 3, value: 'item 3', userId: 2 }
                         ]
                     })));
                     testItemService.loadAll();

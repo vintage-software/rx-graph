@@ -8,7 +8,7 @@ import {MockConnection} from 'angular2/src/http/backends/mock_backend';
 import {Observable} from 'rxjs/Observable';
 import {RestCollection} from './rest-collection';
 import {GraphService} from './graph-service';
-import {ServiceConfig} from './graph-helpers';
+import {ServiceConfig, Mapping} from './graph-helpers';
 import {MockHttp} from './testing/mock-http';
 import {IHttp} from './interfaces/http';
 
@@ -42,7 +42,7 @@ class TestGraphService extends GraphService<TestGraph> {
         super([
             new ServiceConfig<TestUser, TestGraph>(
                 testUserService, (graph, collection) => graph.testUsers = collection, [
-
+                    new Mapping('testItems', testItemService, 'userId', true)
                 ]
             ),
             new ServiceConfig<TestItem, TestGraph>(
@@ -97,16 +97,16 @@ describe('GraphService Specs', () => {
         testItemService.loadAll();
     });
 
-    it('should have items on user', () => {
+    it('should have users should have items mapping', () => {
         testGraphService.graph$
             .skip(2)
             .do(graph => {
                 expect(graph.testUsers.length).toBe(3);
                 expect(graph.testItems.length).toBe(3);
                 graph.testItems.map(i => expect(!!i.testUser).toBe(false));
-                // expect(graph.testUsers.find(i => i.id === 1).testItems.length).toBe(2);
-                // expect(graph.testUsers.find(i => i.id === 2).testItems.length).toBe(0);
-                // expect(graph.testUsers.find(i => i.id === 3).testItems.length).toBe(1);
+                expect(graph.testUsers.find(i => i.id === 1).testItems.length).toBe(2);
+                expect(graph.testUsers.find(i => i.id === 2).testItems.length).toBe(1);
+                expect(graph.testUsers.find(i => i.id === 3).testItems.length).toBe(0);
             })
             .subscribe();
 
@@ -122,9 +122,9 @@ describe('GraphService Specs', () => {
 
         mockHttp.setMockResponse(new Response(new ResponseOptions({
             body: [
-                { id: 1, value: 'item 1' },
-                { id: 2, value: 'item 2' },
-                { id: 3, value: 'item 3' }
+                { id: 1, value: 'item 1', userId: 1 },
+                { id: 2, value: 'item 2', userId: 1 },
+                { id: 3, value: 'item 3', userId: 2 }
             ]
         })));
 
