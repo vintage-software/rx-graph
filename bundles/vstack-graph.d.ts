@@ -145,5 +145,8 @@ declare module "graph-service" {
         private _toGraph(master);
     }
 }
-declare module "main" {
+declare module "vstack-graph" {
+    import { GraphService } from "graph-service";
+    import { RestCollection } from "rest-collection";
+    export { GraphService, RestCollection };
 }

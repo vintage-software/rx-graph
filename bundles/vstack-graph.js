@@ -383,12 +383,21 @@ System.register("graph-service", ['rxjs/Observable', 'rxjs/add/operator/combineL
         }
     }
 });
-System.register("main", [], function(exports_6, context_6) {
+System.register("vstack-graph", ["graph-service", "rest-collection"], function(exports_6, context_6) {
     "use strict";
     var __moduleName = context_6 && context_6.id;
+    var graph_service_1, rest_collection_1;
     return {
-        setters:[],
+        setters:[
+            function (graph_service_1_1) {
+                graph_service_1 = graph_service_1_1;
+            },
+            function (rest_collection_1_1) {
+                rest_collection_1 = rest_collection_1_1;
+            }],
         execute: function() {
+            exports_6("GraphService", graph_service_1.GraphService);
+            exports_6("RestCollection", rest_collection_1.RestCollection);
         }
     }
 });

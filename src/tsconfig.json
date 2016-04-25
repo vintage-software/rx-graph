@@ -12,6 +12,6 @@
     "outFile": "../bundles/vstack-graph.js"
   },
   "files": [
-    "main.ts"
+    "vstack-graph.ts"
   ]
 }
