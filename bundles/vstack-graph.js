@@ -707,7 +707,7 @@ System.register("utilities.spec", ['angular2/testing', "utilities"], function(ex
                 utilities_3 = utilities_3_1;
             }],
         execute: function() {
-            testing_3.describe('Utilities Specs', function () {
+            testing_3.describe('isPrimitive', function () {
                 testing_3.it('should detect primitives', function () {
                     testing_3.expect(utilities_3.isPrimitive('Hello World')).toBe(true);
                     testing_3.expect(utilities_3.isPrimitive(true)).toBe(true);
@@ -718,6 +718,8 @@ System.register("utilities.spec", ['angular2/testing', "utilities"], function(ex
                     testing_3.expect(utilities_3.isPrimitive({})).toBe(false);
                     testing_3.expect(utilities_3.isPrimitive([])).toBe(false);
                 });
+            });
+            testing_3.describe('slimify', function () {
                 testing_3.it('should be able to slimify objects', function () {
                     var complexObject = {
                         id: 1,
@@ -728,6 +730,8 @@ System.register("utilities.spec", ['angular2/testing', "utilities"], function(ex
                     testing_3.expect(utilities_3.slimify(complexObject).includedAccounts).toBe(null);
                     testing_3.expect(utilities_3.slimify(complexObject).includedSession).toBe(null);
                 });
+            });
+            testing_3.describe('clone', function () {
                 testing_3.it('should be able to clone Dates, Objects and Arrays', function () {
                     var testDate = new Date();
                     var testObject = { id: 1, utcDate: new Date(), accounts: ['Visa', 'Discover'] };
@@ -737,6 +741,15 @@ System.register("utilities.spec", ['angular2/testing', "utilities"], function(ex
                     testing_3.expect(utilities_3.clone(testObject).utcDate.getTime()).toBe(testObject.utcDate.getTime());
                     testing_3.expect(utilities_3.clone(testObject).accounts[0]).toBe('Visa');
                     testing_3.expect(utilities_3.clone(testArray).length).toBe(2);
+                });
+            });
+            testing_3.describe('mergeCollection', function () {
+                testing_3.it('should merge two collections', function () {
+                    var collection1 = [{ id: 1, value: 'value 1' }, { id: 2, value: 'value 2' }];
+                    var collection2 = [{ id: 1, value: 'updated value' }, { id: 3, value: 'value 3' }];
+                    utilities_3.mergeCollection(collection1, collection2);
+                    testing_3.expect(collection1[0].value).toBe('updated value');
+                    testing_3.expect(collection1.length).toBe(3);
                 });
             });
         }
