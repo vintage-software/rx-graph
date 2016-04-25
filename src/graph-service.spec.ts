@@ -128,4 +128,28 @@ describe('GraphService Specs', () => {
 
         testItemService.loadAll();
     });
+    
+    it('should have users should have items mapping w/ includes', () => {
+        testGraphService.graph$
+            .skip(2)
+            .do(graph => {
+                expect(graph.testUsers.length).toBe(3);
+                expect(graph.testItems.length).toBe(3);
+                graph.testItems.map(i => expect(!!i.testUser).toBe(false));
+                expect(graph.testUsers.find(i => i.id === 1).testItems.length).toBe(2);
+                expect(graph.testUsers.find(i => i.id === 2).testItems.length).toBe(1);
+                expect(graph.testUsers.find(i => i.id === 3).testItems.length).toBe(0);
+            })
+            .subscribe();
+
+        mockHttp.setMockResponse(new Response(new ResponseOptions({
+            body: [
+                { id: 1, value: 'user 1', items: [{ id: 1, value: 'item 1', userId: 1 }, { id: 2, value: 'item 2', userId: 1 }] },
+                { id: 2, value: 'user 2', items: [] },
+                { id: 3, value: 'user 3', items: [{ id: 3, value: 'item 3', userId: 2 }] }
+            ]
+        })));
+
+        testUserService.loadAll();
+    });
 });

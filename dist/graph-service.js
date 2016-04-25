@@ -12,7 +12,7 @@ var GraphService = (function () {
         this._serviceConfigs = _serviceConfigs;
         this._debug = false;
         this.graph$ = Observable_1.Observable
-            .combineLatest(this._serviceConfigs.map(function (i) { return i.service.collection$; }))
+            .combineLatest(this._serviceConfigs.map(function (i) { return i.service._collection$; }))
             .map(function (i) { return _this._slimify(i); })
             .map(function (i) { return i.map(function (array) { return utilities_1.clone(array); }); })
             .map(function (i) { return _this._toGraph(i); });

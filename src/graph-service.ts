@@ -16,7 +16,7 @@ export class GraphService<TGraph> {
 
     constructor(private _serviceConfigs: IServiceConfig<TGraph>[]) {
         this.graph$ = Observable
-            .combineLatest(this._serviceConfigs.map(i => i.service.collection$))
+            .combineLatest(this._serviceConfigs.map(i => (<any>i.service)._collection$))
             .map(i => this._slimify(i))
             // .share()
             // .startWith(this._serviceConfigs.map(i => []))

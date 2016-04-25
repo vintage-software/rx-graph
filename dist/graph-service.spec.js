@@ -102,5 +102,26 @@ testing_1.describe('GraphService Specs', function () {
         })));
         testItemService.loadAll();
     });
+    testing_1.it('should have users should have items mapping w/ includes', function () {
+        testGraphService.graph$
+            .skip(2)
+            .do(function (graph) {
+            testing_1.expect(graph.testUsers.length).toBe(3);
+            testing_1.expect(graph.testItems.length).toBe(3);
+            graph.testItems.map(function (i) { return testing_1.expect(!!i.testUser).toBe(false); });
+            testing_1.expect(graph.testUsers.find(function (i) { return i.id === 1; }).testItems.length).toBe(2);
+            testing_1.expect(graph.testUsers.find(function (i) { return i.id === 2; }).testItems.length).toBe(1);
+            testing_1.expect(graph.testUsers.find(function (i) { return i.id === 3; }).testItems.length).toBe(0);
+        })
+            .subscribe();
+        mockHttp.setMockResponse(new http_1.Response(new http_1.ResponseOptions({
+            body: [
+                { id: 1, value: 'user 1', items: [{ id: 1, value: 'item 1', userId: 1 }, { id: 2, value: 'item 2', userId: 1 }] },
+                { id: 2, value: 'user 2', items: [] },
+                { id: 3, value: 'user 3', items: [{ id: 3, value: 'item 3', userId: 2 }] }
+            ]
+        })));
+        testUserService.loadAll();
+    });
 });
 //# sourceMappingURL=graph-service.spec.js.map

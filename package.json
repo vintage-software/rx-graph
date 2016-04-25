@@ -1,6 +1,6 @@
 {
   "name": "vstack-graph",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A HTTP REST library for Angular 2 including relational data structure support.",
   "typings": "./dist/vstack-graph.d.ts",
   "main": "./bundles/vstack-graph.js",
