@@ -1,6 +1,6 @@
 {
   "name": "vstack-graph",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A HTTP REST library for Angular 2 including relational data structure support.",
   "typings": "./dist/vstack-graph.d.ts",
   "main": "./bundles/vstack-graph.js",
@@ -19,6 +19,10 @@
   },
   "author": "",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vintage-software/vstack-graph.git"
+  },
   "dependencies": {
     "rxjs": "5.0.0-beta.2"
   },
