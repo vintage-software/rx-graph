@@ -10,7 +10,7 @@ import 'rxjs/Rx'; //TODO: we just want combineLatest
 import {CollectionItem, clone} from './utilities';
 import {IServiceConfig} from './graph-helpers';
 
-export class GraphService<TGraph> {
+export class BaseGraphService<TGraph> {
     private _debug: boolean = false;
     graph$: Observable<TGraph>;
 
@@ -18,18 +18,8 @@ export class GraphService<TGraph> {
         this.graph$ = Observable
             .combineLatest(this._serviceConfigs.map(i => (<any>i.service)._collection$))
             .map(i => this._slimify(i))
-            // .share()
-            // .startWith(this._serviceConfigs.map(i => []))
             .map(i => i.map(array => clone(array)))
             .map(i => this._toGraph(i));
-
-        // this._serviceConfigs[0].service['_collection$'];
-        // if (this._serviceConfigs.length > 1) {
-        //     _master$ = _master$.combineLatest(
-        //         this._serviceConfigs.slice(1).map(i => i.service.collection$)
-        //     );
-        // }
-        // _master$ = _master$
     }
 
     private _slimify(master: any[]) {

@@ -6,8 +6,8 @@ require('rxjs/add/operator/skip');
 require('rxjs/add/operator/do');
 require('rxjs/Rx');
 var utilities_1 = require('./utilities');
-var GraphService = (function () {
-    function GraphService(_serviceConfigs) {
+var BaseGraphService = (function () {
+    function BaseGraphService(_serviceConfigs) {
         var _this = this;
         this._serviceConfigs = _serviceConfigs;
         this._debug = false;
@@ -17,7 +17,7 @@ var GraphService = (function () {
             .map(function (i) { return i.map(function (array) { return utilities_1.clone(array); }); })
             .map(function (i) { return _this._toGraph(i); });
     }
-    GraphService.prototype._slimify = function (master) {
+    BaseGraphService.prototype._slimify = function (master) {
         var _this = this;
         var arr = [];
         var changes = true;
@@ -48,7 +48,7 @@ var GraphService = (function () {
         this._debug && console.log('master', master);
         return master;
     };
-    GraphService.prototype._combine = function (arr1, arr2) {
+    BaseGraphService.prototype._combine = function (arr1, arr2) {
         var arr = arr1.slice();
         arr2.forEach(function (i) {
             if (arr.find(function (j) { return j.id === i.id; }) === undefined) {
@@ -57,10 +57,10 @@ var GraphService = (function () {
         });
         return arr;
     };
-    GraphService.prototype._copy = function (masterObs) {
+    BaseGraphService.prototype._copy = function (masterObs) {
         return masterObs.map(function (arrays) { return utilities_1.clone(arrays); });
     };
-    GraphService.prototype._toGraph = function (master) {
+    BaseGraphService.prototype._toGraph = function (master) {
         var _this = this;
         var graph = {};
         this._serviceConfigs.forEach(function (serviceConfig, index) {
@@ -80,7 +80,7 @@ var GraphService = (function () {
         });
         return graph;
     };
-    return GraphService;
+    return BaseGraphService;
 }());
-exports.GraphService = GraphService;
-//# sourceMappingURL=graph-service.js.map
+exports.BaseGraphService = BaseGraphService;
+//# sourceMappingURL=base-graph-service.js.map

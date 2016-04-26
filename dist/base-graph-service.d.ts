@@ -5,7 +5,7 @@ import 'rxjs/add/operator/skip';
 import 'rxjs/add/operator/do';
 import 'rxjs/Rx';
 import { IServiceConfig } from './graph-helpers';
-export declare class GraphService<TGraph> {
+export declare class BaseGraphService<TGraph> {
     private _serviceConfigs;
     private _debug;
     graph$: Observable<TGraph>;

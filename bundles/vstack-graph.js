@@ -284,11 +284,11 @@ System.register("graph-helpers", [], function(exports_4, context_4) {
         }
     }
 });
-System.register("graph-service", ['rxjs/Observable', 'rxjs/add/operator/combineLatest', 'rxjs/add/operator/startWith', 'rxjs/add/operator/skip', 'rxjs/add/operator/do', 'rxjs/Rx', "utilities"], function(exports_5, context_5) {
+System.register("base-graph-service", ['rxjs/Observable', 'rxjs/add/operator/combineLatest', 'rxjs/add/operator/startWith', 'rxjs/add/operator/skip', 'rxjs/add/operator/do', 'rxjs/Rx', "utilities"], function(exports_5, context_5) {
     "use strict";
     var __moduleName = context_5 && context_5.id;
     var Observable_1, utilities_2;
-    var GraphService;
+    var BaseGraphService;
     return {
         setters:[
             function (Observable_1_1) {
@@ -303,8 +303,8 @@ System.register("graph-service", ['rxjs/Observable', 'rxjs/add/operator/combineL
                 utilities_2 = utilities_2_1;
             }],
         execute: function() {
-            GraphService = (function () {
-                function GraphService(_serviceConfigs) {
+            BaseGraphService = (function () {
+                function BaseGraphService(_serviceConfigs) {
                     var _this = this;
                     this._serviceConfigs = _serviceConfigs;
                     this._debug = false;
@@ -314,7 +314,7 @@ System.register("graph-service", ['rxjs/Observable', 'rxjs/add/operator/combineL
                         .map(function (i) { return i.map(function (array) { return utilities_2.clone(array); }); })
                         .map(function (i) { return _this._toGraph(i); });
                 }
-                GraphService.prototype._slimify = function (master) {
+                BaseGraphService.prototype._slimify = function (master) {
                     var _this = this;
                     var arr = [];
                     var changes = true;
@@ -345,7 +345,7 @@ System.register("graph-service", ['rxjs/Observable', 'rxjs/add/operator/combineL
                     this._debug && console.log('master', master);
                     return master;
                 };
-                GraphService.prototype._combine = function (arr1, arr2) {
+                BaseGraphService.prototype._combine = function (arr1, arr2) {
                     var arr = arr1.slice();
                     arr2.forEach(function (i) {
                         if (arr.find(function (j) { return j.id === i.id; }) === undefined) {
@@ -354,10 +354,10 @@ System.register("graph-service", ['rxjs/Observable', 'rxjs/add/operator/combineL
                     });
                     return arr;
                 };
-                GraphService.prototype._copy = function (masterObs) {
+                BaseGraphService.prototype._copy = function (masterObs) {
                     return masterObs.map(function (arrays) { return utilities_2.clone(arrays); });
                 };
-                GraphService.prototype._toGraph = function (master) {
+                BaseGraphService.prototype._toGraph = function (master) {
                     var _this = this;
                     var graph = {};
                     this._serviceConfigs.forEach(function (serviceConfig, index) {
@@ -377,26 +377,26 @@ System.register("graph-service", ['rxjs/Observable', 'rxjs/add/operator/combineL
                     });
                     return graph;
                 };
-                return GraphService;
+                return BaseGraphService;
             }());
-            exports_5("GraphService", GraphService);
+            exports_5("BaseGraphService", BaseGraphService);
         }
     }
 });
-System.register("vstack-graph", ["graph-service", "rest-collection"], function(exports_6, context_6) {
+System.register("vstack-graph", ["base-graph-service", "rest-collection"], function(exports_6, context_6) {
     "use strict";
     var __moduleName = context_6 && context_6.id;
-    var graph_service_1, rest_collection_1;
+    var base_graph_service_1, rest_collection_1;
     return {
         setters:[
-            function (graph_service_1_1) {
-                graph_service_1 = graph_service_1_1;
+            function (base_graph_service_1_1) {
+                base_graph_service_1 = base_graph_service_1_1;
             },
             function (rest_collection_1_1) {
                 rest_collection_1 = rest_collection_1_1;
             }],
         execute: function() {
-            exports_6("GraphService", graph_service_1.GraphService);
+            exports_6("BaseGraphService", base_graph_service_1.BaseGraphService);
             exports_6("RestCollection", rest_collection_1.RestCollection);
         }
     }

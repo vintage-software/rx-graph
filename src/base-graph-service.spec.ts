@@ -5,7 +5,7 @@ import {Headers, Response, ResponseOptions, RequestOptionsArgs} from 'angular2/h
 
 import {Observable} from 'rxjs/Observable';
 import {RestCollection} from './rest-collection';
-import {GraphService} from './graph-service';
+import {BaseGraphService} from './base-graph-service';
 import {ServiceConfig, Mapping} from './graph-helpers';
 import {MockHttp} from './testing/mock-http';
 import {IHttp} from './interfaces/http';
@@ -35,7 +35,7 @@ class TestItemService extends RestCollection<TestItem> {
     }
 }
 
-class TestGraphService extends GraphService<TestGraph> {
+class TestGraphService extends BaseGraphService<TestGraph> {
     constructor(testUserService: TestUserService, testItemService: TestItemService) {
         super([
             new ServiceConfig<TestUser, TestGraph>(

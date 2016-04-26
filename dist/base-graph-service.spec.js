@@ -8,7 +8,7 @@ var testing_1 = require('angular2/testing');
 var http_1 = require('angular2/http');
 var Observable_1 = require('rxjs/Observable');
 var rest_collection_1 = require('./rest-collection');
-var graph_service_1 = require('./graph-service');
+var base_graph_service_1 = require('./base-graph-service');
 var graph_helpers_1 = require('./graph-helpers');
 var mock_http_1 = require('./testing/mock-http');
 var TestUserService = (function (_super) {
@@ -36,7 +36,7 @@ var TestGraphService = (function (_super) {
         ]);
     }
     return TestGraphService;
-}(graph_service_1.GraphService));
+}(base_graph_service_1.BaseGraphService));
 var TestGraph = (function () {
     function TestGraph() {
     }
@@ -124,4 +124,4 @@ testing_1.describe('GraphService Specs', function () {
         testUserService.loadAll();
     });
 });
-//# sourceMappingURL=graph-service.spec.js.map
+//# sourceMappingURL=base-graph-service.spec.js.map

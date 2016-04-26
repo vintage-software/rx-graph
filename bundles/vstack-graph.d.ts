@@ -126,7 +126,7 @@ declare module "graph-helpers" {
         constructor(service: RestCollection<TCollectionItem>, func: (graph: TGraph, collection: TCollectionItem[]) => void, mappings: Mapping[]);
     }
 }
-declare module "graph-service" {
+declare module "base-graph-service" {
     import { Observable } from 'rxjs/Observable';
     import 'rxjs/add/operator/combineLatest';
     import 'rxjs/add/operator/startWith';
@@ -134,7 +134,7 @@ declare module "graph-service" {
     import 'rxjs/add/operator/do';
     import 'rxjs/Rx';
     import { IServiceConfig } from "graph-helpers";
-    export class GraphService<TGraph> {
+    export class BaseGraphService<TGraph> {
         private _serviceConfigs;
         private _debug;
         graph$: Observable<TGraph>;
@@ -146,7 +146,7 @@ declare module "graph-service" {
     }
 }
 declare module "vstack-graph" {
-    import { GraphService } from "graph-service";
+    import { BaseGraphService } from "base-graph-service";
     import { RestCollection } from "rest-collection";
-    export { GraphService, RestCollection };
+    export { BaseGraphService, RestCollection };
 }
