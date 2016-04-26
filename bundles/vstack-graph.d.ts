@@ -1,5 +1,4 @@
-/// <reference path="../typings/browser/ambient/es6-shim/es6-shim.d.ts" />
-declare module "utilities" {
+declare module "vstack-graph/utilities" {
     export interface CollectionItem {
         id: any;
     }
@@ -8,7 +7,7 @@ declare module "utilities" {
     export function slimify(item: any): any;
     export function isPrimitive(item: any): boolean;
 }
-declare module "interfaces/http" {
+declare module "vstack-graph/interfaces/http" {
     import { Observable } from 'rxjs/Observable';
     export interface IHttp {
         get(url: string, options?: any): Observable<Response>;
@@ -62,11 +61,11 @@ declare module "interfaces/http" {
         body: string;
     }
 }
-declare module "rest-collection" {
+declare module "vstack-graph/rest-collection" {
     import { Observable } from 'rxjs/Observable';
     import 'rxjs/add/operator/map';
-    import { CollectionItem } from "utilities";
-    import { IHttp, RequestOptionsArgs } from "interfaces/http";
+    import { CollectionItem } from "vstack-graph/utilities";
+    import { IHttp, RequestOptionsArgs } from "vstack-graph/interfaces/http";
     export abstract class RestCollection<TItem extends CollectionItem> {
         protected _baseUrl: string;
         protected _requestOptionsArgs: any;
@@ -99,10 +98,10 @@ declare module "rest-collection" {
         protected _updateCollectionItem(id: any, data: any): void;
     }
 }
-declare module "graph-helpers" {
+declare module "vstack-graph/graph/graph-utilities" {
     import { Observable } from 'rxjs/Observable';
-    import { RestCollection } from "rest-collection";
-    import { CollectionItem } from "utilities";
+    import { RestCollection } from "vstack-graph/rest-collection";
+    import { CollectionItem } from "vstack-graph/utilities";
     export interface IService {
         collection$: Observable<CollectionItem[]>;
         errors$: Observable<any>;
@@ -126,14 +125,14 @@ declare module "graph-helpers" {
         constructor(service: RestCollection<TCollectionItem>, func: (graph: TGraph, collection: TCollectionItem[]) => void, mappings: Mapping[]);
     }
 }
-declare module "base-graph-service" {
+declare module "vstack-graph/graph/base-graph-service" {
     import { Observable } from 'rxjs/Observable';
     import 'rxjs/add/operator/combineLatest';
     import 'rxjs/add/operator/startWith';
     import 'rxjs/add/operator/skip';
     import 'rxjs/add/operator/do';
     import 'rxjs/Rx';
-    import { IServiceConfig } from "graph-helpers";
+    import { IServiceConfig } from "vstack-graph/graph/graph-utilities";
     export class BaseGraphService<TGraph> {
         private _serviceConfigs;
         private _debug;
@@ -146,7 +145,9 @@ declare module "base-graph-service" {
     }
 }
 declare module "vstack-graph" {
-    import { BaseGraphService } from "base-graph-service";
-    import { RestCollection } from "rest-collection";
-    export { BaseGraphService, RestCollection };
+    import { BaseGraphService } from "vstack-graph/graph/base-graph-service";
+    import { ServiceConfig, Mapping } from "vstack-graph/graph/graph-utilities";
+    import { RestCollection } from "vstack-graph/rest-collection";
+    import { CollectionItem } from "vstack-graph/utilities";
+    export { BaseGraphService, RestCollection, CollectionItem, ServiceConfig, Mapping };
 }

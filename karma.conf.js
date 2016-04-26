@@ -17,11 +17,11 @@ module.exports = function(config) {
             {pattern: 'karma-test-shim.js', included: true, watched: true},
 
             // paths loaded via module imports
-            {pattern: 'dist/**/*.js', included: false, watched: true},
+            {pattern: 'dist/vstack-graph/**/*.js', included: false, watched: true},
 
             // paths to support debugging with source maps in dev tools
-            {pattern: 'src/**/*.ts', included: false, watched: false},
-            {pattern: 'dist/**/*.js.map', included: false, watched: false}
+            {pattern: 'vstack-graph/**/*.ts', included: false, watched: false},
+            {pattern: 'dist/vstack-graph/**/*.js.map', included: false, watched: false}
         ],
 
         // proxied base paths

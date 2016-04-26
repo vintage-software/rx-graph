@@ -1,4 +1,4 @@
-System.register("utilities", [], function(exports_1, context_1) {
+System.register("vstack-graph/utilities", [], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     function clone(obj) {
@@ -64,7 +64,7 @@ System.register("utilities", [], function(exports_1, context_1) {
         }
     }
 });
-System.register("interfaces/http", [], function(exports_2, context_2) {
+System.register("vstack-graph/interfaces/http", [], function(exports_2, context_2) {
     "use strict";
     var __moduleName = context_2 && context_2.id;
     var ResponseType;
@@ -84,7 +84,7 @@ System.register("interfaces/http", [], function(exports_2, context_2) {
         }
     }
 });
-System.register("rest-collection", ['rxjs/subject/ReplaySubject', 'rxjs/subject/BehaviorSubject', 'rxjs/add/operator/map', "utilities"], function(exports_3, context_3) {
+System.register("vstack-graph/rest-collection", ['rxjs/subject/ReplaySubject', 'rxjs/subject/BehaviorSubject', 'rxjs/add/operator/map', "vstack-graph/utilities"], function(exports_3, context_3) {
     "use strict";
     var __moduleName = context_3 && context_3.id;
     var ReplaySubject_1, BehaviorSubject_1, utilities_1;
@@ -255,7 +255,7 @@ System.register("rest-collection", ['rxjs/subject/ReplaySubject', 'rxjs/subject/
         }
     }
 });
-System.register("graph-helpers", [], function(exports_4, context_4) {
+System.register("vstack-graph/graph/graph-utilities", [], function(exports_4, context_4) {
     "use strict";
     var __moduleName = context_4 && context_4.id;
     var Mapping, ServiceConfig;
@@ -284,7 +284,7 @@ System.register("graph-helpers", [], function(exports_4, context_4) {
         }
     }
 });
-System.register("base-graph-service", ['rxjs/Observable', 'rxjs/add/operator/combineLatest', 'rxjs/add/operator/startWith', 'rxjs/add/operator/skip', 'rxjs/add/operator/do', 'rxjs/Rx', "utilities"], function(exports_5, context_5) {
+System.register("vstack-graph/graph/base-graph-service", ['rxjs/Observable', 'rxjs/add/operator/combineLatest', 'rxjs/add/operator/startWith', 'rxjs/add/operator/skip', 'rxjs/add/operator/do', 'rxjs/Rx', "vstack-graph/utilities"], function(exports_5, context_5) {
     "use strict";
     var __moduleName = context_5 && context_5.id;
     var Observable_1, utilities_2;
@@ -383,14 +383,17 @@ System.register("base-graph-service", ['rxjs/Observable', 'rxjs/add/operator/com
         }
     }
 });
-System.register("vstack-graph", ["base-graph-service", "rest-collection"], function(exports_6, context_6) {
+System.register("vstack-graph", ["vstack-graph/graph/base-graph-service", "vstack-graph/graph/graph-utilities", "vstack-graph/rest-collection"], function(exports_6, context_6) {
     "use strict";
     var __moduleName = context_6 && context_6.id;
-    var base_graph_service_1, rest_collection_1;
+    var base_graph_service_1, graph_utilities_1, rest_collection_1;
     return {
         setters:[
             function (base_graph_service_1_1) {
                 base_graph_service_1 = base_graph_service_1_1;
+            },
+            function (graph_utilities_1_1) {
+                graph_utilities_1 = graph_utilities_1_1;
             },
             function (rest_collection_1_1) {
                 rest_collection_1 = rest_collection_1_1;
@@ -398,6 +401,8 @@ System.register("vstack-graph", ["base-graph-service", "rest-collection"], funct
         execute: function() {
             exports_6("BaseGraphService", base_graph_service_1.BaseGraphService);
             exports_6("RestCollection", rest_collection_1.RestCollection);
+            exports_6("ServiceConfig", graph_utilities_1.ServiceConfig);
+            exports_6("Mapping", graph_utilities_1.Mapping);
         }
     }
 });
