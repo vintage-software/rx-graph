@@ -28,7 +28,7 @@ function clone(obj) {
 }
 exports.clone = clone;
 function mergeCollection(target, src) {
-    src.forEach(function (srcItem) {
+    src.filter(function (i) { return i && i.id; }).forEach(function (srcItem) {
         var match = target.find(function (tItem) { return tItem.id === srcItem.id; });
         if (match) {
             Object.assign(match, srcItem);

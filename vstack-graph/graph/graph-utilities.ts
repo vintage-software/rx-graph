@@ -1,6 +1,6 @@
 import {Observable} from 'rxjs/Observable';
 
-import {RestCollection} from '../rest-collection';
+import {LocalCollectionService} from '../services/local.service';
 import {CollectionItem} from '../utilities';
 
 export interface IService {
@@ -11,13 +11,13 @@ export interface IService {
 export interface IServiceConfig<TGraph> {
     service: IService;
     func: (graph: TGraph, collection: CollectionItem[]) => void;
-    mappings: Mapping[];
+    mappings: Relation[];
 }
 
-export class Mapping {
+export class Relation {
     constructor(public collectionProperty: string, public to: IService, public mappingId: string, public many: boolean) { }
 }
 
 export class ServiceConfig<TCollectionItem extends CollectionItem, TGraph> implements IServiceConfig<TGraph> {
-    constructor(public service: RestCollection<TCollectionItem>, public func: (graph: TGraph, collection: TCollectionItem[]) => void, public mappings: Mapping[]) { }
+    constructor(public service: LocalCollectionService<TCollectionItem>, public func: (graph: TGraph, collection: TCollectionItem[]) => void, public mappings: Relation[]) { }
 }

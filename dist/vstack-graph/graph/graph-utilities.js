@@ -1,14 +1,14 @@
 "use strict";
-var Mapping = (function () {
-    function Mapping(collectionProperty, to, mappingId, many) {
+var Relation = (function () {
+    function Relation(collectionProperty, to, mappingId, many) {
         this.collectionProperty = collectionProperty;
         this.to = to;
         this.mappingId = mappingId;
         this.many = many;
     }
-    return Mapping;
+    return Relation;
 }());
-exports.Mapping = Mapping;
+exports.Relation = Relation;
 var ServiceConfig = (function () {
     function ServiceConfig(service, func, mappings) {
         this.service = service;

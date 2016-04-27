@@ -14,12 +14,12 @@ var BaseGraphService = (function () {
         this.graph$ = Observable_1.Observable
             .combineLatest(this._serviceConfigs.map(function (i) { return i.service._collection$; }))
             .map(function (i) { return _this._slimify(i); })
+            .share()
             .map(function (i) { return i.map(function (array) { return utilities_1.clone(array); }); })
             .map(function (i) { return _this._toGraph(i); });
     }
     BaseGraphService.prototype._slimify = function (master) {
         var _this = this;
-        var arr = [];
         var changes = true;
         while (changes === true) {
             changes = false;
@@ -29,17 +29,17 @@ var BaseGraphService = (function () {
                         var mappingService = _this._serviceConfigs.find(function (i) { return i.service === mapping.to; });
                         var mappingIndex = _this._serviceConfigs.indexOf(mappingService);
                         var toUpdate = [];
-                        if (dto[mapping.collectionProperty] !== null) {
+                        if (!!dto[mapping.collectionProperty]) {
                             changes = true;
                             if (mapping.many) {
-                                toUpdate = dto[mapping.collectionProperty] || [];
+                                toUpdate = dto[mapping.collectionProperty];
                             }
                             else {
                                 toUpdate.push(dto[mapping.collectionProperty]);
                             }
                             dto[mapping.collectionProperty] = null;
-                            arr[mappingIndex] = arr[mappingIndex] ? arr[mappingIndex].concat(toUpdate) : toUpdate;
-                            master[mappingIndex] = _this._combine(master[mappingIndex], toUpdate);
+                            utilities_1.mergeCollection(master[mappingIndex], toUpdate);
+                            master[mappingIndex] = master[mappingIndex].filter(function (i) { return i[mapping.mappingId] !== dto.id || toUpdate.find(function (j) { return j.id === i.id; }); });
                         }
                     });
                 });
@@ -47,18 +47,6 @@ var BaseGraphService = (function () {
         }
         this._debug && console.log('master', master);
         return master;
-    };
-    BaseGraphService.prototype._combine = function (arr1, arr2) {
-        var arr = arr1.slice();
-        arr2.forEach(function (i) {
-            if (arr.find(function (j) { return j.id === i.id; }) === undefined) {
-                arr.push(i);
-            }
-        });
-        return arr;
-    };
-    BaseGraphService.prototype._copy = function (masterObs) {
-        return masterObs.map(function (arrays) { return utilities_1.clone(arrays); });
     };
     BaseGraphService.prototype._toGraph = function (master) {
         var _this = this;
@@ -83,4 +71,4 @@ var BaseGraphService = (function () {
     return BaseGraphService;
 }());
 exports.BaseGraphService = BaseGraphService;
-//# sourceMappingURL=base-graph-service.js.map
+//# sourceMappingURL=base-graph.service.js.map

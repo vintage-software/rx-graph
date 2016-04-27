@@ -3,104 +3,48 @@ declare module "vstack-graph/utilities" {
         id: any;
     }
     export function clone(obj: any): any;
-    export function mergeCollection(target: any[], src: any[]): void;
+    export function mergeCollection<TItem extends CollectionItem>(target: TItem[], src: TItem[]): void;
     export function slimify(item: any): any;
     export function isPrimitive(item: any): boolean;
 }
-declare module "vstack-graph/interfaces/http" {
+declare module "vstack-graph/services/local.service" {
     import { Observable } from 'rxjs/Observable';
-    export interface IHttp {
-        get(url: string, options?: any): Observable<Response>;
-        post(url: string, body: string, options?: any): Observable<Response>;
-        put(url: string, body: string, options?: any): Observable<Response>;
-        delete(url: string, options?: any): Observable<Response>;
-    }
-    export interface Response {
-        type: any;
-        ok: boolean;
-        url: string;
-        status: number;
-        statusText: string;
-        bytesLoaded: number;
-        totalBytes: number;
-        headers: any;
-        blob(): any;
-        json(): any;
-        text(): string;
-        arrayBuffer(): any;
-    }
-    export enum ResponseType {
-        basic = 0,
-        cors = 1,
-        default = 2,
-        error = 3,
-        opaque = 4,
-        opaqueredirect = 5,
-    }
-    export interface Headers {
-        fromResponseHeaderString(headersString: string): Headers;
-        append(name: string, value: string): void;
-        delete(name: string): void;
-        forEach(fn: (values: string[], name: string, headers: Map<string, string[]>) => void): void;
-        get(header: string): string;
-        has(header: string): boolean;
-        keys(): string[];
-        set(header: string, value: string | string[]): void;
-        values(): string[][];
-        toJSON(): {
-            [key: string]: any;
-        };
-        getAll(header: string): string[];
-        entries(): any;
-    }
-    export interface RequestOptionsArgs {
-        url: string;
-        method: string;
-        search: string;
-        headers: Headers;
-        body: string;
-    }
-}
-declare module "vstack-graph/rest-collection" {
-    import { Observable } from 'rxjs/Observable';
+    import { BehaviorSubject } from 'rxjs/subject/BehaviorSubject';
     import 'rxjs/add/operator/map';
     import { CollectionItem } from "vstack-graph/utilities";
-    import { IHttp, RequestOptionsArgs } from "vstack-graph/interfaces/http";
-    export abstract class RestCollection<TItem extends CollectionItem> {
-        protected _baseUrl: string;
-        protected _requestOptionsArgs: any;
-        private _http;
-        private _collection$;
-        private _errors$;
-        private _history$;
-        private _dataStore;
+    export interface LocalPersistenceMapper<TItem extends CollectionItem> {
+        create(items: TItem[]): Observable<TItem[]>;
+        update(items: TItem[]): Observable<TItem[]>;
+        delete(ids: any[]): Observable<any>;
+    }
+    export abstract class LocalCollectionService<TItem extends CollectionItem> {
+        protected _mapper: LocalPersistenceMapper<TItem>;
+        protected _collection$: BehaviorSubject<TItem[]>;
+        protected _errors$: BehaviorSubject<any>;
+        protected _history$: BehaviorSubject<any>;
+        protected _dataStore: {
+            collection: TItem[];
+        };
         private _historyStore;
-        constructor({baseUrl, http, options}: {
-            baseUrl: string;
-            http: IHttp;
-            options?: RequestOptionsArgs | {};
-        });
+        constructor(_mapper: LocalPersistenceMapper<TItem>);
         collection$: Observable<TItem[]>;
         errors$: Observable<any>;
         history$: Observable<any>;
-        loadAll(options?: string): Observable<Array<TItem>>;
-        load(id: any, options?: string): Observable<TItem>;
-        create(item: any, options?: string): Observable<TItem>;
-        update(item: any): Observable<TItem>;
-        remove(id: any): Observable<TItem>;
-        protected _apiGet(url: string, opt?: any): Observable<any>;
-        protected _apiPost(url: string, val: any, opt?: any): Observable<any>;
-        protected _apiPut(url: string, val: any, opt?: any): Observable<any>;
-        protected _apiDelete(url: string, opt?: any): Observable<number>;
+        create(item: any | TItem): Observable<TItem>;
+        createMany(items: any[] | TItem[]): Observable<TItem[]>;
+        update(item: any | TItem): Observable<TItem>;
+        updateMany(items: any[] | TItem[]): Observable<TItem[]>;
+        delete(id: any): Observable<any>;
+        deleteMany(ids: any[]): Observable<any[]>;
         protected _recordHistory(action: string): void;
-        protected _removeCollectionItem(id: any): void;
-        _dangerousGraphUpdateCollection(items: TItem[]): void;
-        protected _updateCollectionItem(id: any, data: any): void;
+        protected _removeCollectionItems(ids: any[]): void;
+        protected _assignIds(items: any[]): void;
+        private _getGuid();
     }
 }
 declare module "vstack-graph/graph/graph-utilities" {
     import { Observable } from 'rxjs/Observable';
-    import { RestCollection } from "vstack-graph/rest-collection";
+    import { LocalCollectionService } from "vstack-graph/services/local.service";
     import { CollectionItem } from "vstack-graph/utilities";
     export interface IService {
         collection$: Observable<CollectionItem[]>;
@@ -109,9 +53,9 @@ declare module "vstack-graph/graph/graph-utilities" {
     export interface IServiceConfig<TGraph> {
         service: IService;
         func: (graph: TGraph, collection: CollectionItem[]) => void;
-        mappings: Mapping[];
+        mappings: Relation[];
     }
-    export class Mapping {
+    export class Relation {
         collectionProperty: string;
         to: IService;
         mappingId: string;
@@ -119,13 +63,13 @@ declare module "vstack-graph/graph/graph-utilities" {
         constructor(collectionProperty: string, to: IService, mappingId: string, many: boolean);
     }
     export class ServiceConfig<TCollectionItem extends CollectionItem, TGraph> implements IServiceConfig<TGraph> {
-        service: RestCollection<TCollectionItem>;
+        service: LocalCollectionService<TCollectionItem>;
         func: (graph: TGraph, collection: TCollectionItem[]) => void;
-        mappings: Mapping[];
-        constructor(service: RestCollection<TCollectionItem>, func: (graph: TGraph, collection: TCollectionItem[]) => void, mappings: Mapping[]);
+        mappings: Relation[];
+        constructor(service: LocalCollectionService<TCollectionItem>, func: (graph: TGraph, collection: TCollectionItem[]) => void, mappings: Relation[]);
     }
 }
-declare module "vstack-graph/graph/base-graph-service" {
+declare module "vstack-graph/graph/base-graph.service" {
     import { Observable } from 'rxjs/Observable';
     import 'rxjs/add/operator/combineLatest';
     import 'rxjs/add/operator/startWith';
@@ -139,15 +83,75 @@ declare module "vstack-graph/graph/base-graph-service" {
         graph$: Observable<TGraph>;
         constructor(_serviceConfigs: IServiceConfig<TGraph>[]);
         private _slimify(master);
-        private _combine(arr1, arr2);
-        private _copy(masterObs);
         private _toGraph(master);
     }
 }
-declare module "vstack-graph" {
-    import { BaseGraphService } from "vstack-graph/graph/base-graph-service";
-    import { ServiceConfig, Mapping } from "vstack-graph/graph/graph-utilities";
-    import { RestCollection } from "vstack-graph/rest-collection";
+declare module "vstack-graph/services/vs-queryable" {
+    import { Observable } from 'rxjs/Observable';
+    export class VsQueryable<TResult> {
+        private _load;
+        private _queryString;
+        constructor(_load: (boolean, string) => Observable<TResult>);
+        getQueryString(): string;
+        toList(): Observable<TResult>;
+        withQueryString(queryString: string): VsQueryable<TResult>;
+    }
+}
+declare module "vstack-graph/services/remote.service" {
+    import { Observable } from 'rxjs/Observable';
+    import { ReplaySubject } from 'rxjs/subject/ReplaySubject';
+    import { LocalCollectionService, LocalPersistenceMapper } from "vstack-graph/services/local.service";
     import { CollectionItem } from "vstack-graph/utilities";
-    export { BaseGraphService, RestCollection, CollectionItem, ServiceConfig, Mapping };
+    import { VsQueryable } from "vstack-graph/services/vs-queryable";
+    export interface RemotePersistenceMapper<TItem extends CollectionItem> extends LocalPersistenceMapper<TItem> {
+        load(id: any, options: string): Observable<TItem>;
+        loadMany(options: string): Observable<TItem[]>;
+    }
+    export abstract class BaseRemoteService<TItem extends CollectionItem> extends LocalCollectionService<TItem> {
+        private _remotePersistenceMapper;
+        constructor(_remotePersistenceMapper: RemotePersistenceMapper<TItem>);
+        _remoteMapper: RemotePersistenceMapper<TItem>;
+        protected _assignIds(items: any[]): void;
+        protected _load(id: any, options: string): ReplaySubject<{}>;
+        protected _loadMany(isLoadAll: boolean, options: string): ReplaySubject<{}>;
+    }
+    export abstract class CollectionService<TItem extends CollectionItem> extends BaseRemoteService<TItem> {
+        constructor(_remotePersistenceMapper: RemotePersistenceMapper<TItem>);
+        get(id: any, options?: string): Observable<TItem>;
+        getAll(options?: string): Observable<TItem[]>;
+    }
+    export abstract class VSCollectionService<TItem extends CollectionItem> extends BaseRemoteService<TItem> {
+        constructor(_remotePersistenceMapper: RemotePersistenceMapper<TItem>);
+        get(id: any): VsQueryable<TItem>;
+        getAll(): VsQueryable<TItem[]>;
+    }
+}
+declare module "vstack-graph/services/angular-http" {
+    import { RemotePersistenceMapper } from "vstack-graph/services/remote.service";
+    import { Observable } from 'rxjs/Observable';
+    import { CollectionItem } from "vstack-graph/utilities";
+    export class AngularHttpMapper<TItem extends CollectionItem> implements RemotePersistenceMapper<TItem> {
+        protected _baseUrl: string;
+        protected _requestOptionsArgs: any;
+        private _http;
+        constructor({baseUrl, http, options}: {
+            baseUrl: string;
+            http: any;
+            options?: {};
+        });
+        create(items: TItem[]): Observable<TItem[]>;
+        update(items: TItem[]): Observable<TItem[]>;
+        delete(ids: any[]): Observable<any>;
+        load(id: string, options?: string): any;
+        loadMany(options?: string): any;
+    }
+}
+declare module "vstack-graph" {
+    import { BaseGraphService } from "vstack-graph/graph/base-graph.service";
+    import { ServiceConfig, Relation } from "vstack-graph/graph/graph-utilities";
+    import { VSCollectionService, CollectionService } from "vstack-graph/services/remote.service";
+    import { LocalCollectionService } from "vstack-graph/services/local.service";
+    import { AngularHttpMapper } from "vstack-graph/services/angular-http";
+    import { CollectionItem } from "vstack-graph/utilities";
+    export { LocalCollectionService, CollectionService, VSCollectionService, BaseGraphService, CollectionItem, ServiceConfig, Relation, AngularHttpMapper };
 }

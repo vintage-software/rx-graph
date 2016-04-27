@@ -36,8 +36,8 @@ export function clone(obj) {
     throw new Error('Unable to copy');
 }
 
-export function mergeCollection(target: any[], src: any[]) {
-    src.forEach(srcItem => {
+export function mergeCollection<TItem extends CollectionItem>(target: TItem[], src: TItem[]) {
+    src.filter(i => i && i.id).forEach(srcItem => {
         let match = target.find(tItem => tItem.id === srcItem.id);
         if (match) {
             Object.assign(match, srcItem)

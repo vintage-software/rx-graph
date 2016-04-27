@@ -11,7 +11,5 @@ export declare class BaseGraphService<TGraph> {
     graph$: Observable<TGraph>;
     constructor(_serviceConfigs: IServiceConfig<TGraph>[]);
     private _slimify(master);
-    private _combine(arr1, arr2);
-    private _copy(masterObs);
     private _toGraph(master);
 }

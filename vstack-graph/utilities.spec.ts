@@ -3,7 +3,6 @@ import {Headers, HTTP_PROVIDERS, BaseRequestOptions, XHRBackend, Response, Respo
 import {provide, Injectable, Injector} from 'angular2/core';
 import {MockBackend} from 'angular2/http/testing';
 import {MockConnection} from 'angular2/src/http/backends/mock_backend';
-import {RestCollection} from './rest-collection';
 
 import {slimify, isPrimitive, clone, mergeCollection} from './utilities';
 
