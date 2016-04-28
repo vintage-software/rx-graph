@@ -1,6 +1,6 @@
 {
   "name": "vstack-graph",
-  "version": "0.1.5",
+  "version": "0.1.8",
   "description": "A HTTP REST library for Angular 2 including relational data structure support.",
   "typings": "./dist/vstack-graph.d.ts",
   "main": "./bundles/vstack-graph.js",
@@ -45,10 +45,6 @@
     "typings": "^0.6.8",
     "codecov.io": "0.1.6",
     "uglify-js": "2.6.2"
-  },
-  "repository": {
-    "type": "git",
-    "url": ""
   },
   "keywords": [
     "angular2",

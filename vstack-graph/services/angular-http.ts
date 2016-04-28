@@ -14,22 +14,22 @@ export class AngularHttpMapper<TItem extends CollectionItem> implements RemotePe
     }
     
     create(items: TItem[]): Observable<TItem[]> {
-        return this._http.post(`${this._baseUrl}/bulk`, JSON.stringify(items), Object.assign({}, this._requestOptionsArgs)).map(res => res.json());
+        return this._http.post(`${this._baseUrl}/bulk`, JSON.stringify(items), this._requestOptionsArgs).map(res => res.json());
     }
     
     update(items: TItem[]): Observable<TItem[]> {
-         return this._http.put(`${this._baseUrl}/bulk`, JSON.stringify(items), Object.assign({}, this._requestOptionsArgs)).map(res => res.json());
+         return this._http.put(`${this._baseUrl}/bulk`, JSON.stringify(items), this._requestOptionsArgs).map(res => res.json());
     }
     
     delete(ids: any[]): Observable<any> {
-        return this._http.delete(`${this._baseUrl}?ids=${ids.join()}`, Object.assign({}, this._requestOptionsArgs)).map(res => res.status);
+        return this._http.delete(`${this._baseUrl}?ids=${ids.join()}`, this._requestOptionsArgs).map(res => res.status);
     }
     
     load(id: string, options = '') {
-        return this._http.get(`${this._baseUrl}/${id}`, Object.assign({}, this._requestOptionsArgs, options)).map(res => res.json());
+        return this._http.get(`${this._baseUrl}/${id}?${options}`, this._requestOptionsArgs).map(res => res.json());
     }
     
     loadMany(options = '') {
-        return this._http.get(this._baseUrl, Object.assign({}, this._requestOptionsArgs, options)).map(res => res.json());
+        return this._http.get(`${this._baseUrl}?${options}`, this._requestOptionsArgs).map(res => res.json());
     }
 }

@@ -75,7 +75,7 @@ var VSCollectionService = (function (_super) {
     }
     VSCollectionService.prototype.get = function (id) {
         var _this = this;
-        return new vs_queryable_1.VsQueryable(function (options) { return _this._load(id, options); });
+        return new vs_queryable_1.VsQueryable(function (isLoadAll, options) { return _this._load(id, options); });
     };
     VSCollectionService.prototype.getAll = function () {
         var _this = this;

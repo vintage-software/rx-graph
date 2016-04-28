@@ -75,7 +75,7 @@ export abstract class VSCollectionService<TItem extends CollectionItem> extends 
     }
     
     get(id: any): VsQueryable<TItem> {
-        return new VsQueryable<TItem>(options => this._load(id, options));
+        return new VsQueryable<TItem>((isLoadAll, options) => this._load(id, options));
     }
 
     getAll(): VsQueryable<TItem[]> {

@@ -167,23 +167,21 @@ describe('GraphService Specs', () => {
     it('users should have items and packages if they are included in the request', () => {
         let checked = false;
 
-        for (let i = 1; i <= 1000; i++) {
-            testGraphService.graph$
-                .skip(1)
-                .do(graph => {
-                    expect(graph.testUsers.length).toBe(3);
-                    expect(graph.testItems.length).toBe(3);
-                    expect(graph.testUsers[0].testItems.length).toBe(2);
-                    expect(graph.testUsers[1].testItems.length).toBe(0);
-                    expect(graph.testUsers[2].testItems.length).toBe(1);
-                    expect(graph.testUsers[2].testItems[0].testUser).toBe(graph.testUsers[2]);
-                    expect(graph.testUsers[0].testPackage.value).toBe('bronze');
-                    expect(graph.testUsers[1].testPackage.value).toBe('bronze');
-                    expect(graph.testUsers[2].testPackage.value).toBe('gold');
-                    checked = true;
-                })
-                .subscribe();
-        }
+        testGraphService.graph$
+            .skip(1)
+            .do(graph => {
+                expect(graph.testUsers.length).toBe(3);
+                expect(graph.testItems.length).toBe(3);
+                expect(graph.testUsers[0].testItems.length).toBe(2);
+                expect(graph.testUsers[1].testItems.length).toBe(0);
+                expect(graph.testUsers[2].testItems.length).toBe(1);
+                expect(graph.testUsers[2].testItems[0].testUser).toBe(graph.testUsers[2]);
+                expect(graph.testUsers[0].testPackage.value).toBe('bronze');
+                expect(graph.testUsers[1].testPackage.value).toBe('bronze');
+                expect(graph.testUsers[2].testPackage.value).toBe('gold');
+                checked = true;
+            })
+            .subscribe();
 
         MockPersistenceMapper.mockResponse = getTestUsers(true);
         testGraphService.testUserService.getAll().toList();
