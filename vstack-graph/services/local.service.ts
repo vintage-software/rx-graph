@@ -1,6 +1,6 @@
 import {Observable} from 'rxjs/Observable';
-import {ReplaySubject} from 'rxjs/subject/ReplaySubject';
-import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject';
+import {ReplaySubject} from 'rxjs/ReplaySubject';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import 'rxjs/add/operator/map';
 
 import {slimify, CollectionItem, clone, mergeCollection} from '../utilities';
@@ -46,7 +46,7 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
     }
 
     createMany(items: any[] | TItem[]): Observable<TItem[]> {
-        let completion$ = new ReplaySubject(1);
+        let completion$ = new ReplaySubject<TItem[]>(1);
         this._assignIds(items);
 
         this._mapper.create(items.map(i => slimify(i))).subscribe(items => {
@@ -66,7 +66,7 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
     }
 
     updateMany(items: any[] | TItem[]): Observable<TItem[]> {
-        let completion$ = new ReplaySubject(1);
+        let completion$ = new ReplaySubject<TItem[]>(1);
 
         this._mapper.update(items.map(i => slimify(i))).subscribe(items => {
             mergeCollection(this._dataStore.collection, items);
@@ -85,7 +85,7 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
     }
 
     deleteMany(ids: any[]): Observable<any[]> {
-        let completion$ = new ReplaySubject(1);
+        let completion$ = new ReplaySubject<TItem[]>(1);
 
         this._mapper.delete(ids).subscribe(ids => {
             this._removeCollectionItems(ids);

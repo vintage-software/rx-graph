@@ -26,8 +26,9 @@ System.register("vstack-graph/utilities", [], function(exports_1, context_1) {
         if (obj instanceof Object) {
             copy = {};
             for (var attr in obj) {
-                if (obj.hasOwnProperty(attr))
+                if (obj.hasOwnProperty(attr)) {
                     copy[attr] = clone(obj[attr]);
+                }
             }
             return copy;
         }
@@ -69,7 +70,7 @@ System.register("vstack-graph/utilities", [], function(exports_1, context_1) {
         }
     }
 });
-System.register("vstack-graph/services/local.service", ['rxjs/subject/ReplaySubject', 'rxjs/subject/BehaviorSubject', 'rxjs/add/operator/map', "vstack-graph/utilities"], function(exports_2, context_2) {
+System.register("vstack-graph/services/local.service", ['rxjs/ReplaySubject', 'rxjs/BehaviorSubject', 'rxjs/add/operator/map', "vstack-graph/utilities"], function(exports_2, context_2) {
     "use strict";
     var __moduleName = context_2 && context_2.id;
     var ReplaySubject_1, BehaviorSubject_1, utilities_1;
@@ -227,7 +228,7 @@ System.register("vstack-graph/graph/graph-utilities", [], function(exports_3, co
         }
     }
 });
-System.register("vstack-graph/graph/base-graph.service", ['rxjs/Observable', 'rxjs/add/operator/combineLatest', 'rxjs/add/operator/startWith', 'rxjs/add/operator/skip', 'rxjs/add/operator/do', 'rxjs/Rx', "vstack-graph/utilities"], function(exports_4, context_4) {
+System.register("vstack-graph/graph/base-graph.service", ['rxjs/Observable', 'rxjs/Rx', "vstack-graph/utilities"], function(exports_4, context_4) {
     "use strict";
     var __moduleName = context_4 && context_4.id;
     var Observable_1, utilities_2;
@@ -238,10 +239,6 @@ System.register("vstack-graph/graph/base-graph.service", ['rxjs/Observable', 'rx
                 Observable_1 = Observable_1_1;
             },
             function (_2) {},
-            function (_3) {},
-            function (_4) {},
-            function (_5) {},
-            function (_6) {},
             function (utilities_2_1) {
                 utilities_2 = utilities_2_1;
             }],
@@ -343,7 +340,7 @@ System.register("vstack-graph/services/vs-queryable", [], function(exports_5, co
         }
     }
 });
-System.register("vstack-graph/services/remote.service", ['rxjs/subject/ReplaySubject', "vstack-graph/services/local.service", "vstack-graph/utilities", "vstack-graph/services/vs-queryable"], function(exports_6, context_6) {
+System.register("vstack-graph/services/remote.service", ['rxjs/ReplaySubject', "vstack-graph/services/local.service", "vstack-graph/utilities", "vstack-graph/services/vs-queryable"], function(exports_6, context_6) {
     "use strict";
     var __moduleName = context_6 && context_6.id;
     var ReplaySubject_2, local_service_1, utilities_3, vs_queryable_1;

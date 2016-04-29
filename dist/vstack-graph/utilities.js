@@ -19,8 +19,9 @@ function clone(obj) {
     if (obj instanceof Object) {
         copy = {};
         for (var attr in obj) {
-            if (obj.hasOwnProperty(attr))
+            if (obj.hasOwnProperty(attr)) {
                 copy[attr] = clone(obj[attr]);
+            }
         }
         return copy;
     }

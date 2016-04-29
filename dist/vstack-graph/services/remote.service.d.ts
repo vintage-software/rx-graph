@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs/Observable';
-import { ReplaySubject } from 'rxjs/subject/ReplaySubject';
+import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { LocalCollectionService, LocalPersistenceMapper } from './local.service';
 import { CollectionItem } from '../utilities';
 import { VsQueryable } from './vs-queryable';
@@ -12,8 +12,8 @@ export declare abstract class BaseRemoteService<TItem extends CollectionItem> ex
     constructor(_remotePersistenceMapper: RemotePersistenceMapper<TItem>);
     _remoteMapper: RemotePersistenceMapper<TItem>;
     protected _assignIds(items: any[]): void;
-    protected _load(id: any, options: string): ReplaySubject<{}>;
-    protected _loadMany(isLoadAll: boolean, options: string): ReplaySubject<{}>;
+    protected _load(id: any, options: string): ReplaySubject<TItem>;
+    protected _loadMany(isLoadAll: boolean, options: string): ReplaySubject<TItem[]>;
 }
 export declare abstract class CollectionService<TItem extends CollectionItem> extends BaseRemoteService<TItem> {
     constructor(_remotePersistenceMapper: RemotePersistenceMapper<TItem>);

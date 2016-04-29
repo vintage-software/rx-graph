@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/subject/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/operator/map';
 import { CollectionItem } from '../utilities';
 export interface LocalPersistenceMapper<TItem extends CollectionItem> {

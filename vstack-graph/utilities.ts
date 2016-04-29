@@ -28,7 +28,9 @@ export function clone(obj) {
     if (obj instanceof Object) {
         copy = {};
         for (let attr in obj) {
-            if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+            if (obj.hasOwnProperty(attr)) {
+                copy[attr] = clone(obj[attr]);
+            }
         }
         return copy;
     }

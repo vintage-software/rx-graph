@@ -1,5 +1,5 @@
 import {Observable} from 'rxjs/Observable';
-import {ReplaySubject} from 'rxjs/subject/ReplaySubject';
+import {ReplaySubject} from 'rxjs/ReplaySubject';
 import {LocalCollectionService, LocalPersistenceMapper} from './local.service';
 import {CollectionItem, clone, mergeCollection} from '../utilities';
 import {VsQueryable} from './vs-queryable';
@@ -17,13 +17,13 @@ export abstract class BaseRemoteService<TItem extends CollectionItem> extends Lo
     get _remoteMapper() {
         return <RemotePersistenceMapper<TItem>>this._mapper;
     }
-    
+
     protected _assignIds(items: any[]) {
-        
+
     }
 
     protected _load(id: any, options: string) {
-        let completion$ = new ReplaySubject(1);
+        let completion$ = new ReplaySubject<TItem>(1);
 
         this._remoteMapper.load(id, options).subscribe(item => {
             mergeCollection(this._dataStore.collection, [item]);
@@ -37,7 +37,7 @@ export abstract class BaseRemoteService<TItem extends CollectionItem> extends Lo
     }
 
     protected _loadMany(isLoadAll: boolean, options: string) {
-        let completion$ = new ReplaySubject(1);
+        let completion$ = new ReplaySubject<TItem[]>(1);
 
         this._remoteMapper.loadMany(options).subscribe(items => {
             mergeCollection(this._dataStore.collection, items);
@@ -58,7 +58,7 @@ export abstract class CollectionService<TItem extends CollectionItem> extends Ba
     constructor(_remotePersistenceMapper: RemotePersistenceMapper<TItem>) {
         super(_remotePersistenceMapper);
     }
-    
+
     get(id: any, options?: string): Observable<TItem> {
         return this._load(id, options);
     }
@@ -73,7 +73,7 @@ export abstract class VSCollectionService<TItem extends CollectionItem> extends 
     constructor(_remotePersistenceMapper: RemotePersistenceMapper<TItem>) {
         super(_remotePersistenceMapper);
     }
-    
+
     get(id: any): VsQueryable<TItem> {
         return new VsQueryable<TItem>((isLoadAll, options) => this._load(id, options));
     }

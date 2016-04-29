@@ -50,11 +50,11 @@ describe('clone', () => {
 
 describe('mergeCollection', () => {
     it('should merge two collections', () => {
-        let collection1 = [{ id: 1, value: 'value 1' }, { id: 2, value: 'value 2'}];
-        let collection2 = [{ id: 1, value: 'updated value' }, { id: 3, value: 'value 3'}];
-        
+        let collection1 = [{ id: 1, value: 'value 1' }, { id: 2, value: 'value 2' }];
+        let collection2 = [{ id: 1, value: 'updated value' }, { id: 3, value: 'value 3' }];
+
         mergeCollection(collection1, collection2);
-        
+
         expect(collection1[0].value).toBe('updated value');
         expect(collection1.length).toBe(3);
     });

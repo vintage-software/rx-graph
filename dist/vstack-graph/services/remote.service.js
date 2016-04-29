@@ -4,7 +4,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var ReplaySubject_1 = require('rxjs/subject/ReplaySubject');
+var ReplaySubject_1 = require('rxjs/ReplaySubject');
 var local_service_1 = require('./local.service');
 var utilities_1 = require('../utilities');
 var vs_queryable_1 = require('./vs-queryable');

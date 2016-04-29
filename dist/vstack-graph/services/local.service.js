@@ -1,6 +1,6 @@
 "use strict";
-var ReplaySubject_1 = require('rxjs/subject/ReplaySubject');
-var BehaviorSubject_1 = require('rxjs/subject/BehaviorSubject');
+var ReplaySubject_1 = require('rxjs/ReplaySubject');
+var BehaviorSubject_1 = require('rxjs/BehaviorSubject');
 require('rxjs/add/operator/map');
 var utilities_1 = require('../utilities');
 var LocalCollectionService = (function () {

@@ -9,7 +9,7 @@ declare module "vstack-graph/utilities" {
 }
 declare module "vstack-graph/services/local.service" {
     import { Observable } from 'rxjs/Observable';
-    import { BehaviorSubject } from 'rxjs/subject/BehaviorSubject';
+    import { BehaviorSubject } from 'rxjs/BehaviorSubject';
     import 'rxjs/add/operator/map';
     import { CollectionItem } from "vstack-graph/utilities";
     export interface LocalPersistenceMapper<TItem extends CollectionItem> {
@@ -71,10 +71,6 @@ declare module "vstack-graph/graph/graph-utilities" {
 }
 declare module "vstack-graph/graph/base-graph.service" {
     import { Observable } from 'rxjs/Observable';
-    import 'rxjs/add/operator/combineLatest';
-    import 'rxjs/add/operator/startWith';
-    import 'rxjs/add/operator/skip';
-    import 'rxjs/add/operator/do';
     import 'rxjs/Rx';
     import { IServiceConfig } from "vstack-graph/graph/graph-utilities";
     export class BaseGraphService<TGraph> {
@@ -99,7 +95,7 @@ declare module "vstack-graph/services/vs-queryable" {
 }
 declare module "vstack-graph/services/remote.service" {
     import { Observable } from 'rxjs/Observable';
-    import { ReplaySubject } from 'rxjs/subject/ReplaySubject';
+    import { ReplaySubject } from 'rxjs/ReplaySubject';
     import { LocalCollectionService, LocalPersistenceMapper } from "vstack-graph/services/local.service";
     import { CollectionItem } from "vstack-graph/utilities";
     import { VsQueryable } from "vstack-graph/services/vs-queryable";
@@ -112,8 +108,8 @@ declare module "vstack-graph/services/remote.service" {
         constructor(_remotePersistenceMapper: RemotePersistenceMapper<TItem>);
         _remoteMapper: RemotePersistenceMapper<TItem>;
         protected _assignIds(items: any[]): void;
-        protected _load(id: any, options: string): ReplaySubject<{}>;
-        protected _loadMany(isLoadAll: boolean, options: string): ReplaySubject<{}>;
+        protected _load(id: any, options: string): ReplaySubject<TItem>;
+        protected _loadMany(isLoadAll: boolean, options: string): ReplaySubject<TItem[]>;
     }
     export abstract class CollectionService<TItem extends CollectionItem> extends BaseRemoteService<TItem> {
         constructor(_remotePersistenceMapper: RemotePersistenceMapper<TItem>);
