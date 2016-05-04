@@ -207,20 +207,20 @@ System.register("vstack-graph/graph/graph-utilities", [], function(exports_3, co
         setters:[],
         execute: function() {
             Relation = (function () {
-                function Relation(collectionProperty, to, mappingId, many) {
+                function Relation(collectionProperty, to, relationId, many) {
                     this.collectionProperty = collectionProperty;
                     this.to = to;
-                    this.mappingId = mappingId;
+                    this.relationId = relationId;
                     this.many = many;
                 }
                 return Relation;
             }());
             exports_3("Relation", Relation);
             ServiceConfig = (function () {
-                function ServiceConfig(service, func, mappings) {
+                function ServiceConfig(service, func, relations) {
                     this.service = service;
                     this.func = func;
-                    this.mappings = mappings;
+                    this.relations = relations;
                 }
                 return ServiceConfig;
             }());
@@ -250,58 +250,58 @@ System.register("vstack-graph/graph/base-graph.service", ['rxjs/Observable', 'rx
                     this._debug = false;
                     this.graph$ = Observable_1.Observable
                         .combineLatest(this._serviceConfigs.map(function (i) { return i.service._collection$; }))
-                        .map(function (i) { return _this._slimify(i); })
+                        .map(function (i) { return _this._slimifyCollection(i); })
                         .share()
                         .map(function (i) { return i.map(function (array) { return utilities_2.clone(array); }); })
                         .map(function (i) { return _this._toGraph(i); });
                 }
-                BaseGraphService.prototype._slimify = function (master) {
+                BaseGraphService.prototype._slimifyCollection = function (collection) {
                     var _this = this;
                     var changes = true;
                     while (changes === true) {
                         changes = false;
                         this._serviceConfigs.forEach(function (serviceConfig, index) {
-                            serviceConfig.mappings.forEach(function (mapping) {
-                                return master[index].forEach(function (dto) {
-                                    var mappingService = _this._serviceConfigs.find(function (i) { return i.service === mapping.to; });
+                            serviceConfig.relations.forEach(function (relation) {
+                                return collection[index].forEach(function (collectionItem) {
+                                    var mappingService = _this._serviceConfigs.find(function (i) { return i.service === relation.to; });
                                     var mappingIndex = _this._serviceConfigs.indexOf(mappingService);
-                                    var toUpdate = [];
-                                    if (!!dto[mapping.collectionProperty]) {
+                                    var collectionItemsToUpdate = [];
+                                    if (!!collectionItem[relation.collectionProperty]) {
                                         changes = true;
-                                        if (mapping.many) {
-                                            toUpdate = dto[mapping.collectionProperty];
+                                        if (relation.many) {
+                                            collectionItemsToUpdate = collectionItem[relation.collectionProperty];
                                         }
                                         else {
-                                            toUpdate.push(dto[mapping.collectionProperty]);
+                                            collectionItemsToUpdate.push(collectionItem[relation.collectionProperty]);
                                         }
-                                        dto[mapping.collectionProperty] = null;
-                                        utilities_2.mergeCollection(master[mappingIndex], toUpdate);
-                                        master[mappingIndex] = master[mappingIndex].filter(function (i) { return i[mapping.mappingId] !== dto.id || toUpdate.find(function (j) { return j.id === i.id; }); });
+                                        collectionItem[relation.collectionProperty] = null;
+                                        utilities_2.mergeCollection(collection[mappingIndex], collectionItemsToUpdate);
+                                        collection[mappingIndex] = collection[mappingIndex].filter(function (i) { return i[relation.relationId] !== collectionItem.id || collectionItemsToUpdate.find(function (j) { return j.id === i.id; }); });
                                     }
                                 });
                             });
                         });
                     }
-                    this._debug && console.log('master', master);
-                    return master;
+                    this._debug && console.log('Collection: ', collection);
+                    return collection;
                 };
-                BaseGraphService.prototype._toGraph = function (master) {
+                BaseGraphService.prototype._toGraph = function (collection) {
                     var _this = this;
                     var graph = {};
                     this._serviceConfigs.forEach(function (serviceConfig, index) {
-                        serviceConfig.mappings.forEach(function (mapping) {
-                            return master[index].forEach(function (dto) {
-                                var mappingService = _this._serviceConfigs.find(function (i) { return i.service === mapping.to; });
+                        serviceConfig.relations.forEach(function (relation) {
+                            return collection[index].forEach(function (collectionItem) {
+                                var mappingService = _this._serviceConfigs.find(function (i) { return i.service === relation.to; });
                                 var mappingIndex = _this._serviceConfigs.indexOf(mappingService);
-                                if (mapping.many) {
-                                    dto[mapping.collectionProperty] = master[mappingIndex].filter(function (i) { return i[mapping.mappingId] === dto.id; });
+                                if (relation.many) {
+                                    collectionItem[relation.collectionProperty] = collection[mappingIndex].filter(function (i) { return i[relation.relationId] === collectionItem.id; });
                                 }
                                 else {
-                                    dto[mapping.collectionProperty] = master[mappingIndex].find(function (i) { return i.id === dto[mapping.mappingId]; });
+                                    collectionItem[relation.collectionProperty] = collection[mappingIndex].find(function (i) { return i.id === collectionItem[relation.relationId]; });
                                 }
                             });
                         });
-                        serviceConfig.func(graph, master[index]);
+                        serviceConfig.func(graph, collection[index]);
                     });
                     return graph;
                 };

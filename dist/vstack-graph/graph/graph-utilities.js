@@ -1,19 +1,19 @@
 "use strict";
 var Relation = (function () {
-    function Relation(collectionProperty, to, mappingId, many) {
+    function Relation(collectionProperty, to, relationId, many) {
         this.collectionProperty = collectionProperty;
         this.to = to;
-        this.mappingId = mappingId;
+        this.relationId = relationId;
         this.many = many;
     }
     return Relation;
 }());
 exports.Relation = Relation;
 var ServiceConfig = (function () {
-    function ServiceConfig(service, func, mappings) {
+    function ServiceConfig(service, func, relations) {
         this.service = service;
         this.func = func;
-        this.mappings = mappings;
+        this.relations = relations;
     }
     return ServiceConfig;
 }());

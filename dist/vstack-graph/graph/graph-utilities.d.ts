@@ -8,18 +8,18 @@ export interface IService {
 export interface IServiceConfig<TGraph> {
     service: IService;
     func: (graph: TGraph, collection: CollectionItem[]) => void;
-    mappings: Relation[];
+    relations: Relation[];
 }
 export declare class Relation {
     collectionProperty: string;
     to: IService;
-    mappingId: string;
+    relationId: string;
     many: boolean;
-    constructor(collectionProperty: string, to: IService, mappingId: string, many: boolean);
+    constructor(collectionProperty: string, to: IService, relationId: string, many: boolean);
 }
 export declare class ServiceConfig<TCollectionItem extends CollectionItem, TGraph> implements IServiceConfig<TGraph> {
     service: LocalCollectionService<TCollectionItem>;
     func: (graph: TGraph, collection: TCollectionItem[]) => void;
-    mappings: Relation[];
-    constructor(service: LocalCollectionService<TCollectionItem>, func: (graph: TGraph, collection: TCollectionItem[]) => void, mappings: Relation[]);
+    relations: Relation[];
+    constructor(service: LocalCollectionService<TCollectionItem>, func: (graph: TGraph, collection: TCollectionItem[]) => void, relations: Relation[]);
 }

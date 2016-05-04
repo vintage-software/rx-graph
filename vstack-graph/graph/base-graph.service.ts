@@ -1,10 +1,9 @@
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
-
-import 'rxjs/Rx'; //TODO: we just want combineLatest
+import 'rxjs/Rx'; // TODO: we just want combineLatest
 
 import {CollectionItem, clone, mergeCollection} from '../utilities';
-import {IServiceConfig} from './graph-utilities';
+import {IServiceConfig, Relation, ServiceConfig} from './graph-utilities';
 
 export class BaseGraphService<TGraph> {
     private _debug: boolean = false;
@@ -13,59 +12,63 @@ export class BaseGraphService<TGraph> {
     constructor(private _serviceConfigs: IServiceConfig<TGraph>[]) {
         this.graph$ = Observable
             .combineLatest(this._serviceConfigs.map(i => (<any>i.service)._collection$))
-            .map(i => this._slimify(i))
+            .map(i => this._slimifyCollection(i))
             .share()
             .map(i => i.map(array => clone(array)))
             .map(i => this._toGraph(i));
     }
 
-    private _slimify(master: any[]) {
+    private _slimifyCollection(collection: any[]) {
         let changes = true;
         while (changes === true) {
             changes = false;
             this._serviceConfigs.forEach((serviceConfig, index) => {
-                serviceConfig.mappings.forEach(mapping =>
-                    master[index].forEach(dto => {
-                        let mappingService = this._serviceConfigs.find(i => i.service === mapping.to);
+                serviceConfig.relations.forEach((relation: Relation) =>
+                    collection[index].forEach((collectionItem: CollectionItem) => {
+                        let mappingService = this._serviceConfigs.find(i => i.service === relation.to);
                         let mappingIndex = this._serviceConfigs.indexOf(mappingService);
-                        let toUpdate = [];
-                        if (!!dto[mapping.collectionProperty]) {
+                        let collectionItemsToUpdate = [];
+                        
+                        if (!!collectionItem[relation.collectionProperty]) {
                             changes = true;
-                            if (mapping.many) {
-                                toUpdate = dto[mapping.collectionProperty];
+                            
+                            if (relation.many) {
+                                collectionItemsToUpdate = collectionItem[relation.collectionProperty];
                             } else {
-                                toUpdate.push(dto[mapping.collectionProperty]);
+                                collectionItemsToUpdate.push(collectionItem[relation.collectionProperty]);
                             }
-                            dto[mapping.collectionProperty] = null;
-                            mergeCollection(master[mappingIndex], toUpdate);
-                            master[mappingIndex] = master[mappingIndex].filter(i => i[mapping.mappingId] !== dto.id || toUpdate.find(j => j.id === i.id));
+                            
+                            collectionItem[relation.collectionProperty] = null;
+                            mergeCollection(collection[mappingIndex], collectionItemsToUpdate);
+                            collection[mappingIndex] = collection[mappingIndex].filter(i => i[relation.relationId] !== collectionItem.id || collectionItemsToUpdate.find(j => j.id === i.id));
                         }
                     })
                 );
             });
         }
 
-        this._debug && console.log('master', master);
-        return master;
+        this._debug && console.log('Collection: ', collection);
+        return collection;
     }
 
-    private _toGraph(master: any[]): TGraph {
+    private _toGraph(collection: any[]): TGraph {
         let graph = <TGraph>{};
 
         this._serviceConfigs.forEach((serviceConfig, index) => {
-            serviceConfig.mappings.forEach(mapping =>
-                master[index].forEach(dto => {
-                    let mappingService = this._serviceConfigs.find(i => i.service === mapping.to);
+            serviceConfig.relations.forEach((relation: Relation) =>
+                collection[index].forEach((collectionItem: CollectionItem) => {
+                    let mappingService = this._serviceConfigs.find(i => i.service === relation.to);
                     let mappingIndex = this._serviceConfigs.indexOf(mappingService);
-                    if (mapping.many) {
-                        dto[mapping.collectionProperty] = master[mappingIndex].filter(i => i[mapping.mappingId] === dto.id);
+                    
+                    if (relation.many) {
+                        collectionItem[relation.collectionProperty] = collection[mappingIndex].filter(i => i[relation.relationId] === collectionItem.id);
                     } else {
-                        dto[mapping.collectionProperty] = master[mappingIndex].find(i => i.id === dto[mapping.mappingId]);
+                        collectionItem[relation.collectionProperty] = collection[mappingIndex].find(i => i.id === collectionItem[relation.relationId]);
                     }
                 })
             );
 
-            serviceConfig.func(graph, master[index]);
+            serviceConfig.func(graph, collection[index]);
         });
 
         return graph;

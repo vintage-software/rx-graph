@@ -53,20 +53,20 @@ declare module "vstack-graph/graph/graph-utilities" {
     export interface IServiceConfig<TGraph> {
         service: IService;
         func: (graph: TGraph, collection: CollectionItem[]) => void;
-        mappings: Relation[];
+        relations: Relation[];
     }
     export class Relation {
         collectionProperty: string;
         to: IService;
-        mappingId: string;
+        relationId: string;
         many: boolean;
-        constructor(collectionProperty: string, to: IService, mappingId: string, many: boolean);
+        constructor(collectionProperty: string, to: IService, relationId: string, many: boolean);
     }
     export class ServiceConfig<TCollectionItem extends CollectionItem, TGraph> implements IServiceConfig<TGraph> {
         service: LocalCollectionService<TCollectionItem>;
         func: (graph: TGraph, collection: TCollectionItem[]) => void;
-        mappings: Relation[];
-        constructor(service: LocalCollectionService<TCollectionItem>, func: (graph: TGraph, collection: TCollectionItem[]) => void, mappings: Relation[]);
+        relations: Relation[];
+        constructor(service: LocalCollectionService<TCollectionItem>, func: (graph: TGraph, collection: TCollectionItem[]) => void, relations: Relation[]);
     }
 }
 declare module "vstack-graph/graph/base-graph.service" {
@@ -78,8 +78,8 @@ declare module "vstack-graph/graph/base-graph.service" {
         private _debug;
         graph$: Observable<TGraph>;
         constructor(_serviceConfigs: IServiceConfig<TGraph>[]);
-        private _slimify(master);
-        private _toGraph(master);
+        private _slimifyCollection(collection);
+        private _toGraph(collection);
     }
 }
 declare module "vstack-graph/services/vs-queryable" {

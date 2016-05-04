@@ -11,13 +11,13 @@ export interface IService {
 export interface IServiceConfig<TGraph> {
     service: IService;
     func: (graph: TGraph, collection: CollectionItem[]) => void;
-    mappings: Relation[];
+    relations: Relation[];
 }
 
 export class Relation {
-    constructor(public collectionProperty: string, public to: IService, public mappingId: string, public many: boolean) { }
+    constructor(public collectionProperty: string, public to: IService, public relationId: string, public many: boolean) { }
 }
 
 export class ServiceConfig<TCollectionItem extends CollectionItem, TGraph> implements IServiceConfig<TGraph> {
-    constructor(public service: LocalCollectionService<TCollectionItem>, public func: (graph: TGraph, collection: TCollectionItem[]) => void, public mappings: Relation[]) { }
+    constructor(public service: LocalCollectionService<TCollectionItem>, public func: (graph: TGraph, collection: TCollectionItem[]) => void, public relations: Relation[]) { }
 }

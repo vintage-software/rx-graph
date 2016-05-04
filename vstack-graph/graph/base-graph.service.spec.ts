@@ -1,5 +1,6 @@
 /// <reference path="../../typings/browser/ambient/jasmine/jasmine.d.ts" />
 /// <reference path="../../typings/browser/ambient/es6-shim/es6-shim.d.ts" />
+
 import {Observable} from 'rxjs/Observable';
 
 import {MockPersistenceMapper, TestGraphService, TestUserService, TestPackageService, TestItemService} from './../testing/test-helpers';
