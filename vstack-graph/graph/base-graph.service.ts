@@ -22,33 +22,40 @@ export class BaseGraphService<TGraph> {
         let changes = true;
         while (changes === true) {
             changes = false;
+
             this._serviceConfigs.forEach((serviceConfig, index) => {
                 serviceConfig.relations.forEach((relation: Relation) =>
                     collection[index].forEach((collectionItem: CollectionItem) => {
                         let mappingService = this._serviceConfigs.find(i => i.service === relation.to);
                         let mappingIndex = this._serviceConfigs.indexOf(mappingService);
                         let collectionItemsToUpdate = [];
-                        
-                        if (!!collectionItem[relation.collectionProperty]) {
+
+                        if (this._collectionItemHasRelation(collectionItem, relation)) {
                             changes = true;
-                            
+
                             if (relation.many) {
                                 collectionItemsToUpdate = collectionItem[relation.collectionProperty];
                             } else {
                                 collectionItemsToUpdate.push(collectionItem[relation.collectionProperty]);
                             }
-                            
+
                             collectionItem[relation.collectionProperty] = null;
                             mergeCollection(collection[mappingIndex], collectionItemsToUpdate);
-                            collection[mappingIndex] = collection[mappingIndex].filter(i => i[relation.relationId] !== collectionItem.id || collectionItemsToUpdate.find(j => j.id === i.id));
+
+                            collection[mappingIndex] = collection[mappingIndex].filter(i => {
+                                return i[relation.relationId] !== collectionItem.id || collectionItemsToUpdate.find(j => j.id === i.id);
+                            });
                         }
                     })
                 );
             });
         }
 
-        this._debug && console.log('Collection: ', collection);
         return collection;
+    }
+
+    private _collectionItemHasRelation(collectionItem: CollectionItem, relation: Relation) {
+        return !!collectionItem[relation.collectionProperty]
     }
 
     private _toGraph(collection: any[]): TGraph {
@@ -57,14 +64,7 @@ export class BaseGraphService<TGraph> {
         this._serviceConfigs.forEach((serviceConfig, index) => {
             serviceConfig.relations.forEach((relation: Relation) =>
                 collection[index].forEach((collectionItem: CollectionItem) => {
-                    let mappingService = this._serviceConfigs.find(i => i.service === relation.to);
-                    let mappingIndex = this._serviceConfigs.indexOf(mappingService);
-                    
-                    if (relation.many) {
-                        collectionItem[relation.collectionProperty] = collection[mappingIndex].filter(i => i[relation.relationId] === collectionItem.id);
-                    } else {
-                        collectionItem[relation.collectionProperty] = collection[mappingIndex].find(i => i.id === collectionItem[relation.relationId]);
-                    }
+                    this._mapCollectionItemPropertyFromRelation(collectionItem, collection, relation);
                 })
             );
 
@@ -72,5 +72,16 @@ export class BaseGraphService<TGraph> {
         });
 
         return graph;
+    }
+
+    private _mapCollectionItemPropertyFromRelation(collectionItem: CollectionItem, collection: any[], relation: Relation) {
+        let mappingService = this._serviceConfigs.find(i => i.service === relation.to);
+        let mappingIndex = this._serviceConfigs.indexOf(mappingService);
+
+        if (relation.many) {
+            collectionItem[relation.collectionProperty] = collection[mappingIndex].filter(i => i[relation.relationId] === collectionItem.id);
+        } else {
+            collectionItem[relation.collectionProperty] = collection[mappingIndex].find(i => i.id === collectionItem[relation.relationId]);
+        }
     }
 }

@@ -11,7 +11,6 @@ export declare abstract class BaseRemoteService<TItem extends CollectionItem> ex
     private _remotePersistenceMapper;
     constructor(_remotePersistenceMapper: RemotePersistenceMapper<TItem>);
     _remoteMapper: RemotePersistenceMapper<TItem>;
-    protected _assignIds(items: any[]): void;
     protected _load(id: any, options: string): ReplaySubject<TItem>;
     protected _loadMany(isLoadAll: boolean, options: string): ReplaySubject<TItem[]>;
 }

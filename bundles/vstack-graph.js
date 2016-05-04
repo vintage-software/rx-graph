@@ -266,7 +266,7 @@ System.register("vstack-graph/graph/base-graph.service", ['rxjs/Observable', 'rx
                                     var mappingService = _this._serviceConfigs.find(function (i) { return i.service === relation.to; });
                                     var mappingIndex = _this._serviceConfigs.indexOf(mappingService);
                                     var collectionItemsToUpdate = [];
-                                    if (!!collectionItem[relation.collectionProperty]) {
+                                    if (_this._collectionItemHasRelation(collectionItem, relation)) {
                                         changes = true;
                                         if (relation.many) {
                                             collectionItemsToUpdate = collectionItem[relation.collectionProperty];
@@ -276,14 +276,18 @@ System.register("vstack-graph/graph/base-graph.service", ['rxjs/Observable', 'rx
                                         }
                                         collectionItem[relation.collectionProperty] = null;
                                         utilities_2.mergeCollection(collection[mappingIndex], collectionItemsToUpdate);
-                                        collection[mappingIndex] = collection[mappingIndex].filter(function (i) { return i[relation.relationId] !== collectionItem.id || collectionItemsToUpdate.find(function (j) { return j.id === i.id; }); });
+                                        collection[mappingIndex] = collection[mappingIndex].filter(function (i) {
+                                            return i[relation.relationId] !== collectionItem.id || collectionItemsToUpdate.find(function (j) { return j.id === i.id; });
+                                        });
                                     }
                                 });
                             });
                         });
                     }
-                    this._debug && console.log('Collection: ', collection);
                     return collection;
+                };
+                BaseGraphService.prototype._collectionItemHasRelation = function (collectionItem, relation) {
+                    return !!collectionItem[relation.collectionProperty];
                 };
                 BaseGraphService.prototype._toGraph = function (collection) {
                     var _this = this;
@@ -291,19 +295,22 @@ System.register("vstack-graph/graph/base-graph.service", ['rxjs/Observable', 'rx
                     this._serviceConfigs.forEach(function (serviceConfig, index) {
                         serviceConfig.relations.forEach(function (relation) {
                             return collection[index].forEach(function (collectionItem) {
-                                var mappingService = _this._serviceConfigs.find(function (i) { return i.service === relation.to; });
-                                var mappingIndex = _this._serviceConfigs.indexOf(mappingService);
-                                if (relation.many) {
-                                    collectionItem[relation.collectionProperty] = collection[mappingIndex].filter(function (i) { return i[relation.relationId] === collectionItem.id; });
-                                }
-                                else {
-                                    collectionItem[relation.collectionProperty] = collection[mappingIndex].find(function (i) { return i.id === collectionItem[relation.relationId]; });
-                                }
+                                _this._mapCollectionItemPropertyFromRelation(collectionItem, collection, relation);
                             });
                         });
                         serviceConfig.func(graph, collection[index]);
                     });
                     return graph;
+                };
+                BaseGraphService.prototype._mapCollectionItemPropertyFromRelation = function (collectionItem, collection, relation) {
+                    var mappingService = this._serviceConfigs.find(function (i) { return i.service === relation.to; });
+                    var mappingIndex = this._serviceConfigs.indexOf(mappingService);
+                    if (relation.many) {
+                        collectionItem[relation.collectionProperty] = collection[mappingIndex].filter(function (i) { return i[relation.relationId] === collectionItem.id; });
+                    }
+                    else {
+                        collectionItem[relation.collectionProperty] = collection[mappingIndex].find(function (i) { return i.id === collectionItem[relation.relationId]; });
+                    }
                 };
                 return BaseGraphService;
             }());
@@ -373,8 +380,6 @@ System.register("vstack-graph/services/remote.service", ['rxjs/ReplaySubject', "
                     enumerable: true,
                     configurable: true
                 });
-                BaseRemoteService.prototype._assignIds = function (items) {
-                };
                 BaseRemoteService.prototype._load = function (id, options) {
                     var _this = this;
                     var completion$ = new ReplaySubject_2.ReplaySubject(1);

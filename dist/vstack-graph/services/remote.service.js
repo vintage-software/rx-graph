@@ -21,8 +21,6 @@ var BaseRemoteService = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    BaseRemoteService.prototype._assignIds = function (items) {
-    };
     BaseRemoteService.prototype._load = function (id, options) {
         var _this = this;
         var completion$ = new ReplaySubject_1.ReplaySubject(1);

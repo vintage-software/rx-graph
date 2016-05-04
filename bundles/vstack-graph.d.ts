@@ -79,7 +79,9 @@ declare module "vstack-graph/graph/base-graph.service" {
         graph$: Observable<TGraph>;
         constructor(_serviceConfigs: IServiceConfig<TGraph>[]);
         private _slimifyCollection(collection);
+        private _collectionItemHasRelation(collectionItem, relation);
         private _toGraph(collection);
+        private _mapCollectionItemPropertyFromRelation(collectionItem, collection, relation);
     }
 }
 declare module "vstack-graph/services/vs-queryable" {
@@ -107,7 +109,6 @@ declare module "vstack-graph/services/remote.service" {
         private _remotePersistenceMapper;
         constructor(_remotePersistenceMapper: RemotePersistenceMapper<TItem>);
         _remoteMapper: RemotePersistenceMapper<TItem>;
-        protected _assignIds(items: any[]): void;
         protected _load(id: any, options: string): ReplaySubject<TItem>;
         protected _loadMany(isLoadAll: boolean, options: string): ReplaySubject<TItem[]>;
     }

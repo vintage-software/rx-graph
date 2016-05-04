@@ -18,10 +18,6 @@ export abstract class BaseRemoteService<TItem extends CollectionItem> extends Lo
         return <RemotePersistenceMapper<TItem>>this._mapper;
     }
 
-    protected _assignIds(items: any[]) {
-
-    }
-
     protected _load(id: any, options: string) {
         let completion$ = new ReplaySubject<TItem>(1);
 
