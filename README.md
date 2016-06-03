@@ -6,8 +6,8 @@
 
 ## Work in progress
 
-A Reactive Http REST library with relational data structure support. Supports Angular 2 out of the box. Adding
-Angular 1 and generic browser support as well. 
+A Observable (RxJS) based Graph layer for JavaScript Applications. Supports Object relation structures via REST APIs. Supports Angular 2 out of the box. Includes Angular 2 support out of the box and has a generic adapter for many different
+client libraries. 
 
 ### RestCollection
 
