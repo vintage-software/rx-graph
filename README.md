@@ -6,7 +6,7 @@
 
 ## Work in progress
 
-A Observable (RxJS) based Graph layer for JavaScript Applications. Supports Object relation structures via REST APIs. Supports Angular 2 out of the box. Includes Angular 2 support out of the box and has a generic adapter for many different
+A Observable (RxJS) based Graph layer for JavaScript Applications. Supports Object relation structures via REST APIs. Includes Angular 2 support out of the box and has a generic adapter for many different
 client libraries. 
 
 ### RestCollection
