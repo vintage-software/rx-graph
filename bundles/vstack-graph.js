@@ -228,13 +228,16 @@ System.register("vstack-graph/graph/graph-utilities", [], function(exports_3, co
         }
     }
 });
-System.register("vstack-graph/graph/base-graph.service", ['rxjs/Observable', 'rxjs/Rx', "vstack-graph/utilities"], function(exports_4, context_4) {
+System.register("vstack-graph/graph/base-graph.service", ['rxjs/BehaviorSubject', 'rxjs/Observable', 'rxjs/Rx', "vstack-graph/utilities"], function(exports_4, context_4) {
     "use strict";
     var __moduleName = context_4 && context_4.id;
-    var Observable_1, utilities_2;
+    var BehaviorSubject_2, Observable_1, utilities_2;
     var BaseGraphService;
     return {
         setters:[
+            function (BehaviorSubject_2_1) {
+                BehaviorSubject_2 = BehaviorSubject_2_1;
+            },
             function (Observable_1_1) {
                 Observable_1 = Observable_1_1;
             },
@@ -248,11 +251,12 @@ System.register("vstack-graph/graph/base-graph.service", ['rxjs/Observable', 'rx
                     var _this = this;
                     this._serviceConfigs = _serviceConfigs;
                     this._debug = false;
-                    this.graph$ = Observable_1.Observable
+                    var bs = new BehaviorSubject_2.BehaviorSubject(null);
+                    Observable_1.Observable
                         .combineLatest(this._serviceConfigs.map(function (i) { return i.service._collection$; }))
                         .map(function (i) { return _this._slimifyCollection(i); })
-                        .share()
-                        .map(function (i) { return i.map(function (array) { return utilities_2.clone(array); }); })
+                        .subscribe(function (i) { return bs.next(i); });
+                    this.graph$ = bs.map(function (i) { return i.map(function (array) { return utilities_2.clone(array); }); })
                         .map(function (i) { return _this._toGraph(i); });
                 }
                 BaseGraphService.prototype._slimifyCollection = function (collection) {

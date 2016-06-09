@@ -1,4 +1,5 @@
 "use strict";
+var BehaviorSubject_1 = require('rxjs/BehaviorSubject');
 var Observable_1 = require('rxjs/Observable');
 require('rxjs/Rx');
 var utilities_1 = require('../utilities');
@@ -7,11 +8,12 @@ var BaseGraphService = (function () {
         var _this = this;
         this._serviceConfigs = _serviceConfigs;
         this._debug = false;
-        this.graph$ = Observable_1.Observable
+        var bs = new BehaviorSubject_1.BehaviorSubject(null);
+        Observable_1.Observable
             .combineLatest(this._serviceConfigs.map(function (i) { return i.service._collection$; }))
             .map(function (i) { return _this._slimifyCollection(i); })
-            .share()
-            .map(function (i) { return i.map(function (array) { return utilities_1.clone(array); }); })
+            .subscribe(function (i) { return bs.next(i); });
+        this.graph$ = bs.map(function (i) { return i.map(function (array) { return utilities_1.clone(array); }); })
             .map(function (i) { return _this._toGraph(i); });
     }
     BaseGraphService.prototype._slimifyCollection = function (collection) {

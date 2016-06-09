@@ -75,11 +75,11 @@ describe('GraphService Specs', () => {
             .subscribe();
 
         testGraphService.testUserService.createMany(getTestUsers());
-        testGraphService.testUserService.create({ id: 4, value: 'user 4'});
+        testGraphService.testUserService.create({ id: 4, value: 'user 4' });
 
         expect(checked).toBe(true);
     });
-    
+
     it('get and getMany should be reflected in the graph', () => {
         let checked = false;
 
@@ -122,7 +122,7 @@ describe('GraphService Specs', () => {
 
         expect(checked).toBe(true);
     });
-    
+
     it('delete and deleteMany should be reflected in the graph', () => {
         let checked = false;
 
@@ -137,7 +137,7 @@ describe('GraphService Specs', () => {
         let users = getTestUsers();
         MockPersistenceMapper.mockResponse = users;
         testGraphService.testUserService.getAll().toList();
-        testGraphService.testUserService.deleteMany([ users[0].id, users[1].id ]);
+        testGraphService.testUserService.deleteMany([users[0].id, users[1].id]);
         testGraphService.testUserService.delete(users[2].id);
 
         expect(checked).toBe(true);
@@ -248,5 +248,42 @@ describe('GraphService Specs', () => {
         testGraphService.testUserService.getAll().withQueryString('bob').toList();
 
         expect(checked).toBe(true);
+    });
+
+    it('graph should return cached result from behavior subject for first value then recieve second value', () => {
+        let checked = 0;
+
+        testGraphService.graph$
+            .do(graph => {
+                checked++;
+            }).subscribe();
+
+        testGraphService.graph$
+            .do(graph => {
+                checked++;
+            }).subscribe();
+        
+        testGraphService.graph$
+            .do(graph => {
+                checked++;
+            }).subscribe();
+        
+        testGraphService.graph$
+            .do(graph => {
+                checked++;
+            }).subscribe();
+
+        testGraphService.graph$
+            .do(graph => {
+                checked++;
+            }).subscribe();
+        
+        MockPersistenceMapper.mockResponse = [{ id: 1, value: 'user 1', testPackageId: 1 }, { id: 2, value: 'user 2', testPackageId: 1 }];
+        testGraphService.testUserService.getAll().toList();
+
+        MockPersistenceMapper.mockResponse = [{ id: 1, value: 'user 1', testPackageId: 1 }];
+        testGraphService.testUserService.getAll().toList();
+
+        expect(checked).toBe(15);
     });
 });
