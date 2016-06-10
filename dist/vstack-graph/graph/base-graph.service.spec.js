@@ -199,33 +199,20 @@ describe('GraphService Specs', function () {
         testGraphService.testUserService.getAll().withQueryString('bob').toList();
         expect(checked).toBe(true);
     });
-    it('graph should return cached result from behavior subject for first value then recieve second value', function () {
+    it('multiple subscribers should be able to get initial and subsequent values', function () {
         var checked = 0;
-        testGraphService.graph$
-            .do(function (graph) {
-            checked++;
-        }).subscribe();
-        testGraphService.graph$
-            .do(function (graph) {
-            checked++;
-        }).subscribe();
-        testGraphService.graph$
-            .do(function (graph) {
-            checked++;
-        }).subscribe();
-        testGraphService.graph$
-            .do(function (graph) {
-            checked++;
-        }).subscribe();
-        testGraphService.graph$
-            .do(function (graph) {
-            checked++;
-        }).subscribe();
+        var subscribers = 5;
+        for (var i = 0; i < subscribers; i++) {
+            testGraphService.graph$
+                .do(function (graph) {
+                checked++;
+            }).subscribe();
+        }
         test_helpers_1.MockPersistenceMapper.mockResponse = [{ id: 1, value: 'user 1', testPackageId: 1 }, { id: 2, value: 'user 2', testPackageId: 1 }];
         testGraphService.testUserService.getAll().toList();
         test_helpers_1.MockPersistenceMapper.mockResponse = [{ id: 1, value: 'user 1', testPackageId: 1 }];
         testGraphService.testUserService.getAll().toList();
-        expect(checked).toBe(15);
+        expect(checked).toBe(subscribers * 3);
     });
 });
 //# sourceMappingURL=base-graph.service.spec.js.map

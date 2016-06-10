@@ -250,40 +250,24 @@ describe('GraphService Specs', () => {
         expect(checked).toBe(true);
     });
 
-    it('graph should return cached result from behavior subject for first value then recieve second value', () => {
+    it('multiple subscribers should be able to get initial and subsequent values', () => {
         let checked = 0;
 
-        testGraphService.graph$
-            .do(graph => {
-                checked++;
-            }).subscribe();
+        let subscribers = 5;
 
-        testGraphService.graph$
-            .do(graph => {
-                checked++;
-            }).subscribe();
-        
-        testGraphService.graph$
-            .do(graph => {
-                checked++;
-            }).subscribe();
-        
-        testGraphService.graph$
-            .do(graph => {
-                checked++;
-            }).subscribe();
+        for (let i = 0; i < subscribers; i++) {
+            testGraphService.graph$
+                .do(graph => {
+                    checked++;
+                }).subscribe();
+        }
 
-        testGraphService.graph$
-            .do(graph => {
-                checked++;
-            }).subscribe();
-        
         MockPersistenceMapper.mockResponse = [{ id: 1, value: 'user 1', testPackageId: 1 }, { id: 2, value: 'user 2', testPackageId: 1 }];
         testGraphService.testUserService.getAll().toList();
 
         MockPersistenceMapper.mockResponse = [{ id: 1, value: 'user 1', testPackageId: 1 }];
         testGraphService.testUserService.getAll().toList();
 
-        expect(checked).toBe(15);
+        expect(checked).toBe(subscribers * 3);
     });
 });
