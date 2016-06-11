@@ -1,22 +1,22 @@
 import { Observable } from 'rxjs/Observable';
 
 export class VsQueryable<TResult> {
-    private queryString: string;
+  private queryString: string;
 
-    constructor(private load: (boolean, string) => Observable<TResult>) { }
+  constructor(private load: (boolean, string) => Observable<TResult>) { }
 
-    getQueryString(): string {
-        return this.queryString;
-    }
+  getQueryString(): string {
+    return this.queryString;
+  }
 
-    toList(): Observable<TResult> {
-        let qs = this.getQueryString();
-        let isLoadAll = !!!qs;
-        return this.load(isLoadAll, qs);
-    }
+  toList(): Observable<TResult> {
+    let qs = this.getQueryString();
+    let isLoadAll = !!!qs;
+    return this.load(isLoadAll, qs);
+  }
 
-    withQueryString(queryString: string): VsQueryable<TResult> {
-        this.queryString = queryString;
-        return this;
-    }
+  withQueryString(queryString: string): VsQueryable<TResult> {
+    this.queryString = queryString;
+    return this;
+  }
 }
