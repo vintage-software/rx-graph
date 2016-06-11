@@ -9,9 +9,9 @@ var LocalCollectionService = (function () {
         this._collection$ = new BehaviorSubject_1.BehaviorSubject([]);
         this._errors$ = new BehaviorSubject_1.BehaviorSubject({});
         this._history$ = new BehaviorSubject_1.BehaviorSubject({});
-        this._dataStore = { collection: [] };
-        this._historyStore = [];
-        this._recordHistory('INIT');
+        this.dataStore = { collection: [] };
+        this.historyStore = [];
+        this.recordHistory('INIT');
     }
     Object.defineProperty(LocalCollectionService.prototype, "collection$", {
         get: function () {
@@ -41,13 +41,13 @@ var LocalCollectionService = (function () {
     LocalCollectionService.prototype.createMany = function (items) {
         var _this = this;
         var completion$ = new ReplaySubject_1.ReplaySubject(1);
-        this._assignIds(items);
+        this.assignIds(items);
         this._mapper.create(items.map(function (i) { return utilities_1.slimify(i); })).subscribe(function (items) {
-            utilities_1.mergeCollection(_this._dataStore.collection, items);
-            _this._recordHistory('CREATE');
+            utilities_1.mergeCollection(_this.dataStore.collection, items);
+            _this.recordHistory('CREATE');
             completion$.next(utilities_1.clone(items));
             completion$.complete();
-            _this._collection$.next(_this._dataStore.collection);
+            _this._collection$.next(_this.dataStore.collection);
         }, function (error) { _this._errors$.next(error); completion$.error(error); });
         return completion$;
     };
@@ -59,11 +59,11 @@ var LocalCollectionService = (function () {
         var _this = this;
         var completion$ = new ReplaySubject_1.ReplaySubject(1);
         this._mapper.update(items.map(function (i) { return utilities_1.slimify(i); })).subscribe(function (items) {
-            utilities_1.mergeCollection(_this._dataStore.collection, items);
-            _this._recordHistory('UPDATE');
+            utilities_1.mergeCollection(_this.dataStore.collection, items);
+            _this.recordHistory('UPDATE');
             completion$.next(utilities_1.clone(items));
             completion$.complete();
-            _this._collection$.next(_this._dataStore.collection);
+            _this._collection$.next(_this.dataStore.collection);
         }, function (error) { _this._errors$.next(error); completion$.error(error); });
         return completion$;
     };
@@ -75,31 +75,31 @@ var LocalCollectionService = (function () {
         var _this = this;
         var completion$ = new ReplaySubject_1.ReplaySubject(1);
         this._mapper.delete(ids).subscribe(function (ids) {
-            _this._removeCollectionItems(ids);
-            _this._recordHistory('DELETE');
+            _this.removeCollectionItems(ids);
+            _this.recordHistory('DELETE');
             completion$.next(ids);
             completion$.complete();
-            _this._collection$.next(_this._dataStore.collection);
+            _this._collection$.next(_this.dataStore.collection);
         }, function (error) { _this._errors$.next(error); completion$.error(error); });
         return completion$;
     };
-    LocalCollectionService.prototype._recordHistory = function (action) {
-        if (this._historyStore.length >= 100) {
-            this._historyStore.shift();
+    LocalCollectionService.prototype.recordHistory = function (action) {
+        if (this.historyStore.length >= 100) {
+            this.historyStore.shift();
         }
-        this._historyStore.push({ action: action, state: this._dataStore });
-        this._history$.next(this._historyStore);
+        this.historyStore.push({ action: action, state: this.dataStore });
+        this._history$.next(this.historyStore);
     };
-    LocalCollectionService.prototype._removeCollectionItems = function (ids) {
-        this._dataStore = Object.assign({}, this._dataStore, {
-            collection: this._dataStore.collection.filter(function (item) { return !ids.find(function (id) { return id === item.id; }); })
+    LocalCollectionService.prototype.removeCollectionItems = function (ids) {
+        this.dataStore = Object.assign({}, this.dataStore, {
+            collection: this.dataStore.collection.filter(function (item) { return !ids.find(function (id) { return id === item.id; }); })
         });
     };
-    LocalCollectionService.prototype._assignIds = function (items) {
+    LocalCollectionService.prototype.assignIds = function (items) {
         var _this = this;
-        items.forEach(function (i) { return i.id = _this._getGuid(); });
+        items.forEach(function (i) { return i.id = _this.getGuid(); });
     };
-    LocalCollectionService.prototype._getGuid = function () {
+    LocalCollectionService.prototype.getGuid = function () {
         function s4() {
             return Math.floor((1 + Math.random()) * 0x10000)
                 .toString(16)

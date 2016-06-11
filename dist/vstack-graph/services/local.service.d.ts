@@ -12,10 +12,10 @@ export declare abstract class LocalCollectionService<TItem extends CollectionIte
     protected _collection$: BehaviorSubject<TItem[]>;
     protected _errors$: BehaviorSubject<any>;
     protected _history$: BehaviorSubject<any>;
-    protected _dataStore: {
+    protected dataStore: {
         collection: TItem[];
     };
-    private _historyStore;
+    private historyStore;
     constructor(_mapper: LocalPersistenceMapper<TItem>);
     collection$: Observable<TItem[]>;
     errors$: Observable<any>;
@@ -26,8 +26,8 @@ export declare abstract class LocalCollectionService<TItem extends CollectionIte
     updateMany(items: any[] | TItem[]): Observable<TItem[]>;
     delete(id: any): Observable<any>;
     deleteMany(ids: any[]): Observable<any[]>;
-    protected _recordHistory(action: string): void;
-    protected _removeCollectionItems(ids: any[]): void;
-    protected _assignIds(items: any[]): void;
-    private _getGuid();
+    protected recordHistory(action: string): void;
+    protected removeCollectionItems(ids: any[]): void;
+    protected assignIds(items: any[]): void;
+    private getGuid();
 }

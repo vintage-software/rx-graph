@@ -1,8 +1,8 @@
-import {Observable} from 'rxjs/Observable';
-import {BaseGraphService} from './../graph/base-graph.service';
-import {ServiceConfig, Relation} from './../graph/graph-utilities';
-import {CollectionItem, clone} from './../utilities';
-import {VSCollectionService, RemotePersistenceMapper} from './../services/remote.service';
+import { Observable } from 'rxjs/Observable';
+import { BaseGraphService } from './../graph/base-graph.service';
+import { ServiceConfig, Relation } from './../graph/graph-utilities';
+import { CollectionItem, clone } from './../utilities';
+import { VSCollectionService, RemotePersistenceMapper } from './../services/remote.service';
 
 export class MockPersistenceMapper<TItem extends CollectionItem> implements RemotePersistenceMapper<TItem> {
     static mockResponse: any;

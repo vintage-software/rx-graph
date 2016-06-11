@@ -1,39 +1,39 @@
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-import {Observable} from 'rxjs/Observable';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx'; // TODO: we just want combineLatest
 
-import {CollectionItem, clone, mergeCollection} from '../utilities';
-import {IServiceConfig, Relation, ServiceConfig} from './graph-utilities';
+import { CollectionItem, clone, mergeCollection } from '../utilities';
+import { IServiceConfig, Relation, ServiceConfig } from './graph-utilities';
 
 export class BaseGraphService<TGraph> {
-    private _debug: boolean = false;
+    private debug: boolean = false;
     graph$: Observable<TGraph>;
 
-    constructor(private _serviceConfigs: IServiceConfig<TGraph>[]) {
+    constructor(private serviceConfigs: IServiceConfig<TGraph>[]) {
         let bs = new BehaviorSubject<any[]>(null);
 
         Observable
-            .combineLatest(this._serviceConfigs.map(i => (<any>i.service)._collection$))
-            .map(i => this._slimifyCollection(i))
+            .combineLatest(this.serviceConfigs.map(i => (<any>i.service)._collection$))
+            .map(i => this.slimifyCollection(i))
             .subscribe(i => bs.next(i));
         
         this.graph$ = bs.map(i => i.map(array => clone(array)))
-            .map(i => this._toGraph(i));
+            .map(i => this.toGraph(i));
     }
 
-    private _slimifyCollection(collection: any[]) {
+    private slimifyCollection(collection: any[]) {
         let changes = true;
         while (changes === true) {
             changes = false;
 
-            this._serviceConfigs.forEach((serviceConfig, index) => {
+            this.serviceConfigs.forEach((serviceConfig, index) => {
                 serviceConfig.relations.forEach((relation: Relation) =>
                     collection[index].forEach((collectionItem: CollectionItem) => {
-                        let mappingService = this._serviceConfigs.find(i => i.service === relation.to);
-                        let mappingIndex = this._serviceConfigs.indexOf(mappingService);
+                        let mappingService = this.serviceConfigs.find(i => i.service === relation.to);
+                        let mappingIndex = this.serviceConfigs.indexOf(mappingService);
                         let collectionItemsToUpdate = [];
 
-                        if (this._collectionItemHasRelation(collectionItem, relation)) {
+                        if (this.collectionItemHasRelation(collectionItem, relation)) {
                             changes = true;
 
                             if (relation.many) {
@@ -57,17 +57,17 @@ export class BaseGraphService<TGraph> {
         return collection;
     }
 
-    private _collectionItemHasRelation(collectionItem: CollectionItem, relation: Relation) {
+    private collectionItemHasRelation(collectionItem: CollectionItem, relation: Relation) {
         return !!collectionItem[relation.collectionProperty]
     }
 
-    private _toGraph(collection: any[]): TGraph {
+    private toGraph(collection: any[]): TGraph {
         let graph = <TGraph>{};
 
-        this._serviceConfigs.forEach((serviceConfig, index) => {
+        this.serviceConfigs.forEach((serviceConfig, index) => {
             serviceConfig.relations.forEach((relation: Relation) =>
                 collection[index].forEach((collectionItem: CollectionItem) => {
-                    this._mapCollectionItemPropertyFromRelation(collectionItem, collection, relation);
+                    this.mapCollectionItemPropertyFromRelation(collectionItem, collection, relation);
                 })
             );
 
@@ -77,9 +77,9 @@ export class BaseGraphService<TGraph> {
         return graph;
     }
 
-    private _mapCollectionItemPropertyFromRelation(collectionItem: CollectionItem, collection: any[], relation: Relation) {
-        let mappingService = this._serviceConfigs.find(i => i.service === relation.to);
-        let mappingIndex = this._serviceConfigs.indexOf(mappingService);
+    private mapCollectionItemPropertyFromRelation(collectionItem: CollectionItem, collection: any[], relation: Relation) {
+        let mappingService = this.serviceConfigs.find(i => i.service === relation.to);
+        let mappingIndex = this.serviceConfigs.indexOf(mappingService);
 
         if (relation.many) {
             collectionItem[relation.collectionProperty] = collection[mappingIndex].filter(i => i[relation.relationId] === collectionItem.id);

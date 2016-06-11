@@ -1,7 +1,7 @@
-import {Observable} from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
 
-import {LocalCollectionService} from '../services/local.service';
-import {CollectionItem} from '../utilities';
+import { LocalCollectionService } from '../services/local.service';
+import { CollectionItem } from '../utilities';
 
 export interface IService {
     collection$: Observable<CollectionItem[]>;

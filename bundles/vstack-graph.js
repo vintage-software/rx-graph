@@ -94,9 +94,9 @@ System.register("vstack-graph/services/local.service", ['rxjs/ReplaySubject', 'r
                     this._collection$ = new BehaviorSubject_1.BehaviorSubject([]);
                     this._errors$ = new BehaviorSubject_1.BehaviorSubject({});
                     this._history$ = new BehaviorSubject_1.BehaviorSubject({});
-                    this._dataStore = { collection: [] };
-                    this._historyStore = [];
-                    this._recordHistory('INIT');
+                    this.dataStore = { collection: [] };
+                    this.historyStore = [];
+                    this.recordHistory('INIT');
                 }
                 Object.defineProperty(LocalCollectionService.prototype, "collection$", {
                     get: function () {
@@ -126,13 +126,13 @@ System.register("vstack-graph/services/local.service", ['rxjs/ReplaySubject', 'r
                 LocalCollectionService.prototype.createMany = function (items) {
                     var _this = this;
                     var completion$ = new ReplaySubject_1.ReplaySubject(1);
-                    this._assignIds(items);
+                    this.assignIds(items);
                     this._mapper.create(items.map(function (i) { return utilities_1.slimify(i); })).subscribe(function (items) {
-                        utilities_1.mergeCollection(_this._dataStore.collection, items);
-                        _this._recordHistory('CREATE');
+                        utilities_1.mergeCollection(_this.dataStore.collection, items);
+                        _this.recordHistory('CREATE');
                         completion$.next(utilities_1.clone(items));
                         completion$.complete();
-                        _this._collection$.next(_this._dataStore.collection);
+                        _this._collection$.next(_this.dataStore.collection);
                     }, function (error) { _this._errors$.next(error); completion$.error(error); });
                     return completion$;
                 };
@@ -144,11 +144,11 @@ System.register("vstack-graph/services/local.service", ['rxjs/ReplaySubject', 'r
                     var _this = this;
                     var completion$ = new ReplaySubject_1.ReplaySubject(1);
                     this._mapper.update(items.map(function (i) { return utilities_1.slimify(i); })).subscribe(function (items) {
-                        utilities_1.mergeCollection(_this._dataStore.collection, items);
-                        _this._recordHistory('UPDATE');
+                        utilities_1.mergeCollection(_this.dataStore.collection, items);
+                        _this.recordHistory('UPDATE');
                         completion$.next(utilities_1.clone(items));
                         completion$.complete();
-                        _this._collection$.next(_this._dataStore.collection);
+                        _this._collection$.next(_this.dataStore.collection);
                     }, function (error) { _this._errors$.next(error); completion$.error(error); });
                     return completion$;
                 };
@@ -160,31 +160,31 @@ System.register("vstack-graph/services/local.service", ['rxjs/ReplaySubject', 'r
                     var _this = this;
                     var completion$ = new ReplaySubject_1.ReplaySubject(1);
                     this._mapper.delete(ids).subscribe(function (ids) {
-                        _this._removeCollectionItems(ids);
-                        _this._recordHistory('DELETE');
+                        _this.removeCollectionItems(ids);
+                        _this.recordHistory('DELETE');
                         completion$.next(ids);
                         completion$.complete();
-                        _this._collection$.next(_this._dataStore.collection);
+                        _this._collection$.next(_this.dataStore.collection);
                     }, function (error) { _this._errors$.next(error); completion$.error(error); });
                     return completion$;
                 };
-                LocalCollectionService.prototype._recordHistory = function (action) {
-                    if (this._historyStore.length >= 100) {
-                        this._historyStore.shift();
+                LocalCollectionService.prototype.recordHistory = function (action) {
+                    if (this.historyStore.length >= 100) {
+                        this.historyStore.shift();
                     }
-                    this._historyStore.push({ action: action, state: this._dataStore });
-                    this._history$.next(this._historyStore);
+                    this.historyStore.push({ action: action, state: this.dataStore });
+                    this._history$.next(this.historyStore);
                 };
-                LocalCollectionService.prototype._removeCollectionItems = function (ids) {
-                    this._dataStore = Object.assign({}, this._dataStore, {
-                        collection: this._dataStore.collection.filter(function (item) { return !ids.find(function (id) { return id === item.id; }); })
+                LocalCollectionService.prototype.removeCollectionItems = function (ids) {
+                    this.dataStore = Object.assign({}, this.dataStore, {
+                        collection: this.dataStore.collection.filter(function (item) { return !ids.find(function (id) { return id === item.id; }); })
                     });
                 };
-                LocalCollectionService.prototype._assignIds = function (items) {
+                LocalCollectionService.prototype.assignIds = function (items) {
                     var _this = this;
-                    items.forEach(function (i) { return i.id = _this._getGuid(); });
+                    items.forEach(function (i) { return i.id = _this.getGuid(); });
                 };
-                LocalCollectionService.prototype._getGuid = function () {
+                LocalCollectionService.prototype.getGuid = function () {
                     function s4() {
                         return Math.floor((1 + Math.random()) * 0x10000)
                             .toString(16)
@@ -247,30 +247,30 @@ System.register("vstack-graph/graph/base-graph.service", ['rxjs/BehaviorSubject'
             }],
         execute: function() {
             BaseGraphService = (function () {
-                function BaseGraphService(_serviceConfigs) {
+                function BaseGraphService(serviceConfigs) {
                     var _this = this;
-                    this._serviceConfigs = _serviceConfigs;
-                    this._debug = false;
+                    this.serviceConfigs = serviceConfigs;
+                    this.debug = false;
                     var bs = new BehaviorSubject_2.BehaviorSubject(null);
                     Observable_1.Observable
-                        .combineLatest(this._serviceConfigs.map(function (i) { return i.service._collection$; }))
-                        .map(function (i) { return _this._slimifyCollection(i); })
+                        .combineLatest(this.serviceConfigs.map(function (i) { return i.service._collection$; }))
+                        .map(function (i) { return _this.slimifyCollection(i); })
                         .subscribe(function (i) { return bs.next(i); });
                     this.graph$ = bs.map(function (i) { return i.map(function (array) { return utilities_2.clone(array); }); })
-                        .map(function (i) { return _this._toGraph(i); });
+                        .map(function (i) { return _this.toGraph(i); });
                 }
-                BaseGraphService.prototype._slimifyCollection = function (collection) {
+                BaseGraphService.prototype.slimifyCollection = function (collection) {
                     var _this = this;
                     var changes = true;
                     while (changes === true) {
                         changes = false;
-                        this._serviceConfigs.forEach(function (serviceConfig, index) {
+                        this.serviceConfigs.forEach(function (serviceConfig, index) {
                             serviceConfig.relations.forEach(function (relation) {
                                 return collection[index].forEach(function (collectionItem) {
-                                    var mappingService = _this._serviceConfigs.find(function (i) { return i.service === relation.to; });
-                                    var mappingIndex = _this._serviceConfigs.indexOf(mappingService);
+                                    var mappingService = _this.serviceConfigs.find(function (i) { return i.service === relation.to; });
+                                    var mappingIndex = _this.serviceConfigs.indexOf(mappingService);
                                     var collectionItemsToUpdate = [];
-                                    if (_this._collectionItemHasRelation(collectionItem, relation)) {
+                                    if (_this.collectionItemHasRelation(collectionItem, relation)) {
                                         changes = true;
                                         if (relation.many) {
                                             collectionItemsToUpdate = collectionItem[relation.collectionProperty];
@@ -290,25 +290,25 @@ System.register("vstack-graph/graph/base-graph.service", ['rxjs/BehaviorSubject'
                     }
                     return collection;
                 };
-                BaseGraphService.prototype._collectionItemHasRelation = function (collectionItem, relation) {
+                BaseGraphService.prototype.collectionItemHasRelation = function (collectionItem, relation) {
                     return !!collectionItem[relation.collectionProperty];
                 };
-                BaseGraphService.prototype._toGraph = function (collection) {
+                BaseGraphService.prototype.toGraph = function (collection) {
                     var _this = this;
                     var graph = {};
-                    this._serviceConfigs.forEach(function (serviceConfig, index) {
+                    this.serviceConfigs.forEach(function (serviceConfig, index) {
                         serviceConfig.relations.forEach(function (relation) {
                             return collection[index].forEach(function (collectionItem) {
-                                _this._mapCollectionItemPropertyFromRelation(collectionItem, collection, relation);
+                                _this.mapCollectionItemPropertyFromRelation(collectionItem, collection, relation);
                             });
                         });
                         serviceConfig.func(graph, collection[index]);
                     });
                     return graph;
                 };
-                BaseGraphService.prototype._mapCollectionItemPropertyFromRelation = function (collectionItem, collection, relation) {
-                    var mappingService = this._serviceConfigs.find(function (i) { return i.service === relation.to; });
-                    var mappingIndex = this._serviceConfigs.indexOf(mappingService);
+                BaseGraphService.prototype.mapCollectionItemPropertyFromRelation = function (collectionItem, collection, relation) {
+                    var mappingService = this.serviceConfigs.find(function (i) { return i.service === relation.to; });
+                    var mappingIndex = this.serviceConfigs.indexOf(mappingService);
                     if (relation.many) {
                         collectionItem[relation.collectionProperty] = collection[mappingIndex].filter(function (i) { return i[relation.relationId] === collectionItem.id; });
                     }
@@ -330,19 +330,19 @@ System.register("vstack-graph/services/vs-queryable", [], function(exports_5, co
         setters:[],
         execute: function() {
             VsQueryable = (function () {
-                function VsQueryable(_load) {
-                    this._load = _load;
+                function VsQueryable(load) {
+                    this.load = load;
                 }
                 VsQueryable.prototype.getQueryString = function () {
-                    return this._queryString;
+                    return this.queryString;
                 };
                 VsQueryable.prototype.toList = function () {
                     var qs = this.getQueryString();
                     var isLoadAll = !!!qs;
-                    return this._load(isLoadAll, qs);
+                    return this.load(isLoadAll, qs);
                 };
                 VsQueryable.prototype.withQueryString = function (queryString) {
-                    this._queryString = queryString;
+                    this.queryString = queryString;
                     return this;
                 };
                 return VsQueryable;
@@ -373,9 +373,9 @@ System.register("vstack-graph/services/remote.service", ['rxjs/ReplaySubject', "
         execute: function() {
             BaseRemoteService = (function (_super) {
                 __extends(BaseRemoteService, _super);
-                function BaseRemoteService(_remotePersistenceMapper) {
-                    _super.call(this, _remotePersistenceMapper);
-                    this._remotePersistenceMapper = _remotePersistenceMapper;
+                function BaseRemoteService(remotePersistenceMapper) {
+                    _super.call(this, remotePersistenceMapper);
+                    this.remotePersistenceMapper = remotePersistenceMapper;
                 }
                 Object.defineProperty(BaseRemoteService.prototype, "_remoteMapper", {
                     get: function () {
@@ -384,30 +384,30 @@ System.register("vstack-graph/services/remote.service", ['rxjs/ReplaySubject', "
                     enumerable: true,
                     configurable: true
                 });
-                BaseRemoteService.prototype._load = function (id, options) {
+                BaseRemoteService.prototype.load = function (id, options) {
                     var _this = this;
                     var completion$ = new ReplaySubject_2.ReplaySubject(1);
                     this._remoteMapper.load(id, options).subscribe(function (item) {
-                        utilities_3.mergeCollection(_this._dataStore.collection, [item]);
-                        _this._recordHistory('LOAD');
+                        utilities_3.mergeCollection(_this.dataStore.collection, [item]);
+                        _this.recordHistory('LOAD');
                         completion$.next(utilities_3.clone(item));
                         completion$.complete();
-                        _this._collection$.next(_this._dataStore.collection);
+                        _this._collection$.next(_this.dataStore.collection);
                     }, function (error) { _this._errors$.next(error); completion$.error(error); });
                     return completion$;
                 };
-                BaseRemoteService.prototype._loadMany = function (isLoadAll, options) {
+                BaseRemoteService.prototype.loadMany = function (isLoadAll, options) {
                     var _this = this;
                     var completion$ = new ReplaySubject_2.ReplaySubject(1);
                     this._remoteMapper.loadMany(options).subscribe(function (items) {
-                        utilities_3.mergeCollection(_this._dataStore.collection, items);
+                        utilities_3.mergeCollection(_this.dataStore.collection, items);
                         if (isLoadAll) {
-                            _this._dataStore.collection = _this._dataStore.collection.filter(function (i) { return !!items.find(function (j) { return j.id === i.id; }); });
+                            _this.dataStore.collection = _this.dataStore.collection.filter(function (i) { return !!items.find(function (j) { return j.id === i.id; }); });
                         }
-                        _this._recordHistory('LOAD_MANY');
+                        _this.recordHistory('LOAD_MANY');
                         completion$.next(utilities_3.clone(items));
                         completion$.complete();
-                        _this._collection$.next(_this._dataStore.collection);
+                        _this._collection$.next(_this.dataStore.collection);
                     }, function (error) { _this._errors$.next(error); completion$.error(error); });
                     return completion$;
                 };
@@ -416,31 +416,31 @@ System.register("vstack-graph/services/remote.service", ['rxjs/ReplaySubject', "
             exports_6("BaseRemoteService", BaseRemoteService);
             CollectionService = (function (_super) {
                 __extends(CollectionService, _super);
-                function CollectionService(_remotePersistenceMapper) {
-                    _super.call(this, _remotePersistenceMapper);
+                function CollectionService(remotePersistenceMapper) {
+                    _super.call(this, remotePersistenceMapper);
                 }
                 CollectionService.prototype.get = function (id, options) {
-                    return this._load(id, options);
+                    return this.load(id, options);
                 };
                 CollectionService.prototype.getAll = function (options) {
                     var isLoadAll = !!!options;
-                    return this._loadMany(isLoadAll, options);
+                    return this.loadMany(isLoadAll, options);
                 };
                 return CollectionService;
             }(BaseRemoteService));
             exports_6("CollectionService", CollectionService);
             VSCollectionService = (function (_super) {
                 __extends(VSCollectionService, _super);
-                function VSCollectionService(_remotePersistenceMapper) {
-                    _super.call(this, _remotePersistenceMapper);
+                function VSCollectionService(remotePersistenceMapper) {
+                    _super.call(this, remotePersistenceMapper);
                 }
                 VSCollectionService.prototype.get = function (id) {
                     var _this = this;
-                    return new vs_queryable_1.VsQueryable(function (isLoadAll, options) { return _this._load(id, options); });
+                    return new vs_queryable_1.VsQueryable(function (isLoadAll, options) { return _this.load(id, options); });
                 };
                 VSCollectionService.prototype.getAll = function () {
                     var _this = this;
-                    return new vs_queryable_1.VsQueryable(function (isLoadAll, options) { return _this._loadMany(isLoadAll, options); });
+                    return new vs_queryable_1.VsQueryable(function (isLoadAll, options) { return _this.loadMany(isLoadAll, options); });
                 };
                 return VSCollectionService;
             }(BaseRemoteService));
@@ -458,26 +458,26 @@ System.register("vstack-graph/services/angular-http", [], function(exports_7, co
             AngularHttpMapper = (function () {
                 function AngularHttpMapper(_a) {
                     var baseUrl = _a.baseUrl, http = _a.http, options = _a.options;
-                    this._baseUrl = baseUrl;
-                    this._requestOptionsArgs = options;
-                    this._http = http;
+                    this.baseUrl = baseUrl;
+                    this.requestOptionsArgs = options;
+                    this.http = http;
                 }
                 AngularHttpMapper.prototype.create = function (items) {
-                    return this._http.post(this._baseUrl + "/bulk", JSON.stringify(items), this._requestOptionsArgs).map(function (res) { return res.json(); });
+                    return this.http.post(this.baseUrl + "/bulk", JSON.stringify(items), this.requestOptionsArgs).map(function (res) { return res.json(); });
                 };
                 AngularHttpMapper.prototype.update = function (items) {
-                    return this._http.put(this._baseUrl + "/bulk", JSON.stringify(items), this._requestOptionsArgs).map(function (res) { return res.json(); });
+                    return this.http.put(this.baseUrl + "/bulk", JSON.stringify(items), this.requestOptionsArgs).map(function (res) { return res.json(); });
                 };
                 AngularHttpMapper.prototype.delete = function (ids) {
-                    return this._http.delete(this._baseUrl + "?ids=" + ids.join(), this._requestOptionsArgs).map(function (res) { return res.status; });
+                    return this.http.delete(this.baseUrl + "?ids=" + ids.join(), this.requestOptionsArgs).map(function (res) { return res.status; });
                 };
                 AngularHttpMapper.prototype.load = function (id, options) {
                     if (options === void 0) { options = ''; }
-                    return this._http.get(this._baseUrl + "/" + id + "?" + options, this._requestOptionsArgs).map(function (res) { return res.json(); });
+                    return this.http.get(this.baseUrl + "/" + id + "?" + options, this.requestOptionsArgs).map(function (res) { return res.json(); });
                 };
                 AngularHttpMapper.prototype.loadMany = function (options) {
                     if (options === void 0) { options = ''; }
-                    return this._http.get(this._baseUrl + "?" + options, this._requestOptionsArgs).map(function (res) { return res.json(); });
+                    return this.http.get(this.baseUrl + "?" + options, this.requestOptionsArgs).map(function (res) { return res.json(); });
                 };
                 return AngularHttpMapper;
             }());

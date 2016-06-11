@@ -4,30 +4,30 @@ var Observable_1 = require('rxjs/Observable');
 require('rxjs/Rx');
 var utilities_1 = require('../utilities');
 var BaseGraphService = (function () {
-    function BaseGraphService(_serviceConfigs) {
+    function BaseGraphService(serviceConfigs) {
         var _this = this;
-        this._serviceConfigs = _serviceConfigs;
-        this._debug = false;
+        this.serviceConfigs = serviceConfigs;
+        this.debug = false;
         var bs = new BehaviorSubject_1.BehaviorSubject(null);
         Observable_1.Observable
-            .combineLatest(this._serviceConfigs.map(function (i) { return i.service._collection$; }))
-            .map(function (i) { return _this._slimifyCollection(i); })
+            .combineLatest(this.serviceConfigs.map(function (i) { return i.service._collection$; }))
+            .map(function (i) { return _this.slimifyCollection(i); })
             .subscribe(function (i) { return bs.next(i); });
         this.graph$ = bs.map(function (i) { return i.map(function (array) { return utilities_1.clone(array); }); })
-            .map(function (i) { return _this._toGraph(i); });
+            .map(function (i) { return _this.toGraph(i); });
     }
-    BaseGraphService.prototype._slimifyCollection = function (collection) {
+    BaseGraphService.prototype.slimifyCollection = function (collection) {
         var _this = this;
         var changes = true;
         while (changes === true) {
             changes = false;
-            this._serviceConfigs.forEach(function (serviceConfig, index) {
+            this.serviceConfigs.forEach(function (serviceConfig, index) {
                 serviceConfig.relations.forEach(function (relation) {
                     return collection[index].forEach(function (collectionItem) {
-                        var mappingService = _this._serviceConfigs.find(function (i) { return i.service === relation.to; });
-                        var mappingIndex = _this._serviceConfigs.indexOf(mappingService);
+                        var mappingService = _this.serviceConfigs.find(function (i) { return i.service === relation.to; });
+                        var mappingIndex = _this.serviceConfigs.indexOf(mappingService);
                         var collectionItemsToUpdate = [];
-                        if (_this._collectionItemHasRelation(collectionItem, relation)) {
+                        if (_this.collectionItemHasRelation(collectionItem, relation)) {
                             changes = true;
                             if (relation.many) {
                                 collectionItemsToUpdate = collectionItem[relation.collectionProperty];
@@ -47,25 +47,25 @@ var BaseGraphService = (function () {
         }
         return collection;
     };
-    BaseGraphService.prototype._collectionItemHasRelation = function (collectionItem, relation) {
+    BaseGraphService.prototype.collectionItemHasRelation = function (collectionItem, relation) {
         return !!collectionItem[relation.collectionProperty];
     };
-    BaseGraphService.prototype._toGraph = function (collection) {
+    BaseGraphService.prototype.toGraph = function (collection) {
         var _this = this;
         var graph = {};
-        this._serviceConfigs.forEach(function (serviceConfig, index) {
+        this.serviceConfigs.forEach(function (serviceConfig, index) {
             serviceConfig.relations.forEach(function (relation) {
                 return collection[index].forEach(function (collectionItem) {
-                    _this._mapCollectionItemPropertyFromRelation(collectionItem, collection, relation);
+                    _this.mapCollectionItemPropertyFromRelation(collectionItem, collection, relation);
                 });
             });
             serviceConfig.func(graph, collection[index]);
         });
         return graph;
     };
-    BaseGraphService.prototype._mapCollectionItemPropertyFromRelation = function (collectionItem, collection, relation) {
-        var mappingService = this._serviceConfigs.find(function (i) { return i.service === relation.to; });
-        var mappingIndex = this._serviceConfigs.indexOf(mappingService);
+    BaseGraphService.prototype.mapCollectionItemPropertyFromRelation = function (collectionItem, collection, relation) {
+        var mappingService = this.serviceConfigs.find(function (i) { return i.service === relation.to; });
+        var mappingIndex = this.serviceConfigs.indexOf(mappingService);
         if (relation.many) {
             collectionItem[relation.collectionProperty] = collection[mappingIndex].filter(function (i) { return i[relation.relationId] === collectionItem.id; });
         }

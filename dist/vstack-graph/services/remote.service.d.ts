@@ -8,19 +8,19 @@ export interface RemotePersistenceMapper<TItem extends CollectionItem> extends L
     loadMany(options: string): Observable<TItem[]>;
 }
 export declare abstract class BaseRemoteService<TItem extends CollectionItem> extends LocalCollectionService<TItem> {
-    private _remotePersistenceMapper;
-    constructor(_remotePersistenceMapper: RemotePersistenceMapper<TItem>);
+    private remotePersistenceMapper;
+    constructor(remotePersistenceMapper: RemotePersistenceMapper<TItem>);
     _remoteMapper: RemotePersistenceMapper<TItem>;
-    protected _load(id: any, options: string): ReplaySubject<TItem>;
-    protected _loadMany(isLoadAll: boolean, options: string): ReplaySubject<TItem[]>;
+    protected load(id: any, options: string): ReplaySubject<TItem>;
+    protected loadMany(isLoadAll: boolean, options: string): ReplaySubject<TItem[]>;
 }
 export declare abstract class CollectionService<TItem extends CollectionItem> extends BaseRemoteService<TItem> {
-    constructor(_remotePersistenceMapper: RemotePersistenceMapper<TItem>);
+    constructor(remotePersistenceMapper: RemotePersistenceMapper<TItem>);
     get(id: any, options?: string): Observable<TItem>;
     getAll(options?: string): Observable<TItem[]>;
 }
 export declare abstract class VSCollectionService<TItem extends CollectionItem> extends BaseRemoteService<TItem> {
-    constructor(_remotePersistenceMapper: RemotePersistenceMapper<TItem>);
+    constructor(remotePersistenceMapper: RemotePersistenceMapper<TItem>);
     get(id: any): VsQueryable<TItem>;
     getAll(): VsQueryable<TItem[]>;
 }

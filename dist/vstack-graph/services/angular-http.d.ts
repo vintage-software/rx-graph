@@ -2,9 +2,9 @@ import { RemotePersistenceMapper } from './remote.service';
 import { Observable } from 'rxjs/Observable';
 import { CollectionItem } from '../utilities';
 export declare class AngularHttpMapper<TItem extends CollectionItem> implements RemotePersistenceMapper<TItem> {
-    protected _baseUrl: string;
-    protected _requestOptionsArgs: any;
-    private _http;
+    protected baseUrl: string;
+    protected requestOptionsArgs: any;
+    private http;
     constructor({baseUrl, http, options}: {
         baseUrl: string;
         http: any;
