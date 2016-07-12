@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
 import { BaseGraphService } from './../graph/base-graph.service';
 import { CollectionItem } from './../utilities';
 import { VSCollectionService, RemotePersistenceMapper } from './../services/remote.service';

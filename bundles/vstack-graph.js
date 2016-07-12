@@ -107,14 +107,14 @@ System.register("vstack-graph/services/local.service", ['rxjs/ReplaySubject', 'r
                 });
                 Object.defineProperty(LocalCollectionService.prototype, "errors$", {
                     get: function () {
-                        return this._errors$;
+                        return this._errors$.asObservable();
                     },
                     enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(LocalCollectionService.prototype, "history$", {
                     get: function () {
-                        return this._history$;
+                        return this._history$.asObservable();
                     },
                     enumerable: true,
                     configurable: true
@@ -228,7 +228,7 @@ System.register("vstack-graph/graph/graph-utilities", [], function(exports_3, co
         }
     }
 });
-System.register("vstack-graph/graph/base-graph.service", ['rxjs/BehaviorSubject', 'rxjs/Observable', 'rxjs/Rx', "vstack-graph/utilities"], function(exports_4, context_4) {
+System.register("vstack-graph/graph/base-graph.service", ['rxjs/BehaviorSubject', 'rxjs/Observable', 'rxjs/add/observable/combineLatest', "vstack-graph/utilities"], function(exports_4, context_4) {
     "use strict";
     var __moduleName = context_4 && context_4.id;
     var BehaviorSubject_2, Observable_1, utilities_2;
@@ -256,8 +256,7 @@ System.register("vstack-graph/graph/base-graph.service", ['rxjs/BehaviorSubject'
                         .combineLatest(this.serviceConfigs.map(function (i) { return i.service._collection$; }))
                         .map(function (i) { return _this.slimifyCollection(i); })
                         .subscribe(function (i) { return bs.next(i); });
-                    this.graph$ = bs.map(function (i) { return i.map(function (array) { return utilities_2.clone(array); }); })
-                        .map(function (i) { return _this.toGraph(i); });
+                    this.graph$ = bs.map(function (i) { return i.map(function (array) { return utilities_2.clone(array); }); }).map(function (i) { return _this.toGraph(i); });
                 }
                 BaseGraphService.prototype.slimifyCollection = function (collection) {
                     var _this = this;

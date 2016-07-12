@@ -29,7 +29,12 @@ declare module "vstack-graph/services/local.service" {
         constructor(_mapper: LocalPersistenceMapper<TItem>);
         collection$: Observable<TItem[]>;
         errors$: Observable<any>;
-        history$: Observable<any>;
+        history$: Observable<{
+            action: string;
+            state: {
+                collection: TItem[];
+            };
+        }[]>;
         create(item: any | TItem): Observable<TItem>;
         createMany(items: any[] | TItem[]): Observable<TItem[]>;
         update(item: any | TItem): Observable<TItem>;
@@ -71,7 +76,7 @@ declare module "vstack-graph/graph/graph-utilities" {
 }
 declare module "vstack-graph/graph/base-graph.service" {
     import { Observable } from 'rxjs/Observable';
-    import 'rxjs/Rx';
+    import 'rxjs/add/observable/combineLatest';
     import { IServiceConfig } from "vstack-graph/graph/graph-utilities";
     export class BaseGraphService<TGraph> {
         private serviceConfigs;

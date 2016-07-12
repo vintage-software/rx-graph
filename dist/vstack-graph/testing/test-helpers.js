@@ -5,6 +5,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Observable_1 = require('rxjs/Observable');
+require('rxjs/add/observable/of');
 var base_graph_service_1 = require('./../graph/base-graph.service');
 var graph_utilities_1 = require('./../graph/graph-utilities');
 var utilities_1 = require('./../utilities');

@@ -1,6 +1,6 @@
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/Rx'; // TODO: we just want combineLatest
+import 'rxjs/add/observable/combineLatest';
 
 import { CollectionItem, clone, mergeCollection } from '../utilities';
 import { IServiceConfig, Relation, ServiceConfig } from './graph-utilities';
@@ -17,10 +17,9 @@ export class BaseGraphService<TGraph> {
       .map(i => this.slimifyCollection(i))
       .subscribe(i => bs.next(i));
 
-    this.graph$ = bs.map(i => i.map(array => clone(array)))
-      .map(i => this.toGraph(i));
+    this.graph$ = bs.map(i => i.map(array => clone(array))).map(i => this.toGraph(i));
   }
-
+   
   private slimifyCollection(collection: any[]) {
     let changes = true;
     while (changes === true) {

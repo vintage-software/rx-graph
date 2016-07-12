@@ -19,7 +19,12 @@ export declare abstract class LocalCollectionService<TItem extends CollectionIte
     constructor(_mapper: LocalPersistenceMapper<TItem>);
     collection$: Observable<TItem[]>;
     errors$: Observable<any>;
-    history$: Observable<any>;
+    history$: Observable<{
+        action: string;
+        state: {
+            collection: TItem[];
+        };
+    }[]>;
     create(item: any | TItem): Observable<TItem>;
     createMany(items: any[] | TItem[]): Observable<TItem[]>;
     update(item: any | TItem): Observable<TItem>;

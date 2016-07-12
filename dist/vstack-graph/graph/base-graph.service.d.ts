@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/Rx';
+import 'rxjs/add/observable/combineLatest';
 import { IServiceConfig } from './graph-utilities';
 export declare class BaseGraphService<TGraph> {
     private serviceConfigs;

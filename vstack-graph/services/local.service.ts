@@ -16,7 +16,7 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
   protected _errors$: BehaviorSubject<any>;
   protected _history$: BehaviorSubject<any>;
   protected dataStore: { collection: TItem[] };
-  private historyStore: any[];
+  private historyStore: { action: string, state: { collection: TItem[] }}[]; // inline interface for generic support
 
   constructor(protected _mapper: LocalPersistenceMapper<TItem>) {
     this._collection$ = new BehaviorSubject(<TItem[]>[]);
@@ -33,11 +33,11 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
   }
 
   get errors$(): Observable<any> {
-    return this._errors$;
+    return this._errors$.asObservable();
   }
 
-  get history$(): Observable<any> {
-    return this._history$;
+  get history$(): Observable<{ action: string, state: { collection: TItem[] }}[]> {
+    return this._history$.asObservable();
   }
 
   create(item: any | TItem): Observable<TItem> {

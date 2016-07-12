@@ -1,5 +1,6 @@
 import { RemotePersistenceMapper } from './remote.service';
 import { Observable } from 'rxjs/Observable';
+
 import { CollectionItem, clone, mergeCollection } from '../utilities';
 
 export class AngularHttpMapper<TItem extends CollectionItem> implements RemotePersistenceMapper<TItem> {

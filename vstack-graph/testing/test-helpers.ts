@@ -1,4 +1,6 @@
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
+
 import { BaseGraphService } from './../graph/base-graph.service';
 import { ServiceConfig, Relation } from './../graph/graph-utilities';
 import { CollectionItem, clone } from './../utilities';

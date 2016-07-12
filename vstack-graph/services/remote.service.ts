@@ -1,5 +1,6 @@
 import { Observable } from 'rxjs/Observable';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
+
 import { LocalCollectionService, LocalPersistenceMapper } from './local.service';
 import { CollectionItem, clone, mergeCollection } from '../utilities';
 import { VsQueryable } from './vs-queryable';

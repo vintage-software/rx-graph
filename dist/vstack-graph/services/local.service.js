@@ -22,14 +22,14 @@ var LocalCollectionService = (function () {
     });
     Object.defineProperty(LocalCollectionService.prototype, "errors$", {
         get: function () {
-            return this._errors$;
+            return this._errors$.asObservable();
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(LocalCollectionService.prototype, "history$", {
         get: function () {
-            return this._history$;
+            return this._history$.asObservable();
         },
         enumerable: true,
         configurable: true

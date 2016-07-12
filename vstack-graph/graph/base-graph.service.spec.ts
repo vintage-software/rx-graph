@@ -2,6 +2,8 @@
 /// <reference path="../../typings/browser/ambient/es6-shim/es6-shim.d.ts" />
 
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/skip';
+import 'rxjs/add/operator/do';
 
 import { MockPersistenceMapper, TestGraphService, TestUserService, TestPackageService, TestItemService } from './../testing/test-helpers';
 
