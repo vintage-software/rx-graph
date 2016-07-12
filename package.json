@@ -1,7 +1,7 @@
 {
   "name": "vstack-graph",
-  "version": "0.2.10",
-  "description": "A HTTP REST library for Angular 2 including relational data structure support.",
+  "version": "0.3.0",
+  "description": "A RxJS relation graph for client side JavaScript Applications",
   "typings": "./dist/vstack-graph.d.ts",
   "main": "./bundles/vstack-graph.js",
   "scripts": {
@@ -54,7 +54,7 @@
     "typescript"
   ],
   "bugs": {
-    "url": ""
+    "url": "https://github.com/vintage-software/vstack-graph/issues"
   },
-  "homepage": ""
+  "homepage": "https://github.com/vintage-software/vstack-graph"
 }
