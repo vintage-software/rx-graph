@@ -22,11 +22,11 @@ export class AngularHttpMapper<TItem extends CollectionItem> implements RemotePe
     return this.http.put(`${this.baseUrl}/bulk`, JSON.stringify(items), this.requestOptionsArgs).map(res => res.json());
   }
 
-  delete(ids: any[]): Observable<any> {
+  delete(ids: string[] | number[]): Observable<any> {
     return this.http.delete(`${this.baseUrl}?ids=${ids.join()}`, this.requestOptionsArgs).map(res => res.status);
   }
 
-  load(id: string, options = '') {
+  load(id: string | number, options = '') {
     return this.http.get(`${this.baseUrl}/${id}?${options}`, this.requestOptionsArgs).map(res => res.json());
   }
 
