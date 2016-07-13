@@ -9,3 +9,5 @@ before_script:
   - npm install
 after_success:
   - npm run report-coverage
+addons:
+  firefox: "latest"
