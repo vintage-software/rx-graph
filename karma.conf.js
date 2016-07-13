@@ -1,69 +1,47 @@
-module.exports = function(config) {
-    config.set({
+const istanbul = require('browserify-istanbul');
 
-        basePath: '.',
+module.exports = function (config) {
+  config.set({
+    basePath: '',
+    frameworks: ['jasmine', 'browserify'],
+    files: [
+      // paths loaded by Karma
+      { pattern: 'node_modules/rxjs/bundles/Rx.umd.js', included: true, served: true, watched: false },
 
-        frameworks: ['jasmine'],
+      // paths loaded via module imports
+      { pattern: 'dist/vstack-graph/**/*.js', watched: true, served: true, included: true },
 
-        files: [
-            // paths loaded by Karma
-            {pattern: 'node_modules/es6-shim/es6-shim.js', included:true, watched: true},
-            {pattern: 'node_modules/angular2/bundles/angular2-polyfills.js', included: true, watched: true},
-            {pattern: 'node_modules/systemjs/dist/system.src.js', included: true, watched: true},
-            {pattern: 'node_modules/rxjs/bundles/Rx.js', included: true, watched: true},
-            {pattern: 'node_modules/angular2/bundles/angular2.dev.js', included: true, watched: true},
-            {pattern: 'node_modules/angular2/bundles/testing.dev.js', included: true, watched: true},
-            {pattern: 'node_modules/angular2/bundles/http.dev.js', included: true, watched: true},
-            {pattern: 'karma-test-shim.js', included: true, watched: true},
+      // paths to support debugging with source maps in dev tools
+      { pattern: 'vstack-graph/**/*.ts', included: false, watched: false, served: true },
+      { pattern: 'dist/vstack-graph/**/*.js.map', included: false, watched: false, served: true }
+    ],
 
-            // paths loaded via module imports
-            {pattern: 'dist/vstack-graph/**/*.js', included: false, watched: true},
+    preprocessors: {
+      'dist/**/*.js': ['browserify']
+    },
 
-            // paths to support debugging with source maps in dev tools
-            {pattern: 'vstack-graph/**/*.ts', included: false, watched: false},
-            {pattern: 'dist/vstack-graph/**/*.js.map', included: false, watched: false}
-        ],
+    reporters: ['dots', 'progress', 'coverage'],
+    port: 9876,
+    colors: true,
+    logLevel: config.LOG_INFO,
+    autoWatch: false,
+    browsers: ['Firefox'],
+    singleRun: true,
+    concurrency: 1,
+    browserNoActivityTimeout: 30000,
 
-        // proxied base paths
-        proxies: {
-            // required for component assests fetched by Angular's compiler
-            '/src/': '/base/src/'
-        },
+    browserify: {
+      debug: true,
+      transform: [istanbul({
+        ignore: ['**/node_modules/**', 'dist/**/*.spec.js'],
+      })],
+    },
 
-        port: 9876,
-
-        logLevel: config.LOG_INFO,
-
-        colors: true,
-
-        autoWatch: true,
-
-        browsers: ['Firefox'],  // target Firefox for travis support
-
-        // Karma plugins loaded
-        plugins: [
-            'karma-jasmine',
-            'karma-coverage',
-            'karma-chrome-launcher',
-            'karma-firefox-launcher'
-        ],
-
-        // Coverage reporter generates the coverage
-        reporters: ['progress', 'dots', 'coverage'],
-
-        // Source files that you wanna generate coverage for.
-        // Do not include tests or libraries (these files will be instrumented by Istanbul)
-        preprocessors: {
-            'dist/**/!(*spec).js': ['coverage']
-        },
-
-        coverageReporter: {
-            reporters:[
-                {type: 'json', subdir: '.', file: 'coverage-final.json'},
-                {type: 'lcov', subdir: '.', file: 'lcov.info'},
-            ]
-        },
-
-        singleRun: true
-    })
+    coverageReporter: {
+      reporters: [
+        { type: 'json', subdir: '.', file: 'coverage-final.json' },
+        { type: 'lcov', subdir: '.', file: 'lcov.info' },
+      ]
+    },
+  });
 };
