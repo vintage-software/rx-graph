@@ -1,4 +1,5 @@
-/// <reference path="../../typings/browser/ambient/jasmine/jasmine.d.ts" />
+/// <reference path="../../typings/globals/jasmine/index.d.ts" />
+
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 

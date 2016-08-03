@@ -1,1 +1,1 @@
-/// <reference path="../../typings/browser/ambient/jasmine/jasmine.d.ts" />
+/// <reference path="../../typings/globals/jasmine/index.d.ts" />

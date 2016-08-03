@@ -11,4 +11,4 @@ var local_service_1 = require('./vstack-graph/services/local.service');
 exports.LocalCollectionService = local_service_1.LocalCollectionService;
 var angular_http_1 = require('./vstack-graph/services/angular-http');
 exports.AngularHttpMapper = angular_http_1.AngularHttpMapper;
-//# sourceMappingURL=vstack-graph.js.map
+//# sourceMappingURL=index.js.map

@@ -484,7 +484,7 @@ System.register("vstack-graph/services/angular-http", [], function(exports_7, co
         }
     }
 });
-System.register("vstack-graph", ["vstack-graph/graph/base-graph.service", "vstack-graph/graph/graph-utilities", "vstack-graph/services/remote.service", "vstack-graph/services/local.service", "vstack-graph/services/angular-http"], function(exports_8, context_8) {
+System.register("index", ["vstack-graph/graph/base-graph.service", "vstack-graph/graph/graph-utilities", "vstack-graph/services/remote.service", "vstack-graph/services/local.service", "vstack-graph/services/angular-http"], function(exports_8, context_8) {
     "use strict";
     var __moduleName = context_8 && context_8.id;
     var base_graph_service_1, graph_utilities_1, remote_service_1, local_service_2, angular_http_1;

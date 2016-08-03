@@ -148,7 +148,7 @@ declare module "vstack-graph/services/angular-http" {
         loadMany(options?: string): any;
     }
 }
-declare module "vstack-graph" {
+declare module "index" {
     import { BaseGraphService } from "vstack-graph/graph/base-graph.service";
     import { ServiceConfig, Relation } from "vstack-graph/graph/graph-utilities";
     import { VSCollectionService, CollectionService } from "vstack-graph/services/remote.service";

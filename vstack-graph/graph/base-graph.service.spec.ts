@@ -1,5 +1,5 @@
-/// <reference path="../../typings/browser/ambient/jasmine/jasmine.d.ts" />
-/// <reference path="../../typings/browser/ambient/es6-shim/es6-shim.d.ts" />
+/// <reference path="../../typings/globals/jasmine/index.d.ts" />
+/// <reference path="../../typings/globals/es6-shim/index.d.ts" />
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/skip';

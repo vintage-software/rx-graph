@@ -12,7 +12,7 @@
     "outFile": "./bundles/vstack-graph.js"
   },
   "files": [
-    "./vstack-graph.ts",
-    "./typings/main.d.ts"
+    "./index.ts",
+    "./typings/index.d.ts"
   ]
 }
