@@ -4,7 +4,7 @@ import { IServiceConfig } from './graph-utilities';
 export declare class BaseGraphService<TGraph> {
     private serviceConfigs;
     private debug;
-    graph$: Observable<TGraph>;
+    graph: Observable<TGraph>;
     constructor(serviceConfigs: IServiceConfig<TGraph>[]);
     private slimifyCollection(collection);
     private collectionItemHasRelation(collectionItem, relation);

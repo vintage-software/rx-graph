@@ -9,10 +9,10 @@
     "removeComments": true,
     "noImplicitAny": false,
     "declaration": true,
-    "outFile": "./bundles/vstack-graph.js"
+    "outFile": "./bundles/vstack-graph.js",
+    "types": ["jasmine", "es6-shim"]
   },
   "files": [
-    "./index.ts",
-    "./typings/index.d.ts"
+    "./index.ts"
   ]
 }

@@ -1,6 +1,4 @@
-/// <reference path="../../typings/globals/jasmine/index.d.ts" />
-/// <reference path="../../typings/globals/es6-shim/index.d.ts" />
-
+/// <reference path="../typings.d.ts" />
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/skip';
 import 'rxjs/add/operator/do';
@@ -53,7 +51,7 @@ describe('GraphService Specs', () => {
     let checked = false;
     (<any>testGraphService)._debug = true; // run under debug once to get full code coverage :)
 
-    testGraphService.graph$
+    testGraphService.graph
       .do(graph => {
         expect(graph.testUsers.length).toBe(0);
         expect(graph.testPackages.length).toBe(0);
@@ -68,7 +66,7 @@ describe('GraphService Specs', () => {
   it('create and createMany should be reflected in the graph', () => {
     let checked = false;
 
-    testGraphService.graph$
+    testGraphService.graph
       .skip(2)
       .do(graph => {
         expect(graph.testUsers.length).toBe(4);
@@ -85,7 +83,7 @@ describe('GraphService Specs', () => {
   it('get and getMany should be reflected in the graph', () => {
     let checked = false;
 
-    testGraphService.graph$
+    testGraphService.graph
       .skip(2)
       .do(graph => {
         expect(graph.testUsers.length).toBe(4);
@@ -105,7 +103,7 @@ describe('GraphService Specs', () => {
   it('update and updateMany should be reflected in the graph', () => {
     let checked = false;
 
-    testGraphService.graph$
+    testGraphService.graph
       .skip(3)
       .do(graph => {
         expect(graph.testUsers[0].value).toBe('user 1-changed');
@@ -128,7 +126,7 @@ describe('GraphService Specs', () => {
   it('delete and deleteMany should be reflected in the graph', () => {
     let checked = false;
 
-    testGraphService.graph$
+    testGraphService.graph
       .skip(3)
       .do(graph => {
         expect(graph.testUsers.length).toBe(0);
@@ -148,7 +146,7 @@ describe('GraphService Specs', () => {
   it('creating users, then items should link them together', () => {
     let checked = false;
 
-    testGraphService.graph$
+    testGraphService.graph
       .skip(2)
       .do(graph => {
         expect(graph.testUsers.length).toBe(3);
@@ -170,7 +168,7 @@ describe('GraphService Specs', () => {
   it('users should have items and packages if they are included in the request', () => {
     let checked = false;
 
-    testGraphService.graph$
+    testGraphService.graph
       .skip(1)
       .do(graph => {
         expect(graph.testUsers.length).toBe(3);
@@ -195,7 +193,7 @@ describe('GraphService Specs', () => {
   it('graph should drop children when no longer present in fk relation', () => {
     let checked = false;
 
-    testGraphService.graph$
+    testGraphService.graph
       .skip(2)
       .do(graph => {
         expect(graph.testUsers.length).toBe(2);
@@ -217,7 +215,7 @@ describe('GraphService Specs', () => {
   it('graph should drop item when no longer present in get all', () => {
     let checked = false;
 
-    testGraphService.graph$
+    testGraphService.graph
       .skip(2)
       .do(graph => {
         expect(graph.testUsers.length).toBe(1);
@@ -236,7 +234,7 @@ describe('GraphService Specs', () => {
   it('graph should not drop item when no longer present in get request that is not a true get all', () => {
     let checked = false;
 
-    testGraphService.graph$
+    testGraphService.graph
       .skip(2)
       .do(graph => {
         expect(graph.testUsers.length).toBe(2);
@@ -258,7 +256,7 @@ describe('GraphService Specs', () => {
     let subscribers = 5;
 
     for (let i = 0; i < subscribers; i++) {
-      testGraphService.graph$
+      testGraphService.graph
         .do(graph => {
           checked++;
         }).subscribe();

@@ -29,8 +29,8 @@ var BaseRemoteService = (function (_super) {
             _this.recordHistory('LOAD');
             completion$.next(utilities_1.clone(item));
             completion$.complete();
-            _this._collection$.next(_this.dataStore.collection);
-        }, function (error) { _this._errors$.next(error); completion$.error(error); });
+            _this._collection.next(_this.dataStore.collection);
+        }, function (error) { _this._errors.next(error); completion$.error(error); });
         return completion$;
     };
     BaseRemoteService.prototype.loadMany = function (isLoadAll, options) {
@@ -44,8 +44,8 @@ var BaseRemoteService = (function (_super) {
             _this.recordHistory('LOAD_MANY');
             completion$.next(utilities_1.clone(items));
             completion$.complete();
-            _this._collection$.next(_this.dataStore.collection);
-        }, function (error) { _this._errors$.next(error); completion$.error(error); });
+            _this._collection.next(_this.dataStore.collection);
+        }, function (error) { _this._errors.next(error); completion$.error(error); });
         return completion$;
     };
     return BaseRemoteService;

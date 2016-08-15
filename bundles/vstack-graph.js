@@ -91,30 +91,30 @@ System.register("vstack-graph/services/local.service", ['rxjs/ReplaySubject', 'r
             LocalCollectionService = (function () {
                 function LocalCollectionService(_mapper) {
                     this._mapper = _mapper;
-                    this._collection$ = new BehaviorSubject_1.BehaviorSubject([]);
-                    this._errors$ = new BehaviorSubject_1.BehaviorSubject({});
-                    this._history$ = new BehaviorSubject_1.BehaviorSubject({});
+                    this._collection = new BehaviorSubject_1.BehaviorSubject([]);
+                    this._errors = new BehaviorSubject_1.BehaviorSubject({});
+                    this._history = new BehaviorSubject_1.BehaviorSubject({});
                     this.dataStore = { collection: [] };
                     this.historyStore = [];
                     this.recordHistory('INIT');
                 }
                 Object.defineProperty(LocalCollectionService.prototype, "collection$", {
                     get: function () {
-                        return this._collection$.map(function (collection) { return utilities_1.clone(collection); });
+                        return this._collection.map(function (collection) { return utilities_1.clone(collection); });
                     },
                     enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(LocalCollectionService.prototype, "errors$", {
                     get: function () {
-                        return this._errors$.asObservable();
+                        return this._errors.asObservable();
                     },
                     enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(LocalCollectionService.prototype, "history$", {
                     get: function () {
-                        return this._history$.asObservable();
+                        return this._history.asObservable();
                     },
                     enumerable: true,
                     configurable: true
@@ -132,8 +132,8 @@ System.register("vstack-graph/services/local.service", ['rxjs/ReplaySubject', 'r
                         _this.recordHistory('CREATE');
                         completion$.next(utilities_1.clone(items));
                         completion$.complete();
-                        _this._collection$.next(_this.dataStore.collection);
-                    }, function (error) { _this._errors$.next(error); completion$.error(error); });
+                        _this._collection.next(_this.dataStore.collection);
+                    }, function (error) { _this._errors.next(error); completion$.error(error); });
                     return completion$;
                 };
                 LocalCollectionService.prototype.update = function (item) {
@@ -148,8 +148,8 @@ System.register("vstack-graph/services/local.service", ['rxjs/ReplaySubject', 'r
                         _this.recordHistory('UPDATE');
                         completion$.next(utilities_1.clone(items));
                         completion$.complete();
-                        _this._collection$.next(_this.dataStore.collection);
-                    }, function (error) { _this._errors$.next(error); completion$.error(error); });
+                        _this._collection.next(_this.dataStore.collection);
+                    }, function (error) { _this._errors.next(error); completion$.error(error); });
                     return completion$;
                 };
                 LocalCollectionService.prototype.delete = function (id) {
@@ -164,8 +164,8 @@ System.register("vstack-graph/services/local.service", ['rxjs/ReplaySubject', 'r
                         _this.recordHistory('DELETE');
                         completion$.next(ids);
                         completion$.complete();
-                        _this._collection$.next(_this.dataStore.collection);
-                    }, function (error) { _this._errors$.next(error); completion$.error(error); });
+                        _this._collection.next(_this.dataStore.collection);
+                    }, function (error) { _this._errors.next(error); completion$.error(error); });
                     return completion$;
                 };
                 LocalCollectionService.prototype.recordHistory = function (action) {
@@ -173,7 +173,7 @@ System.register("vstack-graph/services/local.service", ['rxjs/ReplaySubject', 'r
                         this.historyStore.shift();
                     }
                     this.historyStore.push({ action: action, state: this.dataStore });
-                    this._history$.next(this.historyStore);
+                    this._history.next(this.historyStore);
                 };
                 LocalCollectionService.prototype.removeCollectionItems = function (ids) {
                     this.dataStore = Object.assign({}, this.dataStore, {
@@ -253,10 +253,10 @@ System.register("vstack-graph/graph/base-graph.service", ['rxjs/BehaviorSubject'
                     this.debug = false;
                     var bs = new BehaviorSubject_2.BehaviorSubject(null);
                     Observable_1.Observable
-                        .combineLatest(this.serviceConfigs.map(function (i) { return i.service._collection$; }))
+                        .combineLatest(this.serviceConfigs.map(function (i) { return i.service._collection; }))
                         .map(function (i) { return _this.slimifyCollection(i); })
                         .subscribe(function (i) { return bs.next(i); });
-                    this.graph$ = bs.map(function (i) { return i.map(function (array) { return utilities_2.clone(array); }); }).map(function (i) { return _this.toGraph(i); });
+                    this.graph = bs.map(function (i) { return i.map(function (array) { return utilities_2.clone(array); }); }).map(function (i) { return _this.toGraph(i); });
                 }
                 BaseGraphService.prototype.slimifyCollection = function (collection) {
                     var _this = this;
@@ -391,8 +391,8 @@ System.register("vstack-graph/services/remote.service", ['rxjs/ReplaySubject', "
                         _this.recordHistory('LOAD');
                         completion$.next(utilities_3.clone(item));
                         completion$.complete();
-                        _this._collection$.next(_this.dataStore.collection);
-                    }, function (error) { _this._errors$.next(error); completion$.error(error); });
+                        _this._collection.next(_this.dataStore.collection);
+                    }, function (error) { _this._errors.next(error); completion$.error(error); });
                     return completion$;
                 };
                 BaseRemoteService.prototype.loadMany = function (isLoadAll, options) {
@@ -406,8 +406,8 @@ System.register("vstack-graph/services/remote.service", ['rxjs/ReplaySubject', "
                         _this.recordHistory('LOAD_MANY');
                         completion$.next(utilities_3.clone(items));
                         completion$.complete();
-                        _this._collection$.next(_this.dataStore.collection);
-                    }, function (error) { _this._errors$.next(error); completion$.error(error); });
+                        _this._collection.next(_this.dataStore.collection);
+                    }, function (error) { _this._errors.next(error); completion$.error(error); });
                     return completion$;
                 };
                 return BaseRemoteService;

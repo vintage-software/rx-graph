@@ -19,17 +19,17 @@ declare module "vstack-graph/services/local.service" {
     }
     export abstract class LocalCollectionService<TItem extends CollectionItem> {
         protected _mapper: LocalPersistenceMapper<TItem>;
-        protected _collection$: BehaviorSubject<TItem[]>;
-        protected _errors$: BehaviorSubject<any>;
-        protected _history$: BehaviorSubject<any>;
+        protected _collection: BehaviorSubject<TItem[]>;
+        protected _errors: BehaviorSubject<any>;
+        protected _history: BehaviorSubject<any>;
         protected dataStore: {
             collection: TItem[];
         };
         private historyStore;
         constructor(_mapper: LocalPersistenceMapper<TItem>);
-        collection$: Observable<TItem[]>;
-        errors$: Observable<any>;
-        history$: Observable<{
+        readonly collection$: Observable<TItem[]>;
+        readonly errors$: Observable<any>;
+        readonly history$: Observable<{
             action: string;
             state: {
                 collection: TItem[];
@@ -81,7 +81,7 @@ declare module "vstack-graph/graph/base-graph.service" {
     export class BaseGraphService<TGraph> {
         private serviceConfigs;
         private debug;
-        graph$: Observable<TGraph>;
+        graph: Observable<TGraph>;
         constructor(serviceConfigs: IServiceConfig<TGraph>[]);
         private slimifyCollection(collection);
         private collectionItemHasRelation(collectionItem, relation);
@@ -113,7 +113,7 @@ declare module "vstack-graph/services/remote.service" {
     export abstract class BaseRemoteService<TItem extends CollectionItem> extends LocalCollectionService<TItem> {
         private remotePersistenceMapper;
         constructor(remotePersistenceMapper: RemotePersistenceMapper<TItem>);
-        _remoteMapper: RemotePersistenceMapper<TItem>;
+        readonly _remoteMapper: RemotePersistenceMapper<TItem>;
         protected load(id: any, options: string): ReplaySubject<TItem>;
         protected loadMany(isLoadAll: boolean, options: string): ReplaySubject<TItem[]>;
     }

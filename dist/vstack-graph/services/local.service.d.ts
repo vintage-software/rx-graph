@@ -9,17 +9,17 @@ export interface LocalPersistenceMapper<TItem extends CollectionItem> {
 }
 export declare abstract class LocalCollectionService<TItem extends CollectionItem> {
     protected _mapper: LocalPersistenceMapper<TItem>;
-    protected _collection$: BehaviorSubject<TItem[]>;
-    protected _errors$: BehaviorSubject<any>;
-    protected _history$: BehaviorSubject<any>;
+    protected _collection: BehaviorSubject<TItem[]>;
+    protected _errors: BehaviorSubject<any>;
+    protected _history: BehaviorSubject<any>;
     protected dataStore: {
         collection: TItem[];
     };
     private historyStore;
     constructor(_mapper: LocalPersistenceMapper<TItem>);
-    collection$: Observable<TItem[]>;
-    errors$: Observable<any>;
-    history$: Observable<{
+    readonly collection$: Observable<TItem[]>;
+    readonly errors$: Observable<any>;
+    readonly history$: Observable<{
         action: string;
         state: {
             collection: TItem[];

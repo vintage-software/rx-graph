@@ -12,16 +12,16 @@ export interface LocalPersistenceMapper<TItem extends CollectionItem> {
 }
 
 export abstract class LocalCollectionService<TItem extends CollectionItem> {
-  protected _collection$: BehaviorSubject<TItem[]>;
-  protected _errors$: BehaviorSubject<any>;
-  protected _history$: BehaviorSubject<any>;
+  protected _collection: BehaviorSubject<TItem[]>;
+  protected _errors: BehaviorSubject<any>;
+  protected _history: BehaviorSubject<any>;
   protected dataStore: { collection: TItem[] };
   private historyStore: { action: string, state: { collection: TItem[] }}[]; // inline interface for generic support
 
   constructor(protected _mapper: LocalPersistenceMapper<TItem>) {
-    this._collection$ = new BehaviorSubject(<TItem[]>[]);
-    this._errors$ = new BehaviorSubject(<any>{});
-    this._history$ = new BehaviorSubject(<any>{});
+    this._collection = new BehaviorSubject(<TItem[]>[]);
+    this._errors = new BehaviorSubject(<any>{});
+    this._history = new BehaviorSubject(<any>{});
 
     this.dataStore = { collection: [] };
     this.historyStore = [];
@@ -29,15 +29,15 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
   }
 
   get collection$(): Observable<TItem[]> {
-    return this._collection$.map(collection => clone(collection));
+    return this._collection.map(collection => clone(collection));
   }
 
   get errors$(): Observable<any> {
-    return this._errors$.asObservable();
+    return this._errors.asObservable();
   }
 
   get history$(): Observable<{ action: string, state: { collection: TItem[] }}[]> {
-    return this._history$.asObservable();
+    return this._history.asObservable();
   }
 
   create(item: any | TItem): Observable<TItem> {
@@ -54,8 +54,8 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
       this.recordHistory('CREATE');
       completion$.next(clone(items));
       completion$.complete();
-      this._collection$.next(this.dataStore.collection);
-    }, error => { this._errors$.next(error); completion$.error(error); });
+      this._collection.next(this.dataStore.collection);
+    }, error => { this._errors.next(error); completion$.error(error); });
 
     return completion$;
   }
@@ -73,8 +73,8 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
       this.recordHistory('UPDATE');
       completion$.next(clone(items));
       completion$.complete();
-      this._collection$.next(this.dataStore.collection);
-    }, error => { this._errors$.next(error); completion$.error(error); });
+      this._collection.next(this.dataStore.collection);
+    }, error => { this._errors.next(error); completion$.error(error); });
 
     return completion$;
   }
@@ -92,8 +92,8 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
       this.recordHistory('DELETE');
       completion$.next(ids);
       completion$.complete();
-      this._collection$.next(this.dataStore.collection);
-    }, error => { this._errors$.next(error); completion$.error(error); });
+      this._collection.next(this.dataStore.collection);
+    }, error => { this._errors.next(error); completion$.error(error); });
 
     return completion$;
   }
@@ -103,7 +103,7 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
       this.historyStore.shift();
     }
     this.historyStore.push({ action, state: this.dataStore });
-    this._history$.next(this.historyStore);
+    this._history.next(this.historyStore);
   }
 
   protected removeCollectionItems(ids: any[]) {

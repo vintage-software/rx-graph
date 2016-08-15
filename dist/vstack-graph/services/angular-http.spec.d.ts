@@ -1,2 +1,2 @@
-/// <reference path="../../../typings/globals/jasmine/index.d.ts" />
+/// <reference path="../../../vstack-graph/typings.d.ts" />
 import 'rxjs/add/observable/of';

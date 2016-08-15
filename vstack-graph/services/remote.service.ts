@@ -27,8 +27,8 @@ export abstract class BaseRemoteService<TItem extends CollectionItem> extends Lo
       this.recordHistory('LOAD');
       completion$.next(clone(item));
       completion$.complete();
-      this._collection$.next(this.dataStore.collection);
-    }, error => { this._errors$.next(error); completion$.error(error); });
+      this._collection.next(this.dataStore.collection);
+    }, error => { this._errors.next(error); completion$.error(error); });
 
     return completion$;
   }
@@ -45,8 +45,8 @@ export abstract class BaseRemoteService<TItem extends CollectionItem> extends Lo
       this.recordHistory('LOAD_MANY');
       completion$.next(clone(items));
       completion$.complete();
-      this._collection$.next(this.dataStore.collection);
-    }, error => { this._errors$.next(error); completion$.error(error); });
+      this._collection.next(this.dataStore.collection);
+    }, error => { this._errors.next(error); completion$.error(error); });
 
     return completion$;
   }

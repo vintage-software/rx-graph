@@ -7,17 +7,17 @@ import { IServiceConfig, Relation, ServiceConfig } from './graph-utilities';
 
 export class BaseGraphService<TGraph> {
   private debug: boolean = false;
-  graph$: Observable<TGraph>;
+  graph: Observable<TGraph>;
 
   constructor(private serviceConfigs: IServiceConfig<TGraph>[]) {
     let bs = new BehaviorSubject<any[]>(null);
 
     Observable
-      .combineLatest(this.serviceConfigs.map(i => (<any>i.service)._collection$))
+      .combineLatest(this.serviceConfigs.map(i => (<any>i.service)._collection))
       .map(i => this.slimifyCollection(i))
       .subscribe(i => bs.next(i));
 
-    this.graph$ = bs.map(i => i.map(array => clone(array))).map(i => this.toGraph(i));
+    this.graph = bs.map(i => i.map(array => clone(array))).map(i => this.toGraph(i));
   }
    
   private slimifyCollection(collection: any[]) {

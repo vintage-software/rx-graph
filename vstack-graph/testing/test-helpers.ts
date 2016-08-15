@@ -28,7 +28,7 @@ export class MockPersistenceMapper<TItem extends CollectionItem> implements Remo
   }
 
   loadMany(options?: string): Observable<TItem[]> {
-    let result = Observable.of(clone(<[]>MockPersistenceMapper.mockResponse));
+    let result = Observable.of(clone(MockPersistenceMapper.mockResponse));
     MockPersistenceMapper.mockResponse = null;
     return result;
   }

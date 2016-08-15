@@ -10,7 +10,7 @@ export interface RemotePersistenceMapper<TItem extends CollectionItem> extends L
 export declare abstract class BaseRemoteService<TItem extends CollectionItem> extends LocalCollectionService<TItem> {
     private remotePersistenceMapper;
     constructor(remotePersistenceMapper: RemotePersistenceMapper<TItem>);
-    _remoteMapper: RemotePersistenceMapper<TItem>;
+    readonly _remoteMapper: RemotePersistenceMapper<TItem>;
     protected load(id: any, options: string): ReplaySubject<TItem>;
     protected loadMany(isLoadAll: boolean, options: string): ReplaySubject<TItem[]>;
 }

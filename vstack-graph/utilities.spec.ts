@@ -1,5 +1,4 @@
-/// <reference path="../typings/globals/jasmine/index.d.ts" />
-
+/// <reference path="./typings.d.ts" />
 import {slimify, isPrimitive, clone, mergeCollection} from './utilities';
 
 describe('isPrimitive', () => {
