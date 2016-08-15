@@ -79,7 +79,9 @@ export class TestGraph {
 }
 
 export class TestGraphService extends BaseGraphService<TestGraph> {
-  constructor(public testUserService: TestUserService, public testPackageService: TestPackageService, public testItemService: TestItemService) {
+  constructor(public testUserService: TestUserService,
+    public testPackageService: TestPackageService,
+    public testItemService: TestItemService) {
     super([
       new ServiceConfig<TestUser, TestGraph>(
         testUserService, (graph, collection) => graph.testUsers = collection, [

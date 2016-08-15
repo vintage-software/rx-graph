@@ -250,7 +250,6 @@ System.register("vstack-graph/graph/base-graph.service", ['rxjs/BehaviorSubject'
                 function BaseGraphService(serviceConfigs) {
                     var _this = this;
                     this.serviceConfigs = serviceConfigs;
-                    this.debug = false;
                     var bs = new BehaviorSubject_2.BehaviorSubject(null);
                     Observable_1.Observable
                         .combineLatest(this.serviceConfigs.map(function (i) { return i.service._collection; }))

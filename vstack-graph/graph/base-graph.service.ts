@@ -3,10 +3,9 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
 
 import { CollectionItem, clone, mergeCollection } from '../utilities';
-import { IServiceConfig, Relation, ServiceConfig } from './graph-utilities';
+import { IServiceConfig, Relation } from './graph-utilities';
 
 export class BaseGraphService<TGraph> {
-  private debug: boolean = false;
   graph: Observable<TGraph>;
 
   constructor(private serviceConfigs: IServiceConfig<TGraph>[]) {
@@ -19,7 +18,7 @@ export class BaseGraphService<TGraph> {
 
     this.graph = bs.map(i => i.map(array => clone(array))).map(i => this.toGraph(i));
   }
-   
+
   private slimifyCollection(collection: any[]) {
     let changes = true;
     while (changes === true) {
@@ -57,7 +56,7 @@ export class BaseGraphService<TGraph> {
   }
 
   private collectionItemHasRelation(collectionItem: CollectionItem, relation: Relation) {
-    return !!collectionItem[relation.collectionProperty]
+    return !!collectionItem[relation.collectionProperty];
   }
 
   private toGraph(collection: any[]): TGraph {

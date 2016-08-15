@@ -7,7 +7,6 @@ var BaseGraphService = (function () {
     function BaseGraphService(serviceConfigs) {
         var _this = this;
         this.serviceConfigs = serviceConfigs;
-        this.debug = false;
         var bs = new BehaviorSubject_1.BehaviorSubject(null);
         Observable_1.Observable
             .combineLatest(this.serviceConfigs.map(function (i) { return i.service._collection; }))

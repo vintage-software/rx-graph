@@ -1,5 +1,5 @@
 /// <reference path="./typings.d.ts" />
-import {slimify, isPrimitive, clone, mergeCollection} from './utilities';
+import { slimify, isPrimitive, clone, mergeCollection } from './utilities';
 
 describe('isPrimitive', () => {
   it('should detect primitives', () => {
@@ -22,7 +22,7 @@ describe('slimify', () => {
       name: 'John Doe',
       includedAccounts: ['Visa', 'Mastercard', 'Discover'],
       includedSession: { token: '1234' }
-    }
+    };
 
     expect(slimify(complexObject).includedAccounts).toBe(null);
     expect(slimify(complexObject).includedSession).toBe(null);
@@ -33,7 +33,9 @@ describe('clone', () => {
   it('should be able to clone Dates, Objects and Arrays', () => {
     let testDate = new Date();
     let testObject = { id: 1, utcDate: new Date(), accounts: ['Visa', 'Discover'] };
-    let testArray = [{ id: 1, utcDate: new Date(), accounts: ['Visa', 'Discover'] }, { id: 2, utcDate: new Date(), accounts: ['Visa', 'Discover'] }];
+    let testArray = [
+      { id: 1, utcDate: new Date(), accounts: ['Visa', 'Discover'] },
+      { id: 2, utcDate: new Date(), accounts: ['Visa', 'Discover'] }];
 
     expect(clone(testDate).getTime()).toBe(testDate.getTime());
     expect(clone(testObject).id).toBe(1);

@@ -1,5 +1,3 @@
-import { Observable } from 'rxjs/Observable';
-
 export interface CollectionItem {
   id: any;
 }
@@ -42,7 +40,7 @@ export function mergeCollection<TItem extends CollectionItem>(target: TItem[], s
   src.filter(i => i && i.id).forEach(srcItem => {
     let match = target.find(tItem => tItem.id === srcItem.id);
     if (match) {
-      Object.assign(match, srcItem)
+      Object.assign(match, srcItem);
     } else {
       target.push(srcItem);
     }

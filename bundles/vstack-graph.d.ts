@@ -80,7 +80,6 @@ declare module "vstack-graph/graph/base-graph.service" {
     import { IServiceConfig } from "vstack-graph/graph/graph-utilities";
     export class BaseGraphService<TGraph> {
         private serviceConfigs;
-        private debug;
         graph: Observable<TGraph>;
         constructor(serviceConfigs: IServiceConfig<TGraph>[]);
         private slimifyCollection(collection);

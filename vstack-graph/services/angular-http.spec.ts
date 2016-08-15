@@ -9,7 +9,7 @@ let mockAngularHttp = {
   put: () => Observable.of({ json: () => true }),
   delete: () => Observable.of(true),
   get: () => Observable.of({ json: () => true })
-}
+};
 
 describe('Angular Http Adapter Specs', () => {
   let angularHttpMapper = new AngularHttpMapper({ baseUrl: '/base/url', http: mockAngularHttp });

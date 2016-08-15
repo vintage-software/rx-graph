@@ -15,9 +15,14 @@ export interface IServiceConfig<TGraph> {
 }
 
 export class Relation {
-  constructor(public collectionProperty: string, public to: IService, public relationId: string, public many: boolean) { }
+  constructor(public collectionProperty: string,
+    public to: IService,
+    public relationId: string,
+    public many: boolean) { }
 }
 
 export class ServiceConfig<TCollectionItem extends CollectionItem, TGraph> implements IServiceConfig<TGraph> {
-  constructor(public service: LocalCollectionService<TCollectionItem>, public func: (graph: TGraph, collection: TCollectionItem[]) => void, public relations: Relation[]) { }
+  constructor(public service: LocalCollectionService<TCollectionItem>,
+    public func: (graph: TGraph, collection: TCollectionItem[]) => void,
+    public relations: Relation[]) { }
 }

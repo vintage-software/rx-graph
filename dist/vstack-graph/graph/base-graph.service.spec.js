@@ -165,9 +165,17 @@ describe('GraphService Specs', function () {
             checked = true;
         })
             .subscribe();
-        test_helpers_1.MockPersistenceMapper.mockResponse = [{ id: 1, value: 'user 1', testPackageId: 1, testItems: [{ id: 1, testUserId: 1, value: 'item1' }, { id: 2, testUserId: 1, value: 'item2' }] }];
+        test_helpers_1.MockPersistenceMapper.mockResponse = [
+            {
+                id: 1, value: 'user 1', testPackageId: 1, testItems: [{ id: 1, testUserId: 1, value: 'item1' },
+                    { id: 2, testUserId: 1, value: 'item2' }]
+            }];
         testGraphService.testUserService.getAll().toList();
-        test_helpers_1.MockPersistenceMapper.mockResponse = [{ id: 1, value: 'user 1', testPackageId: 1, testItems: [{ id: 1, testUserId: 1, value: 'item1-changed' }, { id: 3, testUserId: 1, value: 'item3' }] }, { id: 2, value: 'user 2', testPackageId: 1 }];
+        test_helpers_1.MockPersistenceMapper.mockResponse = [
+            {
+                id: 1, value: 'user 1', testPackageId: 1, testItems: [{ id: 1, testUserId: 1, value: 'item1-changed' },
+                    { id: 3, testUserId: 1, value: 'item3' }]
+            }, { id: 2, value: 'user 2', testPackageId: 1 }];
         testGraphService.testUserService.getAll().toList();
         expect(checked).toBe(true);
     });

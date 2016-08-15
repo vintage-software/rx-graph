@@ -1,11 +1,10 @@
 /// <reference path="../typings.d.ts" />
-import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/skip';
 import 'rxjs/add/operator/do';
 
 import { MockPersistenceMapper, TestGraphService, TestUserService, TestPackageService, TestItemService } from './../testing/test-helpers';
 
-function getTestUsers(include: boolean = false): any[] {
+function getTestUsers(include = false): any[] {
   let users: any[] = [
     { id: 1, value: 'user 1', testPackageId: 1 },
     { id: 2, value: 'user 2', testPackageId: 1 },
@@ -204,9 +203,18 @@ describe('GraphService Specs', () => {
       })
       .subscribe();
 
-    MockPersistenceMapper.mockResponse = [{ id: 1, value: 'user 1', testPackageId: 1, testItems: [{ id: 1, testUserId: 1, value: 'item1' }, { id: 2, testUserId: 1, value: 'item2' }] }];
+    MockPersistenceMapper.mockResponse = [
+      {
+        id: 1, value: 'user 1', testPackageId: 1, testItems: [{ id: 1, testUserId: 1, value: 'item1' },
+        { id: 2, testUserId: 1, value: 'item2' }]
+      }];
     testGraphService.testUserService.getAll().toList();
-    MockPersistenceMapper.mockResponse = [{ id: 1, value: 'user 1', testPackageId: 1, testItems: [{ id: 1, testUserId: 1, value: 'item1-changed' }, { id: 3, testUserId: 1, value: 'item3' }] }, { id: 2, value: 'user 2', testPackageId: 1 }];
+
+    MockPersistenceMapper.mockResponse = [
+      {
+        id: 1, value: 'user 1', testPackageId: 1, testItems: [{ id: 1, testUserId: 1, value: 'item1-changed' },
+        { id: 3, testUserId: 1, value: 'item3' }]
+      }, { id: 2, value: 'user 2', testPackageId: 1 }];
     testGraphService.testUserService.getAll().toList();
 
     expect(checked).toBe(true);
