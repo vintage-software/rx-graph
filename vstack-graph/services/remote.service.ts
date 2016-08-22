@@ -20,21 +20,21 @@ export abstract class BaseRemoteService<TItem extends CollectionItem> extends Lo
   }
 
   protected load(id: any, options: string) {
-    let completion$ = new ReplaySubject<TItem>(1);
+    let completion = new ReplaySubject<TItem>(1);
 
     this._remoteMapper.load(id, options).subscribe(item => {
       mergeCollection(this.dataStore.collection, [item]);
       this.recordHistory('LOAD');
-      completion$.next(clone(item));
-      completion$.complete();
+      completion.next(clone(item));
+      completion.complete();
       this._collection.next(this.dataStore.collection);
-    }, error => { this._errors.next(error); completion$.error(error); });
+    }, error => { this._errors.next(error); completion.error(error); });
 
-    return completion$;
+    return completion;
   }
 
   protected loadMany(isLoadAll: boolean, options: string) {
-    let completion$ = new ReplaySubject<TItem[]>(1);
+    let completion = new ReplaySubject<TItem[]>(1);
 
     this._remoteMapper.loadMany(options).subscribe(items => {
       mergeCollection(this.dataStore.collection, items);
@@ -43,12 +43,12 @@ export abstract class BaseRemoteService<TItem extends CollectionItem> extends Lo
       }
 
       this.recordHistory('LOAD_MANY');
-      completion$.next(clone(items));
-      completion$.complete();
+      completion.next(clone(items));
+      completion.complete();
       this._collection.next(this.dataStore.collection);
-    }, error => { this._errors.next(error); completion$.error(error); });
+    }, error => { this._errors.next(error); completion.error(error); });
 
-    return completion$;
+    return completion;
   }
 }
 

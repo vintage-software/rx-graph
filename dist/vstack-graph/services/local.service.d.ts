@@ -17,9 +17,9 @@ export declare abstract class LocalCollectionService<TItem extends CollectionIte
     };
     private historyStore;
     constructor(_mapper: LocalPersistenceMapper<TItem>);
-    readonly collection$: Observable<TItem[]>;
-    readonly errors$: Observable<any>;
-    readonly history$: Observable<{
+    readonly collection: Observable<TItem[]>;
+    readonly errors: Observable<any>;
+    readonly history: Observable<{
         action: string;
         state: {
             collection: TItem[];

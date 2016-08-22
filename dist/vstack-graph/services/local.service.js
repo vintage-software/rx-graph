@@ -13,21 +13,21 @@ var LocalCollectionService = (function () {
         this.historyStore = [];
         this.recordHistory('INIT');
     }
-    Object.defineProperty(LocalCollectionService.prototype, "collection$", {
+    Object.defineProperty(LocalCollectionService.prototype, "collection", {
         get: function () {
             return this._collection.map(function (collection) { return utilities_1.clone(collection); });
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(LocalCollectionService.prototype, "errors$", {
+    Object.defineProperty(LocalCollectionService.prototype, "errors", {
         get: function () {
             return this._errors.asObservable();
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(LocalCollectionService.prototype, "history$", {
+    Object.defineProperty(LocalCollectionService.prototype, "history", {
         get: function () {
             return this._history.asObservable();
         },
@@ -40,16 +40,16 @@ var LocalCollectionService = (function () {
     };
     LocalCollectionService.prototype.createMany = function (items) {
         var _this = this;
-        var completion$ = new ReplaySubject_1.ReplaySubject(1);
+        var completion = new ReplaySubject_1.ReplaySubject(1);
         this.assignIds(items);
         this._mapper.create(items.map(function (i) { return utilities_1.slimify(i); })).subscribe(function (items) {
             utilities_1.mergeCollection(_this.dataStore.collection, items);
             _this.recordHistory('CREATE');
-            completion$.next(utilities_1.clone(items));
-            completion$.complete();
+            completion.next(utilities_1.clone(items));
+            completion.complete();
             _this._collection.next(_this.dataStore.collection);
-        }, function (error) { _this._errors.next(error); completion$.error(error); });
-        return completion$;
+        }, function (error) { _this._errors.next(error); completion.error(error); });
+        return completion;
     };
     LocalCollectionService.prototype.update = function (item) {
         return this.updateMany([item])
@@ -57,15 +57,15 @@ var LocalCollectionService = (function () {
     };
     LocalCollectionService.prototype.updateMany = function (items) {
         var _this = this;
-        var completion$ = new ReplaySubject_1.ReplaySubject(1);
+        var completion = new ReplaySubject_1.ReplaySubject(1);
         this._mapper.update(items.map(function (i) { return utilities_1.slimify(i); })).subscribe(function (items) {
             utilities_1.mergeCollection(_this.dataStore.collection, items);
             _this.recordHistory('UPDATE');
-            completion$.next(utilities_1.clone(items));
-            completion$.complete();
+            completion.next(utilities_1.clone(items));
+            completion.complete();
             _this._collection.next(_this.dataStore.collection);
-        }, function (error) { _this._errors.next(error); completion$.error(error); });
-        return completion$;
+        }, function (error) { _this._errors.next(error); completion.error(error); });
+        return completion;
     };
     LocalCollectionService.prototype.delete = function (id) {
         return this.deleteMany([id])
@@ -73,15 +73,15 @@ var LocalCollectionService = (function () {
     };
     LocalCollectionService.prototype.deleteMany = function (ids) {
         var _this = this;
-        var completion$ = new ReplaySubject_1.ReplaySubject(1);
+        var completion = new ReplaySubject_1.ReplaySubject(1);
         this._mapper.delete(ids).subscribe(function (ids) {
             _this.removeCollectionItems(ids);
             _this.recordHistory('DELETE');
-            completion$.next(ids);
-            completion$.complete();
+            completion.next(ids);
+            completion.complete();
             _this._collection.next(_this.dataStore.collection);
-        }, function (error) { _this._errors.next(error); completion$.error(error); });
-        return completion$;
+        }, function (error) { _this._errors.next(error); completion.error(error); });
+        return completion;
     };
     LocalCollectionService.prototype.recordHistory = function (action) {
         if (this.historyStore.length >= 100) {

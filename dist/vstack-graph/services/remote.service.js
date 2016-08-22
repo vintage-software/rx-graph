@@ -23,30 +23,30 @@ var BaseRemoteService = (function (_super) {
     });
     BaseRemoteService.prototype.load = function (id, options) {
         var _this = this;
-        var completion$ = new ReplaySubject_1.ReplaySubject(1);
+        var completion = new ReplaySubject_1.ReplaySubject(1);
         this._remoteMapper.load(id, options).subscribe(function (item) {
             utilities_1.mergeCollection(_this.dataStore.collection, [item]);
             _this.recordHistory('LOAD');
-            completion$.next(utilities_1.clone(item));
-            completion$.complete();
+            completion.next(utilities_1.clone(item));
+            completion.complete();
             _this._collection.next(_this.dataStore.collection);
-        }, function (error) { _this._errors.next(error); completion$.error(error); });
-        return completion$;
+        }, function (error) { _this._errors.next(error); completion.error(error); });
+        return completion;
     };
     BaseRemoteService.prototype.loadMany = function (isLoadAll, options) {
         var _this = this;
-        var completion$ = new ReplaySubject_1.ReplaySubject(1);
+        var completion = new ReplaySubject_1.ReplaySubject(1);
         this._remoteMapper.loadMany(options).subscribe(function (items) {
             utilities_1.mergeCollection(_this.dataStore.collection, items);
             if (isLoadAll) {
                 _this.dataStore.collection = _this.dataStore.collection.filter(function (i) { return !!items.find(function (j) { return j.id === i.id; }); });
             }
             _this.recordHistory('LOAD_MANY');
-            completion$.next(utilities_1.clone(items));
-            completion$.complete();
+            completion.next(utilities_1.clone(items));
+            completion.complete();
             _this._collection.next(_this.dataStore.collection);
-        }, function (error) { _this._errors.next(error); completion$.error(error); });
-        return completion$;
+        }, function (error) { _this._errors.next(error); completion.error(error); });
+        return completion;
     };
     return BaseRemoteService;
 }(local_service_1.LocalCollectionService));

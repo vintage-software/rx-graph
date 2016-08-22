@@ -28,15 +28,15 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
     this.recordHistory('INIT');
   }
 
-  get collection$(): Observable<TItem[]> {
+  get collection(): Observable<TItem[]> {
     return this._collection.map(collection => clone(collection));
   }
 
-  get errors$(): Observable<any> {
+  get errors(): Observable<any> {
     return this._errors.asObservable();
   }
 
-  get history$(): Observable<{ action: string, state: { collection: TItem[] }}[]> {
+  get history(): Observable<{ action: string, state: { collection: TItem[] }}[]> {
     return this._history.asObservable();
   }
 
@@ -46,18 +46,18 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
   }
 
   createMany(items: any[] | TItem[]): Observable<TItem[]> {
-    let completion$ = new ReplaySubject<TItem[]>(1);
+    let completion = new ReplaySubject<TItem[]>(1);
     this.assignIds(items);
 
     this._mapper.create(items.map(i => slimify(i))).subscribe(items => {
       mergeCollection(this.dataStore.collection, items);
       this.recordHistory('CREATE');
-      completion$.next(clone(items));
-      completion$.complete();
+      completion.next(clone(items));
+      completion.complete();
       this._collection.next(this.dataStore.collection);
-    }, error => { this._errors.next(error); completion$.error(error); });
+    }, error => { this._errors.next(error); completion.error(error); });
 
-    return completion$;
+    return completion;
   }
 
   update(item: any | TItem): Observable<TItem> {
@@ -66,17 +66,17 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
   }
 
   updateMany(items: any[] | TItem[]): Observable<TItem[]> {
-    let completion$ = new ReplaySubject<TItem[]>(1);
+    let completion = new ReplaySubject<TItem[]>(1);
 
     this._mapper.update(items.map(i => slimify(i))).subscribe(items => {
       mergeCollection(this.dataStore.collection, items);
       this.recordHistory('UPDATE');
-      completion$.next(clone(items));
-      completion$.complete();
+      completion.next(clone(items));
+      completion.complete();
       this._collection.next(this.dataStore.collection);
-    }, error => { this._errors.next(error); completion$.error(error); });
+    }, error => { this._errors.next(error); completion.error(error); });
 
-    return completion$;
+    return completion;
   }
 
   delete(id: any): Observable<any> {
@@ -85,17 +85,17 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
   }
 
   deleteMany(ids: any[]): Observable<any[]> {
-    let completion$ = new ReplaySubject<TItem[]>(1);
+    let completion = new ReplaySubject<TItem[]>(1);
 
     this._mapper.delete(ids).subscribe(ids => {
       this.removeCollectionItems(ids);
       this.recordHistory('DELETE');
-      completion$.next(ids);
-      completion$.complete();
+      completion.next(ids);
+      completion.complete();
       this._collection.next(this.dataStore.collection);
-    }, error => { this._errors.next(error); completion$.error(error); });
+    }, error => { this._errors.next(error); completion.error(error); });
 
-    return completion$;
+    return completion;
   }
 
   protected recordHistory(action: string) {

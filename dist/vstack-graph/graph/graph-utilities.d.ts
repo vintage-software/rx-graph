@@ -2,8 +2,8 @@ import { Observable } from 'rxjs/Observable';
 import { LocalCollectionService } from '../services/local.service';
 import { CollectionItem } from '../utilities';
 export interface IService {
-    collection$: Observable<CollectionItem[]>;
-    errors$: Observable<any>;
+    collection: Observable<CollectionItem[]>;
+    errors: Observable<any>;
 }
 export interface IServiceConfig<TGraph> {
     service: IService;

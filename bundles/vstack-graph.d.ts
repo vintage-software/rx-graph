@@ -27,9 +27,9 @@ declare module "vstack-graph/services/local.service" {
         };
         private historyStore;
         constructor(_mapper: LocalPersistenceMapper<TItem>);
-        readonly collection$: Observable<TItem[]>;
-        readonly errors$: Observable<any>;
-        readonly history$: Observable<{
+        readonly collection: Observable<TItem[]>;
+        readonly errors: Observable<any>;
+        readonly history: Observable<{
             action: string;
             state: {
                 collection: TItem[];
@@ -52,8 +52,8 @@ declare module "vstack-graph/graph/graph-utilities" {
     import { LocalCollectionService } from "vstack-graph/services/local.service";
     import { CollectionItem } from "vstack-graph/utilities";
     export interface IService {
-        collection$: Observable<CollectionItem[]>;
-        errors$: Observable<any>;
+        collection: Observable<CollectionItem[]>;
+        errors: Observable<any>;
     }
     export interface IServiceConfig<TGraph> {
         service: IService;
