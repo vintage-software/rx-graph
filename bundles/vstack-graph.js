@@ -70,18 +70,21 @@ System.register("vstack-graph/utilities", [], function(exports_1, context_1) {
         }
     }
 });
-System.register("vstack-graph/services/local.service", ['rxjs/ReplaySubject', 'rxjs/BehaviorSubject', 'rxjs/add/operator/map', "vstack-graph/utilities"], function(exports_2, context_2) {
+System.register("vstack-graph/services/local.service", ['rxjs/BehaviorSubject', 'rxjs/Subject', 'rxjs/ReplaySubject', 'rxjs/add/operator/map', "vstack-graph/utilities"], function(exports_2, context_2) {
     "use strict";
     var __moduleName = context_2 && context_2.id;
-    var ReplaySubject_1, BehaviorSubject_1, utilities_1;
+    var BehaviorSubject_1, Subject_1, ReplaySubject_1, utilities_1;
     var LocalCollectionService;
     return {
         setters:[
-            function (ReplaySubject_1_1) {
-                ReplaySubject_1 = ReplaySubject_1_1;
-            },
             function (BehaviorSubject_1_1) {
                 BehaviorSubject_1 = BehaviorSubject_1_1;
+            },
+            function (Subject_1_1) {
+                Subject_1 = Subject_1_1;
+            },
+            function (ReplaySubject_1_1) {
+                ReplaySubject_1 = ReplaySubject_1_1;
             },
             function (_1) {},
             function (utilities_1_1) {
@@ -92,8 +95,8 @@ System.register("vstack-graph/services/local.service", ['rxjs/ReplaySubject', 'r
                 function LocalCollectionService(_mapper) {
                     this._mapper = _mapper;
                     this._collection = new BehaviorSubject_1.BehaviorSubject([]);
-                    this._errors = new BehaviorSubject_1.BehaviorSubject({});
-                    this._history = new BehaviorSubject_1.BehaviorSubject({});
+                    this._errors = new Subject_1.Subject();
+                    this._history = new Subject_1.Subject();
                     this.dataStore = { collection: [] };
                     this.historyStore = [];
                     this.recordHistory('INIT');

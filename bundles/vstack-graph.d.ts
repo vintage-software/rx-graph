@@ -10,6 +10,7 @@ declare module "vstack-graph/utilities" {
 declare module "vstack-graph/services/local.service" {
     import { Observable } from 'rxjs/Observable';
     import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+    import { Subject } from 'rxjs/Subject';
     import 'rxjs/add/operator/map';
     import { CollectionItem } from "vstack-graph/utilities";
     export interface LocalPersistenceMapper<TItem extends CollectionItem> {
@@ -20,8 +21,8 @@ declare module "vstack-graph/services/local.service" {
     export abstract class LocalCollectionService<TItem extends CollectionItem> {
         protected _mapper: LocalPersistenceMapper<TItem>;
         protected _collection: BehaviorSubject<TItem[]>;
-        protected _errors: BehaviorSubject<any>;
-        protected _history: BehaviorSubject<any>;
+        protected _errors: Subject<{}>;
+        protected _history: Subject<{}>;
         protected dataStore: {
             collection: TItem[];
         };

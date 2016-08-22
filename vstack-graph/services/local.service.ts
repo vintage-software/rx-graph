@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs/Observable';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Subject } from 'rxjs/Subject';
+import { ReplaySubject } from 'rxjs/ReplaySubject';
 import 'rxjs/add/operator/map';
 
 import { slimify, CollectionItem, clone, mergeCollection } from '../utilities';
@@ -12,17 +13,13 @@ export interface LocalPersistenceMapper<TItem extends CollectionItem> {
 }
 
 export abstract class LocalCollectionService<TItem extends CollectionItem> {
-  protected _collection: BehaviorSubject<TItem[]>;
-  protected _errors: BehaviorSubject<any>;
-  protected _history: BehaviorSubject<any>;
+  protected _collection = new BehaviorSubject(<TItem[]>[]);
+  protected _errors = new Subject();
+  protected _history = new Subject();
   protected dataStore: { collection: TItem[] };
   private historyStore: { action: string, state: { collection: TItem[] }}[]; // inline interface for generic support
 
   constructor(protected _mapper: LocalPersistenceMapper<TItem>) {
-    this._collection = new BehaviorSubject(<TItem[]>[]);
-    this._errors = new BehaviorSubject(<any>{});
-    this._history = new BehaviorSubject(<any>{});
-
     this.dataStore = { collection: [] };
     this.historyStore = [];
     this.recordHistory('INIT');
