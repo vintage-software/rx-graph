@@ -1,13 +1,16 @@
 language: node_js
 node_js:
-  - "5.1"
+- '5.1'
 script: node_modules/karma/bin/karma start karma.conf.js --single-run
 before_install:
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
 before_script:
-  - npm install
+- npm install
 after_success:
-  - npm run report-coverage
+- npm run report-coverage
 addons:
-  firefox: "latest"
+  firefox: latest
+notifications:
+  slack:
+    secure: eZ6+g6tQeZAR4s0E11mJInjmPwHGGV4/06CJegwWOtt7wKWHkRcbEo2S/byEBYyFOZXalLmG0JfJ0a003KK9BiZhQXrT8vs7d++Zqe8wbt4kazxhf+251dsJh+xHl94meONG91XwIlp+sLl8fNYJfabTG/6r8NpREbrm/pelD5NBLcvFKGBHNmilUdlNK5a20MBKc3+yaqm8gxBWtD+tFTd6aacjxXqys3uYoBQ5Df385G4byxrGO2XyHqHV443y12TBQG9GgBbqAYz8cHYCjmaReAyDvyhb4TGErHrEosguJffPcrqdkznEb2dlQwg1SvIkgPF0Qb8B3M6PHXT+c0z5jv7nUd1ntWXuJDzsO/RCWSaLdoaruT7bBxaa7OlByBNLnFFRzRZ2sNVoTYcxeV0LABPn7iIQzWY0Cz5VYmojI8fFK0vYHqG6BkHespqDppMs2JPRiHJdUturwYj5McWaq81HOJAmxavTetVVjtv83Z2FbvAZFszuWcRRiPB71y7Gj9edgwts844FYkyO6bO7U/v82ZiRNG/sHbEn78n0pZ8fmzbXq5CRH368shqJQUyYwAOdlD0e5MmXri9k3cgNMQcQ4/wHO8LIK3SkDlxqIHamZqUh3o0t5eHw/raz6oasYQRLPiZeet07hnMew9iABWDQVFxcLZjEtaQ8850=
