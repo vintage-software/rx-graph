@@ -22,7 +22,8 @@ export class Relation {
 }
 
 export class ServiceConfig<TCollectionItem extends CollectionItem, TGraph> implements IServiceConfig<TGraph> {
-  constructor(public service: LocalCollectionService<TCollectionItem>,
+  constructor(
+    public service: LocalCollectionService<TCollectionItem>,
     public func: (graph: TGraph, collection: TCollectionItem[]) => void,
     public relations: Relation[]) { }
 }

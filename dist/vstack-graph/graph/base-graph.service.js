@@ -7,12 +7,12 @@ var BaseGraphService = (function () {
     function BaseGraphService(serviceConfigs) {
         var _this = this;
         this.serviceConfigs = serviceConfigs;
-        var bs = new BehaviorSubject_1.BehaviorSubject(null);
+        var graph = new BehaviorSubject_1.BehaviorSubject(null);
         Observable_1.Observable
             .combineLatest(this.serviceConfigs.map(function (i) { return i.service._collection; }))
             .map(function (i) { return _this.slimifyCollection(i); })
-            .subscribe(function (i) { return bs.next(i); });
-        this.graph = bs.map(function (i) { return i.map(function (array) { return utilities_1.clone(array); }); }).map(function (i) { return _this.toGraph(i); });
+            .subscribe(function (i) { return graph.next(i); });
+        this.graph = graph.map(function (i) { return i.map(function (array) { return utilities_1.clone(array); }); }).map(function (i) { return _this.toGraph(i); });
     }
     BaseGraphService.prototype.slimifyCollection = function (collection) {
         var _this = this;

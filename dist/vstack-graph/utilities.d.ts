@@ -1,5 +1,5 @@
 export interface CollectionItem {
-    id: any;
+    id: string | number;
 }
 export declare function clone(obj: any): any;
 export declare function mergeCollection<TItem extends CollectionItem>(target: TItem[], src: TItem[]): void;

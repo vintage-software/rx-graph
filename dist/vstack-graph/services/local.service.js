@@ -36,8 +36,7 @@ var LocalCollectionService = (function () {
         configurable: true
     });
     LocalCollectionService.prototype.create = function (item) {
-        return this.createMany([item])
-            .map(function (items) { return items.find(function (i) { return true; }); });
+        return this.createMany([item]).map(function (items) { return items.find(function (i) { return true; }); });
     };
     LocalCollectionService.prototype.createMany = function (items) {
         var _this = this;
@@ -53,8 +52,7 @@ var LocalCollectionService = (function () {
         return completion;
     };
     LocalCollectionService.prototype.update = function (item) {
-        return this.updateMany([item])
-            .map(function (items) { return items.find(function (i) { return true; }); });
+        return this.updateMany([item]).map(function (items) { return items.find(function (i) { return true; }); });
     };
     LocalCollectionService.prototype.updateMany = function (items) {
         var _this = this;
@@ -69,8 +67,7 @@ var LocalCollectionService = (function () {
         return completion;
     };
     LocalCollectionService.prototype.delete = function (id) {
-        return this.deleteMany([id])
-            .map(function (items) { return items.find(function (i) { return true; }); });
+        return this.deleteMany([id]).map(function (items) { return items.find(function (i) { return true; }); });
     };
     LocalCollectionService.prototype.deleteMany = function (ids) {
         var _this = this;
@@ -101,13 +98,10 @@ var LocalCollectionService = (function () {
         items.forEach(function (i) { return i.id = _this.getGuid(); });
     };
     LocalCollectionService.prototype.getGuid = function () {
-        function s4() {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-            s4() + '-' + s4() + s4() + s4();
+        return "" + this.s4() + this.s4() + "-" + this.s4() + "-" + this.s4() + "-" + this.s4() + "-" + this.s4() + this.s4() + this.s4();
+    };
+    LocalCollectionService.prototype.s4 = function () {
+        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
     };
     return LocalCollectionService;
 }());

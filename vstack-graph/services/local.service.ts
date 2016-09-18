@@ -38,8 +38,7 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
   }
 
   create(item: any | TItem): Observable<TItem> {
-    return this.createMany([item])
-      .map(items => items.find(i => true));
+    return this.createMany([item]).map(items => items.find(i => true));
   }
 
   createMany(items: any[] | TItem[]): Observable<TItem[]> {
@@ -58,8 +57,7 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
   }
 
   update(item: any | TItem): Observable<TItem> {
-    return this.updateMany([item])
-      .map(items => items.find(i => true));
+    return this.updateMany([item]).map(items => items.find(i => true));
   }
 
   updateMany(items: any[] | TItem[]): Observable<TItem[]> {
@@ -77,8 +75,7 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
   }
 
   delete(id: any): Observable<any> {
-    return this.deleteMany([id])
-      .map(items => items.find(i => true));
+    return this.deleteMany([id]).map(items => items.find(i => true));
   }
 
   deleteMany(ids: any[]): Observable<any[]> {
@@ -114,12 +111,10 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
   }
 
   private getGuid() {
-    function s4() {
-      return Math.floor((1 + Math.random()) * 0x10000)
-        .toString(16)
-        .substring(1);
-    }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-      s4() + '-' + s4() + s4() + s4();
+    return `${this.s4()}${this.s4()}-${this.s4()}-${this.s4()}-${this.s4()}-${this.s4()}${this.s4()}${this.s4()}`;
+  }
+
+  private s4() {
+    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
   }
 }

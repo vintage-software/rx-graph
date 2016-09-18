@@ -1,5 +1,5 @@
 export interface CollectionItem {
-  id: any;
+  id: string | number;
 }
 
 export function clone(obj) {

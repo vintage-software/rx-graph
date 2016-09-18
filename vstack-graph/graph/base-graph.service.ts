@@ -9,14 +9,14 @@ export class BaseGraphService<TGraph> {
   graph: Observable<TGraph>;
 
   constructor(private serviceConfigs: IServiceConfig<TGraph>[]) {
-    let bs = new BehaviorSubject<any[]>(null);
+    let graph = new BehaviorSubject<any[]>(null);
 
     Observable
       .combineLatest(this.serviceConfigs.map(i => (<any>i.service)._collection))
       .map(i => this.slimifyCollection(i))
-      .subscribe(i => bs.next(i));
+      .subscribe(i => graph.next(i));
 
-    this.graph = bs.map(i => i.map(array => clone(array))).map(i => this.toGraph(i));
+    this.graph = graph.map(i => i.map(array => clone(array))).map(i => this.toGraph(i));
   }
 
   private slimifyCollection(collection: any[]) {

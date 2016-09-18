@@ -36,4 +36,5 @@ export declare abstract class LocalCollectionService<TItem extends CollectionIte
     protected removeCollectionItems(ids: any[]): void;
     protected assignIds(items: any[]): void;
     private getGuid();
+    private s4();
 }

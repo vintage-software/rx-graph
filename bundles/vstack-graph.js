@@ -123,8 +123,7 @@ System.register("vstack-graph/services/local.service", ['rxjs/BehaviorSubject', 
                     configurable: true
                 });
                 LocalCollectionService.prototype.create = function (item) {
-                    return this.createMany([item])
-                        .map(function (items) { return items.find(function (i) { return true; }); });
+                    return this.createMany([item]).map(function (items) { return items.find(function (i) { return true; }); });
                 };
                 LocalCollectionService.prototype.createMany = function (items) {
                     var _this = this;
@@ -140,8 +139,7 @@ System.register("vstack-graph/services/local.service", ['rxjs/BehaviorSubject', 
                     return completion;
                 };
                 LocalCollectionService.prototype.update = function (item) {
-                    return this.updateMany([item])
-                        .map(function (items) { return items.find(function (i) { return true; }); });
+                    return this.updateMany([item]).map(function (items) { return items.find(function (i) { return true; }); });
                 };
                 LocalCollectionService.prototype.updateMany = function (items) {
                     var _this = this;
@@ -156,8 +154,7 @@ System.register("vstack-graph/services/local.service", ['rxjs/BehaviorSubject', 
                     return completion;
                 };
                 LocalCollectionService.prototype.delete = function (id) {
-                    return this.deleteMany([id])
-                        .map(function (items) { return items.find(function (i) { return true; }); });
+                    return this.deleteMany([id]).map(function (items) { return items.find(function (i) { return true; }); });
                 };
                 LocalCollectionService.prototype.deleteMany = function (ids) {
                     var _this = this;
@@ -188,13 +185,10 @@ System.register("vstack-graph/services/local.service", ['rxjs/BehaviorSubject', 
                     items.forEach(function (i) { return i.id = _this.getGuid(); });
                 };
                 LocalCollectionService.prototype.getGuid = function () {
-                    function s4() {
-                        return Math.floor((1 + Math.random()) * 0x10000)
-                            .toString(16)
-                            .substring(1);
-                    }
-                    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-                        s4() + '-' + s4() + s4() + s4();
+                    return "" + this.s4() + this.s4() + "-" + this.s4() + "-" + this.s4() + "-" + this.s4() + "-" + this.s4() + this.s4() + this.s4();
+                };
+                LocalCollectionService.prototype.s4 = function () {
+                    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
                 };
                 return LocalCollectionService;
             }());
@@ -253,12 +247,12 @@ System.register("vstack-graph/graph/base-graph.service", ['rxjs/BehaviorSubject'
                 function BaseGraphService(serviceConfigs) {
                     var _this = this;
                     this.serviceConfigs = serviceConfigs;
-                    var bs = new BehaviorSubject_2.BehaviorSubject(null);
+                    var graph = new BehaviorSubject_2.BehaviorSubject(null);
                     Observable_1.Observable
                         .combineLatest(this.serviceConfigs.map(function (i) { return i.service._collection; }))
                         .map(function (i) { return _this.slimifyCollection(i); })
-                        .subscribe(function (i) { return bs.next(i); });
-                    this.graph = bs.map(function (i) { return i.map(function (array) { return utilities_2.clone(array); }); }).map(function (i) { return _this.toGraph(i); });
+                        .subscribe(function (i) { return graph.next(i); });
+                    this.graph = graph.map(function (i) { return i.map(function (array) { return utilities_2.clone(array); }); }).map(function (i) { return _this.toGraph(i); });
                 }
                 BaseGraphService.prototype.slimifyCollection = function (collection) {
                     var _this = this;

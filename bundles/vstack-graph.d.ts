@@ -1,6 +1,6 @@
 declare module "vstack-graph/utilities" {
     export interface CollectionItem {
-        id: any;
+        id: string | number;
     }
     export function clone(obj: any): any;
     export function mergeCollection<TItem extends CollectionItem>(target: TItem[], src: TItem[]): void;
@@ -46,6 +46,7 @@ declare module "vstack-graph/services/local.service" {
         protected removeCollectionItems(ids: any[]): void;
         protected assignIds(items: any[]): void;
         private getGuid();
+        private s4();
     }
 }
 declare module "vstack-graph/graph/graph-utilities" {
