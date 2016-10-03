@@ -41,7 +41,7 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
     return this.createMany([item]).map(items => items.find(i => true));
   }
 
-  createMany(items: any[] | TItem[]): Observable<TItem[]> {
+  createMany(items: TItem[]): Observable<TItem[]> {
     let completion = new ReplaySubject<TItem[]>(1);
     this.assignIds(items);
 
@@ -60,7 +60,7 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
     return this.updateMany([item]).map(items => items.find(i => true));
   }
 
-  updateMany(items: any[] | TItem[]): Observable<TItem[]> {
+  updateMany(items: TItem[]): Observable<TItem[]> {
     let completion = new ReplaySubject<TItem[]>(1);
 
     this._mapper.update(items.map(i => slimify(i))).subscribe(items => {
@@ -81,7 +81,7 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
   deleteMany(ids: any[]): Observable<any[]> {
     let completion = new ReplaySubject<TItem[]>(1);
 
-    this._mapper.delete(ids).subscribe(ids => {
+    this._mapper.delete(ids).subscribe(() => {
       this.removeCollectionItems(ids);
       this.recordHistory('DELETE');
       completion.next(ids);

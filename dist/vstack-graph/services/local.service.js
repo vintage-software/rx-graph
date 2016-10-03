@@ -72,7 +72,7 @@ var LocalCollectionService = (function () {
     LocalCollectionService.prototype.deleteMany = function (ids) {
         var _this = this;
         var completion = new ReplaySubject_1.ReplaySubject(1);
-        this._mapper.delete(ids).subscribe(function (ids) {
+        this._mapper.delete(ids).subscribe(function () {
             _this.removeCollectionItems(ids);
             _this.recordHistory('DELETE');
             completion.next(ids);

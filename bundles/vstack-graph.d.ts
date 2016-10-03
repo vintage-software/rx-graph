@@ -4,7 +4,7 @@ declare module "vstack-graph/utilities" {
     }
     export function clone(obj: any): any;
     export function mergeCollection<TItem extends CollectionItem>(target: TItem[], src: TItem[]): void;
-    export function slimify(item: any): any;
+    export function slimify<TItem>(item: TItem): TItem;
     export function isPrimitive(item: any): boolean;
 }
 declare module "vstack-graph/services/local.service" {
@@ -37,9 +37,9 @@ declare module "vstack-graph/services/local.service" {
             };
         }[]>;
         create(item: any | TItem): Observable<TItem>;
-        createMany(items: any[] | TItem[]): Observable<TItem[]>;
+        createMany(items: TItem[]): Observable<TItem[]>;
         update(item: any | TItem): Observable<TItem>;
-        updateMany(items: any[] | TItem[]): Observable<TItem[]>;
+        updateMany(items: TItem[]): Observable<TItem[]>;
         delete(id: any): Observable<any>;
         deleteMany(ids: any[]): Observable<any[]>;
         protected recordHistory(action: string): void;

@@ -27,9 +27,9 @@ export declare abstract class LocalCollectionService<TItem extends CollectionIte
         };
     }[]>;
     create(item: any | TItem): Observable<TItem>;
-    createMany(items: any[] | TItem[]): Observable<TItem[]>;
+    createMany(items: TItem[]): Observable<TItem[]>;
     update(item: any | TItem): Observable<TItem>;
-    updateMany(items: any[] | TItem[]): Observable<TItem[]>;
+    updateMany(items: TItem[]): Observable<TItem[]>;
     delete(id: any): Observable<any>;
     deleteMany(ids: any[]): Observable<any[]>;
     protected recordHistory(action: string): void;
