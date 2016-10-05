@@ -7,9 +7,9 @@ import 'rxjs/add/operator/map';
 import { slimify, CollectionItem, clone, mergeCollection } from '../utilities';
 
 export interface LocalPersistenceMapper<TItem extends CollectionItem> {
-  create(items: TItem[]): Observable<TItem[]>;
-  update(items: TItem[]): Observable<TItem[]>;
-  delete(ids: any[]): Observable<any>;
+  create(items: TItem[], options: string): Observable<TItem[]>;
+  update(items: TItem[], options: string): Observable<TItem[]>;
+  delete(ids: any[], options: string): Observable<any>;
 }
 
 export abstract class LocalCollectionService<TItem extends CollectionItem> {
@@ -37,15 +37,15 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
     return this._history.asObservable();
   }
 
-  create(item: any | TItem): Observable<TItem> {
-    return this.createMany([item]).map(items => items.find(i => true));
+  create(item: any | TItem, options = ''): Observable<TItem> {
+    return this.createMany([item], options).map(items => items.find(i => true));
   }
 
-  createMany(items: TItem[]): Observable<TItem[]> {
+  createMany(items: TItem[], options = ''): Observable<TItem[]> {
     let completion = new ReplaySubject<TItem[]>(1);
     this.assignIds(items);
 
-    this._mapper.create(items.map(i => slimify(i))).subscribe(items => {
+    this._mapper.create(items.map(i => slimify(i)), options).subscribe(items => {
       mergeCollection(this.dataStore.collection, items);
       this.recordHistory('CREATE');
       completion.next(clone(items));
@@ -56,14 +56,14 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
     return completion;
   }
 
-  update(item: any | TItem): Observable<TItem> {
-    return this.updateMany([item]).map(items => items.find(i => true));
+  update(item: any | TItem, options = ''): Observable<TItem> {
+    return this.updateMany([item], options).map(items => items.find(i => true));
   }
 
-  updateMany(items: TItem[]): Observable<TItem[]> {
+  updateMany(items: TItem[], options = ''): Observable<TItem[]> {
     let completion = new ReplaySubject<TItem[]>(1);
 
-    this._mapper.update(items.map(i => slimify(i))).subscribe(items => {
+    this._mapper.update(items.map(i => slimify(i)), options).subscribe(items => {
       mergeCollection(this.dataStore.collection, items);
       this.recordHistory('UPDATE');
       completion.next(clone(items));
@@ -74,14 +74,14 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
     return completion;
   }
 
-  delete(id: any): Observable<any> {
-    return this.deleteMany([id]).map(items => items.find(i => true));
+  delete(id: any, options = ''): Observable<any> {
+    return this.deleteMany([id], options).map(items => items.find(i => true));
   }
 
-  deleteMany(ids: any[]): Observable<any[]> {
+  deleteMany(ids: any[], options = ''): Observable<any[]> {
     let completion = new ReplaySubject<TItem[]>(1);
 
-    this._mapper.delete(ids).subscribe(() => {
+    this._mapper.delete(ids, options).subscribe(() => {
       this.removeCollectionItems(ids);
       this.recordHistory('DELETE');
       completion.next(ids);

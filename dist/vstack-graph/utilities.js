@@ -31,8 +31,8 @@ exports.clone = clone;
 function mergeCollection(target, src) {
     src.filter(function (i) { return i && i.id; }).forEach(function (srcItem) {
         var match = target.find(function (tItem) { return tItem.id === srcItem.id; });
-        if (match) {
-            Object.assign(match, srcItem);
+        if (target.find(function (tItem) { return tItem.id === srcItem.id; })) {
+            mergeCollectionItem(match, srcItem);
         }
         else {
             target.push(srcItem);
@@ -40,6 +40,14 @@ function mergeCollection(target, src) {
     });
 }
 exports.mergeCollection = mergeCollection;
+function mergeCollectionItem(target, src) {
+    for (var attrname in src) {
+        if (src[attrname] !== undefined || target[attrname + 'Id'] !== src[attrname + 'Id']) {
+            target[attrname] = src[attrname];
+        }
+    }
+}
+exports.mergeCollectionItem = mergeCollectionItem;
 function slimify(item) {
     var newItem = {};
     for (var prop in item) {

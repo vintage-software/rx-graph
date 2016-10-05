@@ -4,6 +4,7 @@ declare module "vstack-graph/utilities" {
     }
     export function clone(obj: any): any;
     export function mergeCollection<TItem extends CollectionItem>(target: TItem[], src: TItem[]): void;
+    export function mergeCollectionItem<TItem extends CollectionItem>(target: TItem, src: TItem): void;
     export function slimify<TItem>(item: TItem): TItem;
     export function isPrimitive(item: any): boolean;
 }
@@ -14,9 +15,9 @@ declare module "vstack-graph/services/local.service" {
     import 'rxjs/add/operator/map';
     import { CollectionItem } from "vstack-graph/utilities";
     export interface LocalPersistenceMapper<TItem extends CollectionItem> {
-        create(items: TItem[]): Observable<TItem[]>;
-        update(items: TItem[]): Observable<TItem[]>;
-        delete(ids: any[]): Observable<any>;
+        create(items: TItem[], options: string): Observable<TItem[]>;
+        update(items: TItem[], options: string): Observable<TItem[]>;
+        delete(ids: any[], options: string): Observable<any>;
     }
     export abstract class LocalCollectionService<TItem extends CollectionItem> {
         protected _mapper: LocalPersistenceMapper<TItem>;
@@ -36,12 +37,12 @@ declare module "vstack-graph/services/local.service" {
                 collection: TItem[];
             };
         }[]>;
-        create(item: any | TItem): Observable<TItem>;
-        createMany(items: TItem[]): Observable<TItem[]>;
-        update(item: any | TItem): Observable<TItem>;
-        updateMany(items: TItem[]): Observable<TItem[]>;
-        delete(id: any): Observable<any>;
-        deleteMany(ids: any[]): Observable<any[]>;
+        create(item: any | TItem, options?: string): Observable<TItem>;
+        createMany(items: TItem[], options?: string): Observable<TItem[]>;
+        update(item: any | TItem, options?: string): Observable<TItem>;
+        updateMany(items: TItem[], options?: string): Observable<TItem[]>;
+        delete(id: any, options?: string): Observable<any>;
+        deleteMany(ids: any[], options?: string): Observable<any[]>;
         protected recordHistory(action: string): void;
         protected removeCollectionItems(ids: any[]): void;
         protected assignIds(items: any[]): void;
@@ -142,9 +143,9 @@ declare module "vstack-graph/services/angular-http" {
             http: any;
             options?: {};
         });
-        create(items: TItem[]): Observable<TItem[]>;
-        update(items: TItem[]): Observable<TItem[]>;
-        delete(ids: string[] | number[]): Observable<any>;
+        create(items: TItem[], options?: string): Observable<TItem[]>;
+        update(items: TItem[], options?: string): Observable<TItem[]>;
+        delete(ids: string[] | number[], options?: string): Observable<any>;
         load(id: string | number, options?: string): any;
         loadMany(options?: string): any;
     }

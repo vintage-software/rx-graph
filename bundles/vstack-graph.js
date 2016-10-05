@@ -38,8 +38,8 @@ System.register("vstack-graph/utilities", [], function(exports_1, context_1) {
     function mergeCollection(target, src) {
         src.filter(function (i) { return i && i.id; }).forEach(function (srcItem) {
             var match = target.find(function (tItem) { return tItem.id === srcItem.id; });
-            if (match) {
-                Object.assign(match, srcItem);
+            if (target.find(function (tItem) { return tItem.id === srcItem.id; })) {
+                mergeCollectionItem(match, srcItem);
             }
             else {
                 target.push(srcItem);
@@ -47,6 +47,14 @@ System.register("vstack-graph/utilities", [], function(exports_1, context_1) {
         });
     }
     exports_1("mergeCollection", mergeCollection);
+    function mergeCollectionItem(target, src) {
+        for (var attrname in src) {
+            if (src[attrname] !== undefined || target[attrname + 'Id'] !== src[attrname + 'Id']) {
+                target[attrname] = src[attrname];
+            }
+        }
+    }
+    exports_1("mergeCollectionItem", mergeCollectionItem);
     function slimify(item) {
         var newItem = {};
         for (var prop in item) {
@@ -122,14 +130,16 @@ System.register("vstack-graph/services/local.service", ['rxjs/BehaviorSubject', 
                     enumerable: true,
                     configurable: true
                 });
-                LocalCollectionService.prototype.create = function (item) {
-                    return this.createMany([item]).map(function (items) { return items.find(function (i) { return true; }); });
+                LocalCollectionService.prototype.create = function (item, options) {
+                    if (options === void 0) { options = ''; }
+                    return this.createMany([item], options).map(function (items) { return items.find(function (i) { return true; }); });
                 };
-                LocalCollectionService.prototype.createMany = function (items) {
+                LocalCollectionService.prototype.createMany = function (items, options) {
                     var _this = this;
+                    if (options === void 0) { options = ''; }
                     var completion = new ReplaySubject_1.ReplaySubject(1);
                     this.assignIds(items);
-                    this._mapper.create(items.map(function (i) { return utilities_1.slimify(i); })).subscribe(function (items) {
+                    this._mapper.create(items.map(function (i) { return utilities_1.slimify(i); }), options).subscribe(function (items) {
                         utilities_1.mergeCollection(_this.dataStore.collection, items);
                         _this.recordHistory('CREATE');
                         completion.next(utilities_1.clone(items));
@@ -138,13 +148,15 @@ System.register("vstack-graph/services/local.service", ['rxjs/BehaviorSubject', 
                     }, function (error) { _this._errors.next(error); completion.error(error); });
                     return completion;
                 };
-                LocalCollectionService.prototype.update = function (item) {
-                    return this.updateMany([item]).map(function (items) { return items.find(function (i) { return true; }); });
+                LocalCollectionService.prototype.update = function (item, options) {
+                    if (options === void 0) { options = ''; }
+                    return this.updateMany([item], options).map(function (items) { return items.find(function (i) { return true; }); });
                 };
-                LocalCollectionService.prototype.updateMany = function (items) {
+                LocalCollectionService.prototype.updateMany = function (items, options) {
                     var _this = this;
+                    if (options === void 0) { options = ''; }
                     var completion = new ReplaySubject_1.ReplaySubject(1);
-                    this._mapper.update(items.map(function (i) { return utilities_1.slimify(i); })).subscribe(function (items) {
+                    this._mapper.update(items.map(function (i) { return utilities_1.slimify(i); }), options).subscribe(function (items) {
                         utilities_1.mergeCollection(_this.dataStore.collection, items);
                         _this.recordHistory('UPDATE');
                         completion.next(utilities_1.clone(items));
@@ -153,13 +165,15 @@ System.register("vstack-graph/services/local.service", ['rxjs/BehaviorSubject', 
                     }, function (error) { _this._errors.next(error); completion.error(error); });
                     return completion;
                 };
-                LocalCollectionService.prototype.delete = function (id) {
-                    return this.deleteMany([id]).map(function (items) { return items.find(function (i) { return true; }); });
+                LocalCollectionService.prototype.delete = function (id, options) {
+                    if (options === void 0) { options = ''; }
+                    return this.deleteMany([id], options).map(function (items) { return items.find(function (i) { return true; }); });
                 };
-                LocalCollectionService.prototype.deleteMany = function (ids) {
+                LocalCollectionService.prototype.deleteMany = function (ids, options) {
                     var _this = this;
+                    if (options === void 0) { options = ''; }
                     var completion = new ReplaySubject_1.ReplaySubject(1);
-                    this._mapper.delete(ids).subscribe(function () {
+                    this._mapper.delete(ids, options).subscribe(function () {
                         _this.removeCollectionItems(ids);
                         _this.recordHistory('DELETE');
                         completion.next(ids);
@@ -457,14 +471,17 @@ System.register("vstack-graph/services/angular-http", [], function(exports_7, co
                     this.requestOptionsArgs = options;
                     this.http = http;
                 }
-                AngularHttpMapper.prototype.create = function (items) {
-                    return this.http.post(this.baseUrl + "/bulk", JSON.stringify(items), this.requestOptionsArgs).map(function (res) { return res.json(); });
+                AngularHttpMapper.prototype.create = function (items, options) {
+                    if (options === void 0) { options = ''; }
+                    return this.http.post(this.baseUrl + "/bulk?" + options, JSON.stringify(items), this.requestOptionsArgs).map(function (res) { return res.json(); });
                 };
-                AngularHttpMapper.prototype.update = function (items) {
-                    return this.http.put(this.baseUrl + "/bulk", JSON.stringify(items), this.requestOptionsArgs).map(function (res) { return res.json(); });
+                AngularHttpMapper.prototype.update = function (items, options) {
+                    if (options === void 0) { options = ''; }
+                    return this.http.put(this.baseUrl + "/bulk?" + options, JSON.stringify(items), this.requestOptionsArgs).map(function (res) { return res.json(); });
                 };
-                AngularHttpMapper.prototype.delete = function (ids) {
-                    return this.http.delete(this.baseUrl + "?ids=" + ids.join(), this.requestOptionsArgs).map(function (res) { return res.status; });
+                AngularHttpMapper.prototype.delete = function (ids, options) {
+                    if (options === void 0) { options = ''; }
+                    return this.http.delete(this.baseUrl + "?ids=" + ids.join() + "&" + options, this.requestOptionsArgs).map(function (res) { return res.status; });
                 };
                 AngularHttpMapper.prototype.load = function (id, options) {
                     if (options === void 0) { options = ''; }

@@ -10,9 +10,9 @@ export declare class AngularHttpMapper<TItem extends CollectionItem> implements 
         http: any;
         options?: {};
     });
-    create(items: TItem[]): Observable<TItem[]>;
-    update(items: TItem[]): Observable<TItem[]>;
-    delete(ids: string[] | number[]): Observable<any>;
+    create(items: TItem[], options?: string): Observable<TItem[]>;
+    update(items: TItem[], options?: string): Observable<TItem[]>;
+    delete(ids: string[] | number[], options?: string): Observable<any>;
     load(id: string | number, options?: string): any;
     loadMany(options?: string): any;
 }

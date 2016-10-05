@@ -6,14 +6,17 @@ var AngularHttpMapper = (function () {
         this.requestOptionsArgs = options;
         this.http = http;
     }
-    AngularHttpMapper.prototype.create = function (items) {
-        return this.http.post(this.baseUrl + "/bulk", JSON.stringify(items), this.requestOptionsArgs).map(function (res) { return res.json(); });
+    AngularHttpMapper.prototype.create = function (items, options) {
+        if (options === void 0) { options = ''; }
+        return this.http.post(this.baseUrl + "/bulk?" + options, JSON.stringify(items), this.requestOptionsArgs).map(function (res) { return res.json(); });
     };
-    AngularHttpMapper.prototype.update = function (items) {
-        return this.http.put(this.baseUrl + "/bulk", JSON.stringify(items), this.requestOptionsArgs).map(function (res) { return res.json(); });
+    AngularHttpMapper.prototype.update = function (items, options) {
+        if (options === void 0) { options = ''; }
+        return this.http.put(this.baseUrl + "/bulk?" + options, JSON.stringify(items), this.requestOptionsArgs).map(function (res) { return res.json(); });
     };
-    AngularHttpMapper.prototype.delete = function (ids) {
-        return this.http.delete(this.baseUrl + "?ids=" + ids.join(), this.requestOptionsArgs).map(function (res) { return res.status; });
+    AngularHttpMapper.prototype.delete = function (ids, options) {
+        if (options === void 0) { options = ''; }
+        return this.http.delete(this.baseUrl + "?ids=" + ids.join() + "&" + options, this.requestOptionsArgs).map(function (res) { return res.status; });
     };
     AngularHttpMapper.prototype.load = function (id, options) {
         if (options === void 0) { options = ''; }

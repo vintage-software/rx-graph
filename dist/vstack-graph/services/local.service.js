@@ -35,14 +35,16 @@ var LocalCollectionService = (function () {
         enumerable: true,
         configurable: true
     });
-    LocalCollectionService.prototype.create = function (item) {
-        return this.createMany([item]).map(function (items) { return items.find(function (i) { return true; }); });
+    LocalCollectionService.prototype.create = function (item, options) {
+        if (options === void 0) { options = ''; }
+        return this.createMany([item], options).map(function (items) { return items.find(function (i) { return true; }); });
     };
-    LocalCollectionService.prototype.createMany = function (items) {
+    LocalCollectionService.prototype.createMany = function (items, options) {
         var _this = this;
+        if (options === void 0) { options = ''; }
         var completion = new ReplaySubject_1.ReplaySubject(1);
         this.assignIds(items);
-        this._mapper.create(items.map(function (i) { return utilities_1.slimify(i); })).subscribe(function (items) {
+        this._mapper.create(items.map(function (i) { return utilities_1.slimify(i); }), options).subscribe(function (items) {
             utilities_1.mergeCollection(_this.dataStore.collection, items);
             _this.recordHistory('CREATE');
             completion.next(utilities_1.clone(items));
@@ -51,13 +53,15 @@ var LocalCollectionService = (function () {
         }, function (error) { _this._errors.next(error); completion.error(error); });
         return completion;
     };
-    LocalCollectionService.prototype.update = function (item) {
-        return this.updateMany([item]).map(function (items) { return items.find(function (i) { return true; }); });
+    LocalCollectionService.prototype.update = function (item, options) {
+        if (options === void 0) { options = ''; }
+        return this.updateMany([item], options).map(function (items) { return items.find(function (i) { return true; }); });
     };
-    LocalCollectionService.prototype.updateMany = function (items) {
+    LocalCollectionService.prototype.updateMany = function (items, options) {
         var _this = this;
+        if (options === void 0) { options = ''; }
         var completion = new ReplaySubject_1.ReplaySubject(1);
-        this._mapper.update(items.map(function (i) { return utilities_1.slimify(i); })).subscribe(function (items) {
+        this._mapper.update(items.map(function (i) { return utilities_1.slimify(i); }), options).subscribe(function (items) {
             utilities_1.mergeCollection(_this.dataStore.collection, items);
             _this.recordHistory('UPDATE');
             completion.next(utilities_1.clone(items));
@@ -66,13 +70,15 @@ var LocalCollectionService = (function () {
         }, function (error) { _this._errors.next(error); completion.error(error); });
         return completion;
     };
-    LocalCollectionService.prototype.delete = function (id) {
-        return this.deleteMany([id]).map(function (items) { return items.find(function (i) { return true; }); });
+    LocalCollectionService.prototype.delete = function (id, options) {
+        if (options === void 0) { options = ''; }
+        return this.deleteMany([id], options).map(function (items) { return items.find(function (i) { return true; }); });
     };
-    LocalCollectionService.prototype.deleteMany = function (ids) {
+    LocalCollectionService.prototype.deleteMany = function (ids, options) {
         var _this = this;
+        if (options === void 0) { options = ''; }
         var completion = new ReplaySubject_1.ReplaySubject(1);
-        this._mapper.delete(ids).subscribe(function () {
+        this._mapper.delete(ids, options).subscribe(function () {
             _this.removeCollectionItems(ids);
             _this.recordHistory('DELETE');
             completion.next(ids);

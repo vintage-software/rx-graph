@@ -39,12 +39,21 @@ export function clone(obj) {
 export function mergeCollection<TItem extends CollectionItem>(target: TItem[], src: TItem[]) {
   src.filter(i => i && i.id).forEach(srcItem => {
     let match = target.find(tItem => tItem.id === srcItem.id);
-    if (match) {
-      Object.assign(match, srcItem);
+    if (target.find(tItem => tItem.id === srcItem.id)) {
+      // Object.assign(target, src);
+      mergeCollectionItem(match, srcItem);
     } else {
       target.push(srcItem);
     }
   });
+}
+
+export function mergeCollectionItem<TItem extends CollectionItem>(target: TItem, src: TItem) {
+  for (let attrname in src) {
+    if (src[attrname] !== undefined || target[attrname + 'Id'] !== src[attrname + 'Id']) {
+      target[attrname] = src[attrname];
+    }
+  }
 }
 
 export function slimify<TItem>(item: TItem) {

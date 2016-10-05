@@ -1,3 +1,6 @@
+# 0.5.8
+- Bug fix for CollectionItem merge when src has null props
+
 # 0.5.7
 - Bug fix for bulk deletions
 

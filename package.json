@@ -1,6 +1,6 @@
 {
   "name": "vstack-graph",
-  "version": "0.5.7",
+  "version": "0.6.0",
   "description": "A RxJS object relation graph for client side JavaScript Applications",
   "typings": "./dist/index.d.ts",
   "main": "./dist/index.js",
