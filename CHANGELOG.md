@@ -1,4 +1,4 @@
-# 0.6.1
+# 0.6.2
 - Added Inject method for bypassing graph and preloading
 
 # 0.5.8

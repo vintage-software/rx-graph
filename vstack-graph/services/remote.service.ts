@@ -20,7 +20,7 @@ export abstract class BaseRemoteService<TItem extends CollectionItem> extends Lo
   }
 
   protected inject(items: TItem[]) {
-    let completion = new ReplaySubject<TItem>(1);
+    let completion = new ReplaySubject<TItem[]>(1);
 
     mergeCollection(this.dataStore.collection, items);
     this.recordHistory('INJECT');
