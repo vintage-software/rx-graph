@@ -1,3 +1,6 @@
+# 0.6.1
+- Added Inject method for bypassing graph and preloading
+
 # 0.5.8
 - Bug fix for CollectionItem merge when src has null props
 
