@@ -393,6 +393,15 @@ System.register("vstack-graph/services/remote.service", ['rxjs/ReplaySubject', "
                     enumerable: true,
                     configurable: true
                 });
+                BaseRemoteService.prototype.inject = function (items) {
+                    var completion = new ReplaySubject_2.ReplaySubject(1);
+                    utilities_3.mergeCollection(this.dataStore.collection, items);
+                    this.recordHistory('INJECT');
+                    completion.next(utilities_3.clone(items));
+                    completion.complete();
+                    this._collection.next(this.dataStore.collection);
+                    return completion;
+                };
                 BaseRemoteService.prototype.load = function (id, options) {
                     var _this = this;
                     var completion = new ReplaySubject_2.ReplaySubject(1);

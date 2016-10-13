@@ -21,6 +21,15 @@ var BaseRemoteService = (function (_super) {
         enumerable: true,
         configurable: true
     });
+    BaseRemoteService.prototype.inject = function (items) {
+        var completion = new ReplaySubject_1.ReplaySubject(1);
+        utilities_1.mergeCollection(this.dataStore.collection, items);
+        this.recordHistory('INJECT');
+        completion.next(utilities_1.clone(items));
+        completion.complete();
+        this._collection.next(this.dataStore.collection);
+        return completion;
+    };
     BaseRemoteService.prototype.load = function (id, options) {
         var _this = this;
         var completion = new ReplaySubject_1.ReplaySubject(1);

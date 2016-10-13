@@ -116,6 +116,7 @@ declare module "vstack-graph/services/remote.service" {
         private remotePersistenceMapper;
         constructor(remotePersistenceMapper: RemotePersistenceMapper<TItem>);
         readonly _remoteMapper: RemotePersistenceMapper<TItem>;
+        protected inject(items: TItem[]): ReplaySubject<TItem>;
         protected load(id: any, options: string): ReplaySubject<TItem>;
         protected loadMany(isLoadAll: boolean, options: string): ReplaySubject<TItem[]>;
     }

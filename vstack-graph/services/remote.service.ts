@@ -19,6 +19,18 @@ export abstract class BaseRemoteService<TItem extends CollectionItem> extends Lo
     return <RemotePersistenceMapper<TItem>>this._mapper;
   }
 
+  protected inject(items: TItem[]) {
+    let completion = new ReplaySubject<TItem>(1);
+
+    mergeCollection(this.dataStore.collection, items);
+    this.recordHistory('INJECT');
+    completion.next(clone(items));
+    completion.complete();
+    this._collection.next(this.dataStore.collection);
+
+    return completion;
+  }
+
   protected load(id: any, options: string) {
     let completion = new ReplaySubject<TItem>(1);
 
