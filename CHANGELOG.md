@@ -1,3 +1,6 @@
+# 0.6.3
+- Updated to latest RxJS (5.0.1)
+
 # 0.6.2
 - Added Inject method for bypassing graph and preloading
 

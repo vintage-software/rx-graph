@@ -1,5 +1,5 @@
 "use strict";
-var utilities_1 = require('./utilities');
+var utilities_1 = require("./utilities");
 describe('isPrimitive', function () {
     it('should detect primitives', function () {
         expect(utilities_1.isPrimitive('Hello World')).toBe(true);
@@ -30,7 +30,8 @@ describe('clone', function () {
         var testObject = { id: 1, utcDate: new Date(), accounts: ['Visa', 'Discover'] };
         var testArray = [
             { id: 1, utcDate: new Date(), accounts: ['Visa', 'Discover'] },
-            { id: 2, utcDate: new Date(), accounts: ['Visa', 'Discover'] }];
+            { id: 2, utcDate: new Date(), accounts: ['Visa', 'Discover'] }
+        ];
         expect(utilities_1.clone(testDate).getTime()).toBe(testDate.getTime());
         expect(utilities_1.clone(testObject).id).toBe(1);
         expect(utilities_1.clone(testObject).utcDate.getTime()).toBe(testObject.utcDate.getTime());

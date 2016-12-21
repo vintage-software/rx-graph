@@ -4,15 +4,16 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var ReplaySubject_1 = require('rxjs/ReplaySubject');
-var local_service_1 = require('./local.service');
-var utilities_1 = require('../utilities');
-var vs_queryable_1 = require('./vs-queryable');
+var ReplaySubject_1 = require("rxjs/ReplaySubject");
+var local_service_1 = require("./local.service");
+var utilities_1 = require("../utilities");
+var vs_queryable_1 = require("./vs-queryable");
 var BaseRemoteService = (function (_super) {
     __extends(BaseRemoteService, _super);
     function BaseRemoteService(remotePersistenceMapper) {
-        _super.call(this, remotePersistenceMapper);
-        this.remotePersistenceMapper = remotePersistenceMapper;
+        var _this = _super.call(this, remotePersistenceMapper) || this;
+        _this.remotePersistenceMapper = remotePersistenceMapper;
+        return _this;
     }
     Object.defineProperty(BaseRemoteService.prototype, "_remoteMapper", {
         get: function () {
@@ -63,7 +64,7 @@ exports.BaseRemoteService = BaseRemoteService;
 var CollectionService = (function (_super) {
     __extends(CollectionService, _super);
     function CollectionService(remotePersistenceMapper) {
-        _super.call(this, remotePersistenceMapper);
+        return _super.call(this, remotePersistenceMapper) || this;
     }
     CollectionService.prototype.get = function (id, options) {
         return this.load(id, options);
@@ -78,7 +79,7 @@ exports.CollectionService = CollectionService;
 var VSCollectionService = (function (_super) {
     __extends(VSCollectionService, _super);
     function VSCollectionService(remotePersistenceMapper) {
-        _super.call(this, remotePersistenceMapper);
+        return _super.call(this, remotePersistenceMapper) || this;
     }
     VSCollectionService.prototype.get = function (id) {
         var _this = this;

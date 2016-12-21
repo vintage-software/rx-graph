@@ -3,7 +3,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-System.register("vstack-graph/utilities", [], function(exports_1, context_1) {
+System.register("vstack-graph/utilities", [], function (exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     function clone(obj) {
@@ -73,18 +73,17 @@ System.register("vstack-graph/utilities", [], function(exports_1, context_1) {
     }
     exports_1("isPrimitive", isPrimitive);
     return {
-        setters:[],
-        execute: function() {
+        setters: [],
+        execute: function () {
         }
-    }
+    };
 });
-System.register("vstack-graph/services/local.service", ['rxjs/BehaviorSubject', 'rxjs/Subject', 'rxjs/ReplaySubject', 'rxjs/add/operator/map', "vstack-graph/utilities"], function(exports_2, context_2) {
+System.register("vstack-graph/services/local.service", ["rxjs/BehaviorSubject", "rxjs/Subject", "rxjs/ReplaySubject", "rxjs/add/operator/map", "vstack-graph/utilities"], function (exports_2, context_2) {
     "use strict";
     var __moduleName = context_2 && context_2.id;
-    var BehaviorSubject_1, Subject_1, ReplaySubject_1, utilities_1;
-    var LocalCollectionService;
+    var BehaviorSubject_1, Subject_1, ReplaySubject_1, utilities_1, LocalCollectionService;
     return {
-        setters:[
+        setters: [
             function (BehaviorSubject_1_1) {
                 BehaviorSubject_1 = BehaviorSubject_1_1;
             },
@@ -94,11 +93,13 @@ System.register("vstack-graph/services/local.service", ['rxjs/BehaviorSubject', 
             function (ReplaySubject_1_1) {
                 ReplaySubject_1 = ReplaySubject_1_1;
             },
-            function (_1) {},
+            function (_1) {
+            },
             function (utilities_1_1) {
                 utilities_1 = utilities_1_1;
-            }],
-        execute: function() {
+            }
+        ],
+        execute: function () {
             LocalCollectionService = (function () {
                 function LocalCollectionService(_mapper) {
                     this._mapper = _mapper;
@@ -208,15 +209,15 @@ System.register("vstack-graph/services/local.service", ['rxjs/BehaviorSubject', 
             }());
             exports_2("LocalCollectionService", LocalCollectionService);
         }
-    }
+    };
 });
-System.register("vstack-graph/graph/graph-utilities", [], function(exports_3, context_3) {
+System.register("vstack-graph/graph/graph-utilities", [], function (exports_3, context_3) {
     "use strict";
     var __moduleName = context_3 && context_3.id;
     var Relation, ServiceConfig;
     return {
-        setters:[],
-        execute: function() {
+        setters: [],
+        execute: function () {
             Relation = (function () {
                 function Relation(collectionProperty, to, relationId, many) {
                     this.collectionProperty = collectionProperty;
@@ -237,26 +238,27 @@ System.register("vstack-graph/graph/graph-utilities", [], function(exports_3, co
             }());
             exports_3("ServiceConfig", ServiceConfig);
         }
-    }
+    };
 });
-System.register("vstack-graph/graph/base-graph.service", ['rxjs/BehaviorSubject', 'rxjs/Observable', 'rxjs/add/observable/combineLatest', "vstack-graph/utilities"], function(exports_4, context_4) {
+System.register("vstack-graph/graph/base-graph.service", ["rxjs/BehaviorSubject", "rxjs/Observable", "rxjs/add/observable/combineLatest", "vstack-graph/utilities"], function (exports_4, context_4) {
     "use strict";
     var __moduleName = context_4 && context_4.id;
-    var BehaviorSubject_2, Observable_1, utilities_2;
-    var BaseGraphService;
+    var BehaviorSubject_2, Observable_1, utilities_2, BaseGraphService;
     return {
-        setters:[
+        setters: [
             function (BehaviorSubject_2_1) {
                 BehaviorSubject_2 = BehaviorSubject_2_1;
             },
             function (Observable_1_1) {
                 Observable_1 = Observable_1_1;
             },
-            function (_2) {},
+            function (_2) {
+            },
             function (utilities_2_1) {
                 utilities_2 = utilities_2_1;
-            }],
-        execute: function() {
+            }
+        ],
+        execute: function () {
             BaseGraphService = (function () {
                 function BaseGraphService(serviceConfigs) {
                     var _this = this;
@@ -329,15 +331,15 @@ System.register("vstack-graph/graph/base-graph.service", ['rxjs/BehaviorSubject'
             }());
             exports_4("BaseGraphService", BaseGraphService);
         }
-    }
+    };
 });
-System.register("vstack-graph/services/vs-queryable", [], function(exports_5, context_5) {
+System.register("vstack-graph/services/vs-queryable", [], function (exports_5, context_5) {
     "use strict";
     var __moduleName = context_5 && context_5.id;
     var VsQueryable;
     return {
-        setters:[],
-        execute: function() {
+        setters: [],
+        execute: function () {
             VsQueryable = (function () {
                 function VsQueryable(load) {
                     this.load = load;
@@ -358,15 +360,14 @@ System.register("vstack-graph/services/vs-queryable", [], function(exports_5, co
             }());
             exports_5("VsQueryable", VsQueryable);
         }
-    }
+    };
 });
-System.register("vstack-graph/services/remote.service", ['rxjs/ReplaySubject', "vstack-graph/services/local.service", "vstack-graph/utilities", "vstack-graph/services/vs-queryable"], function(exports_6, context_6) {
+System.register("vstack-graph/services/remote.service", ["rxjs/ReplaySubject", "vstack-graph/services/local.service", "vstack-graph/utilities", "vstack-graph/services/vs-queryable"], function (exports_6, context_6) {
     "use strict";
     var __moduleName = context_6 && context_6.id;
-    var ReplaySubject_2, local_service_1, utilities_3, vs_queryable_1;
-    var BaseRemoteService, CollectionService, VSCollectionService;
+    var ReplaySubject_2, local_service_1, utilities_3, vs_queryable_1, BaseRemoteService, CollectionService, VSCollectionService;
     return {
-        setters:[
+        setters: [
             function (ReplaySubject_2_1) {
                 ReplaySubject_2 = ReplaySubject_2_1;
             },
@@ -378,13 +379,15 @@ System.register("vstack-graph/services/remote.service", ['rxjs/ReplaySubject', "
             },
             function (vs_queryable_1_1) {
                 vs_queryable_1 = vs_queryable_1_1;
-            }],
-        execute: function() {
+            }
+        ],
+        execute: function () {
             BaseRemoteService = (function (_super) {
                 __extends(BaseRemoteService, _super);
                 function BaseRemoteService(remotePersistenceMapper) {
-                    _super.call(this, remotePersistenceMapper);
-                    this.remotePersistenceMapper = remotePersistenceMapper;
+                    var _this = _super.call(this, remotePersistenceMapper) || this;
+                    _this.remotePersistenceMapper = remotePersistenceMapper;
+                    return _this;
                 }
                 Object.defineProperty(BaseRemoteService.prototype, "_remoteMapper", {
                     get: function () {
@@ -435,7 +438,7 @@ System.register("vstack-graph/services/remote.service", ['rxjs/ReplaySubject', "
             CollectionService = (function (_super) {
                 __extends(CollectionService, _super);
                 function CollectionService(remotePersistenceMapper) {
-                    _super.call(this, remotePersistenceMapper);
+                    return _super.call(this, remotePersistenceMapper) || this;
                 }
                 CollectionService.prototype.get = function (id, options) {
                     return this.load(id, options);
@@ -450,7 +453,7 @@ System.register("vstack-graph/services/remote.service", ['rxjs/ReplaySubject', "
             VSCollectionService = (function (_super) {
                 __extends(VSCollectionService, _super);
                 function VSCollectionService(remotePersistenceMapper) {
-                    _super.call(this, remotePersistenceMapper);
+                    return _super.call(this, remotePersistenceMapper) || this;
                 }
                 VSCollectionService.prototype.get = function (id) {
                     var _this = this;
@@ -464,15 +467,15 @@ System.register("vstack-graph/services/remote.service", ['rxjs/ReplaySubject', "
             }(BaseRemoteService));
             exports_6("VSCollectionService", VSCollectionService);
         }
-    }
+    };
 });
-System.register("vstack-graph/services/angular-http", [], function(exports_7, context_7) {
+System.register("vstack-graph/services/angular-http", [], function (exports_7, context_7) {
     "use strict";
     var __moduleName = context_7 && context_7.id;
     var AngularHttpMapper;
     return {
-        setters:[],
-        execute: function() {
+        setters: [],
+        execute: function () {
             AngularHttpMapper = (function () {
                 function AngularHttpMapper(_a) {
                     var baseUrl = _a.baseUrl, http = _a.http, options = _a.options;
@@ -504,14 +507,14 @@ System.register("vstack-graph/services/angular-http", [], function(exports_7, co
             }());
             exports_7("AngularHttpMapper", AngularHttpMapper);
         }
-    }
+    };
 });
-System.register("index", ["vstack-graph/graph/base-graph.service", "vstack-graph/graph/graph-utilities", "vstack-graph/services/remote.service", "vstack-graph/services/local.service", "vstack-graph/services/angular-http"], function(exports_8, context_8) {
+System.register("index", ["vstack-graph/graph/base-graph.service", "vstack-graph/graph/graph-utilities", "vstack-graph/services/remote.service", "vstack-graph/services/local.service", "vstack-graph/services/angular-http"], function (exports_8, context_8) {
     "use strict";
     var __moduleName = context_8 && context_8.id;
     var base_graph_service_1, graph_utilities_1, remote_service_1, local_service_2, angular_http_1;
     return {
-        setters:[
+        setters: [
             function (base_graph_service_1_1) {
                 base_graph_service_1 = base_graph_service_1_1;
             },
@@ -526,16 +529,17 @@ System.register("index", ["vstack-graph/graph/base-graph.service", "vstack-graph
             },
             function (angular_http_1_1) {
                 angular_http_1 = angular_http_1_1;
-            }],
-        execute: function() {
-            exports_8("LocalCollectionService", local_service_2.LocalCollectionService);
-            exports_8("CollectionService", remote_service_1.CollectionService);
-            exports_8("VSCollectionService", remote_service_1.VSCollectionService);
+            }
+        ],
+        execute: function () {
             exports_8("BaseGraphService", base_graph_service_1.BaseGraphService);
             exports_8("ServiceConfig", graph_utilities_1.ServiceConfig);
             exports_8("Relation", graph_utilities_1.Relation);
+            exports_8("VSCollectionService", remote_service_1.VSCollectionService);
+            exports_8("CollectionService", remote_service_1.CollectionService);
+            exports_8("LocalCollectionService", local_service_2.LocalCollectionService);
             exports_8("AngularHttpMapper", angular_http_1.AngularHttpMapper);
         }
-    }
+    };
 });
 //# sourceMappingURL=vstack-graph.js.map

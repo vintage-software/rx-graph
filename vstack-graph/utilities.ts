@@ -57,7 +57,7 @@ export function mergeCollectionItem<TItem extends CollectionItem>(target: TItem,
 }
 
 export function slimify<TItem>(item: TItem) {
-  let newItem = {};
+  let newItem: any = {};
 
   for (let prop in item) {
     if (isPrimitive(item[prop])) {

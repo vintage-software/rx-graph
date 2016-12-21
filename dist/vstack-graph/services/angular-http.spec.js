@@ -1,7 +1,7 @@
 "use strict";
-var Observable_1 = require('rxjs/Observable');
-require('rxjs/add/observable/of');
-var angular_http_1 = require('./angular-http');
+var Observable_1 = require("rxjs/Observable");
+require("rxjs/add/observable/of");
+var angular_http_1 = require("./angular-http");
 var mockAngularHttp = {
     post: function () { return Observable_1.Observable.of({ json: function () { return true; } }); },
     put: function () { return Observable_1.Observable.of({ json: function () { return true; } }); },

@@ -1,9 +1,9 @@
 "use strict";
-var BehaviorSubject_1 = require('rxjs/BehaviorSubject');
-var Subject_1 = require('rxjs/Subject');
-var ReplaySubject_1 = require('rxjs/ReplaySubject');
-require('rxjs/add/operator/map');
-var utilities_1 = require('../utilities');
+var BehaviorSubject_1 = require("rxjs/BehaviorSubject");
+var Subject_1 = require("rxjs/Subject");
+var ReplaySubject_1 = require("rxjs/ReplaySubject");
+require("rxjs/add/operator/map");
+var utilities_1 = require("../utilities");
 var LocalCollectionService = (function () {
     function LocalCollectionService(_mapper) {
         this._mapper = _mapper;

@@ -1,8 +1,8 @@
 "use strict";
-var BehaviorSubject_1 = require('rxjs/BehaviorSubject');
-var Observable_1 = require('rxjs/Observable');
-require('rxjs/add/observable/combineLatest');
-var utilities_1 = require('../utilities');
+var BehaviorSubject_1 = require("rxjs/BehaviorSubject");
+var Observable_1 = require("rxjs/Observable");
+require("rxjs/add/observable/combineLatest");
+var utilities_1 = require("../utilities");
 var BaseGraphService = (function () {
     function BaseGraphService(serviceConfigs) {
         var _this = this;

@@ -1,7 +1,7 @@
 "use strict";
-require('rxjs/add/operator/skip');
-require('rxjs/add/operator/do');
-var test_helpers_1 = require('./../testing/test-helpers');
+require("rxjs/add/operator/skip");
+require("rxjs/add/operator/do");
+var test_helpers_1 = require("./../testing/test-helpers");
 function getTestUsers(include) {
     if (include === void 0) { include = false; }
     var users = [
