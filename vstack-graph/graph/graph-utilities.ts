@@ -6,6 +6,7 @@ import { CollectionItem } from '../utilities';
 export interface IService {
   collection: Observable<CollectionItem[]>;
   errors: Observable<any>;
+  history: Observable<{ action: string, state: { collection: any[] }}[]>;
 }
 
 export interface IServiceConfig<TGraph> {

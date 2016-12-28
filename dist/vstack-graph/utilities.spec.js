@@ -32,11 +32,11 @@ describe('clone', function () {
             { id: 1, utcDate: new Date(), accounts: ['Visa', 'Discover'] },
             { id: 2, utcDate: new Date(), accounts: ['Visa', 'Discover'] }
         ];
-        expect(utilities_1.clone(testDate).getTime()).toBe(testDate.getTime());
-        expect(utilities_1.clone(testObject).id).toBe(1);
-        expect(utilities_1.clone(testObject).utcDate.getTime()).toBe(testObject.utcDate.getTime());
-        expect(utilities_1.clone(testObject).accounts[0]).toBe('Visa');
-        expect(utilities_1.clone(testArray).length).toBe(2);
+        expect(utilities_1.deepClone(testDate).getTime()).toBe(testDate.getTime());
+        expect(utilities_1.deepClone(testObject).id).toBe(1);
+        expect(utilities_1.deepClone(testObject).utcDate.getTime()).toBe(testObject.utcDate.getTime());
+        expect(utilities_1.deepClone(testObject).accounts[0]).toBe('Visa');
+        expect(utilities_1.deepClone(testArray).length).toBe(2);
     });
 });
 describe('mergeCollection', function () {

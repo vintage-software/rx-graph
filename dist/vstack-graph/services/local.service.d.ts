@@ -13,7 +13,7 @@ export declare abstract class LocalCollectionService<TItem extends CollectionIte
     protected _collection: BehaviorSubject<TItem[]>;
     protected _errors: Subject<{}>;
     protected _history: Subject<{}>;
-    protected dataStore: {
+    protected store: {
         collection: TItem[];
     };
     private historyStore;

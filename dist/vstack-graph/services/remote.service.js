@@ -24,22 +24,22 @@ var BaseRemoteService = (function (_super) {
     });
     BaseRemoteService.prototype.inject = function (items) {
         var completion = new ReplaySubject_1.ReplaySubject(1);
-        utilities_1.mergeCollection(this.dataStore.collection, items);
+        utilities_1.mergeCollection(this.store.collection, items);
         this.recordHistory('INJECT');
-        completion.next(utilities_1.clone(items));
+        completion.next(utilities_1.deepClone(items));
         completion.complete();
-        this._collection.next(this.dataStore.collection);
+        this._collection.next(this.store.collection);
         return completion;
     };
     BaseRemoteService.prototype.load = function (id, options) {
         var _this = this;
         var completion = new ReplaySubject_1.ReplaySubject(1);
         this._remoteMapper.load(id, options).subscribe(function (item) {
-            utilities_1.mergeCollection(_this.dataStore.collection, [item]);
+            utilities_1.mergeCollection(_this.store.collection, [item]);
             _this.recordHistory('LOAD');
-            completion.next(utilities_1.clone(item));
+            completion.next(utilities_1.deepClone(item));
             completion.complete();
-            _this._collection.next(_this.dataStore.collection);
+            _this._collection.next(_this.store.collection);
         }, function (error) { _this._errors.next(error); completion.error(error); });
         return completion;
     };
@@ -47,14 +47,14 @@ var BaseRemoteService = (function (_super) {
         var _this = this;
         var completion = new ReplaySubject_1.ReplaySubject(1);
         this._remoteMapper.loadMany(options).subscribe(function (items) {
-            utilities_1.mergeCollection(_this.dataStore.collection, items);
+            utilities_1.mergeCollection(_this.store.collection, items);
             if (isLoadAll) {
-                _this.dataStore.collection = _this.dataStore.collection.filter(function (i) { return !!items.find(function (j) { return j.id === i.id; }); });
+                _this.store.collection = _this.store.collection.filter(function (i) { return !!items.find(function (j) { return j.id === i.id; }); });
             }
             _this.recordHistory('LOAD_MANY');
-            completion.next(utilities_1.clone(items));
+            completion.next(utilities_1.deepClone(items));
             completion.complete();
-            _this._collection.next(_this.dataStore.collection);
+            _this._collection.next(_this.store.collection);
         }, function (error) { _this._errors.next(error); completion.error(error); });
         return completion;
     };

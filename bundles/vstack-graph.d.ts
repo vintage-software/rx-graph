@@ -2,7 +2,7 @@ declare module "vstack-graph/utilities" {
     export interface CollectionItem {
         id: string | number;
     }
-    export function clone(obj: any): any;
+    export function deepClone(obj: any): any;
     export function mergeCollection<TItem extends CollectionItem>(target: TItem[], src: TItem[]): void;
     export function mergeCollectionItem<TItem extends CollectionItem>(target: TItem, src: TItem): void;
     export function slimify<TItem>(item: TItem): TItem;
@@ -24,7 +24,7 @@ declare module "vstack-graph/services/local.service" {
         protected _collection: BehaviorSubject<TItem[]>;
         protected _errors: Subject<{}>;
         protected _history: Subject<{}>;
-        protected dataStore: {
+        protected store: {
             collection: TItem[];
         };
         private historyStore;
@@ -57,6 +57,12 @@ declare module "vstack-graph/graph/graph-utilities" {
     export interface IService {
         collection: Observable<CollectionItem[]>;
         errors: Observable<any>;
+        history: Observable<{
+            action: string;
+            state: {
+                collection: any[];
+            };
+        }[]>;
     }
     export interface IServiceConfig<TGraph> {
         service: IService;

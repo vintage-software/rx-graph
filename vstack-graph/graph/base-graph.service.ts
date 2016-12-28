@@ -1,22 +1,27 @@
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+// import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
 
-import { CollectionItem, clone, mergeCollection } from '../utilities';
+import { CollectionItem, deepClone, mergeCollection } from '../utilities';
 import { IServiceConfig, Relation } from './graph-utilities';
 
 export class BaseGraphService<TGraph> {
   graph: Observable<TGraph>;
+  // history: Observable<{ state: {}, action: string }>;
 
   constructor(private serviceConfigs: IServiceConfig<TGraph>[]) {
-    let graph = new BehaviorSubject<any[]>(null);
+    // let history = new BehaviorSubject({ state: {}, action: 'INIT' });
 
-    Observable
+    // .subscribe(i => { 
+    //   graph.next(i);
+    //   history.next();
+    // });
+
+    this.graph = Observable
       .combineLatest(this.serviceConfigs.map(i => (<any>i.service)._collection))
-      .map(i => this.slimifyCollection(i))
-      .subscribe(i => graph.next(i));
+      .map(i => this.slimifyCollection(i).map(array => deepClone(array))).map(i => this.toGraph(i));
 
-    this.graph = graph.map(i => i.map(array => clone(array))).map(i => this.toGraph(i));
+    // this.history = history;
   }
 
   private slimifyCollection(collection: any[]) {

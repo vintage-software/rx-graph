@@ -1,5 +1,5 @@
 "use strict";
-function clone(obj) {
+function deepClone(obj) {
     var copy;
     if (null === obj || 'object' !== typeof obj) {
         return obj;
@@ -12,7 +12,7 @@ function clone(obj) {
     if (obj instanceof Array) {
         copy = [];
         for (var i = 0, len = obj.length; i < len; i++) {
-            copy[i] = clone(obj[i]);
+            copy[i] = deepClone(obj[i]);
         }
         return copy;
     }
@@ -20,14 +20,14 @@ function clone(obj) {
         copy = {};
         for (var attr in obj) {
             if (obj.hasOwnProperty(attr)) {
-                copy[attr] = clone(obj[attr]);
+                copy[attr] = deepClone(obj[attr]);
             }
         }
         return copy;
     }
     throw new Error('Unable to copy');
 }
-exports.clone = clone;
+exports.deepClone = deepClone;
 function mergeCollection(target, src) {
     src.filter(function (i) { return i && i.id; }).forEach(function (srcItem) {
         var match = target.find(function (tItem) { return tItem.id === srcItem.id; });

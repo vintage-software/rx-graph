@@ -4,7 +4,7 @@ import { Subject } from 'rxjs/Subject';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import 'rxjs/add/operator/map';
 
-import { slimify, CollectionItem, clone, mergeCollection } from '../utilities';
+import { slimify, CollectionItem, deepClone, mergeCollection } from '../utilities';
 
 export interface LocalPersistenceMapper<TItem extends CollectionItem> {
   create(items: TItem[], options: string): Observable<TItem[]>;
@@ -16,17 +16,17 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
   protected _collection = new BehaviorSubject(<TItem[]>[]);
   protected _errors = new Subject();
   protected _history = new Subject();
-  protected dataStore: { collection: TItem[] };
-  private historyStore: { action: string, state: { collection: TItem[] }}[]; // inline interface for generic support
+  protected store: { collection: TItem[] };
+  private historyStore: { action: string, state: { collection: TItem[] }}[];
 
   constructor(protected _mapper: LocalPersistenceMapper<TItem>) {
-    this.dataStore = { collection: [] };
+    this.store = { collection: [] };
     this.historyStore = [];
     this.recordHistory('INIT');
   }
 
   get collection(): Observable<TItem[]> {
-    return this._collection.map(collection => clone(collection));
+    return this._collection.map(collection => deepClone(collection));
   }
 
   get errors(): Observable<any> {
@@ -46,11 +46,11 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
     this.assignIds(items);
 
     this._mapper.create(items.map(i => slimify(i)), options).subscribe(items => {
-      mergeCollection(this.dataStore.collection, items);
+      mergeCollection(this.store.collection, items);
       this.recordHistory('CREATE');
-      completion.next(clone(items));
+      completion.next(deepClone(items));
       completion.complete();
-      this._collection.next(this.dataStore.collection);
+      this._collection.next(this.store.collection);
     }, error => { this._errors.next(error); completion.error(error); });
 
     return completion;
@@ -64,11 +64,11 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
     let completion = new ReplaySubject<TItem[]>(1);
 
     this._mapper.update(items.map(i => slimify(i)), options).subscribe(items => {
-      mergeCollection(this.dataStore.collection, items);
+      mergeCollection(this.store.collection, items);
       this.recordHistory('UPDATE');
-      completion.next(clone(items));
+      completion.next(deepClone(items));
       completion.complete();
-      this._collection.next(this.dataStore.collection);
+      this._collection.next(this.store.collection);
     }, error => { this._errors.next(error); completion.error(error); });
 
     return completion;
@@ -86,7 +86,7 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
       this.recordHistory('DELETE');
       completion.next(ids);
       completion.complete();
-      this._collection.next(this.dataStore.collection);
+      this._collection.next(this.store.collection);
     }, error => { this._errors.next(error); completion.error(error); });
 
     return completion;
@@ -96,13 +96,14 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
     if (this.historyStore.length >= 100) {
       this.historyStore.shift();
     }
-    this.historyStore.push({ action, state: this.dataStore });
+
+    this.historyStore.push({ action, state: this.store });
     this._history.next(this.historyStore);
   }
 
   protected removeCollectionItems(ids: any[]) {
-    this.dataStore = Object.assign({}, this.dataStore, {
-      collection: this.dataStore.collection.filter(item => !ids.find(id => id === item.id))
+    this.store = Object.assign({}, this.store, {
+      collection: this.store.collection.filter(item => !ids.find(id => id === item.id))
     });
   }
 

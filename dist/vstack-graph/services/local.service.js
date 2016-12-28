@@ -10,13 +10,13 @@ var LocalCollectionService = (function () {
         this._collection = new BehaviorSubject_1.BehaviorSubject([]);
         this._errors = new Subject_1.Subject();
         this._history = new Subject_1.Subject();
-        this.dataStore = { collection: [] };
+        this.store = { collection: [] };
         this.historyStore = [];
         this.recordHistory('INIT');
     }
     Object.defineProperty(LocalCollectionService.prototype, "collection", {
         get: function () {
-            return this._collection.map(function (collection) { return utilities_1.clone(collection); });
+            return this._collection.map(function (collection) { return utilities_1.deepClone(collection); });
         },
         enumerable: true,
         configurable: true
@@ -45,11 +45,11 @@ var LocalCollectionService = (function () {
         var completion = new ReplaySubject_1.ReplaySubject(1);
         this.assignIds(items);
         this._mapper.create(items.map(function (i) { return utilities_1.slimify(i); }), options).subscribe(function (items) {
-            utilities_1.mergeCollection(_this.dataStore.collection, items);
+            utilities_1.mergeCollection(_this.store.collection, items);
             _this.recordHistory('CREATE');
-            completion.next(utilities_1.clone(items));
+            completion.next(utilities_1.deepClone(items));
             completion.complete();
-            _this._collection.next(_this.dataStore.collection);
+            _this._collection.next(_this.store.collection);
         }, function (error) { _this._errors.next(error); completion.error(error); });
         return completion;
     };
@@ -62,11 +62,11 @@ var LocalCollectionService = (function () {
         if (options === void 0) { options = ''; }
         var completion = new ReplaySubject_1.ReplaySubject(1);
         this._mapper.update(items.map(function (i) { return utilities_1.slimify(i); }), options).subscribe(function (items) {
-            utilities_1.mergeCollection(_this.dataStore.collection, items);
+            utilities_1.mergeCollection(_this.store.collection, items);
             _this.recordHistory('UPDATE');
-            completion.next(utilities_1.clone(items));
+            completion.next(utilities_1.deepClone(items));
             completion.complete();
-            _this._collection.next(_this.dataStore.collection);
+            _this._collection.next(_this.store.collection);
         }, function (error) { _this._errors.next(error); completion.error(error); });
         return completion;
     };
@@ -83,7 +83,7 @@ var LocalCollectionService = (function () {
             _this.recordHistory('DELETE');
             completion.next(ids);
             completion.complete();
-            _this._collection.next(_this.dataStore.collection);
+            _this._collection.next(_this.store.collection);
         }, function (error) { _this._errors.next(error); completion.error(error); });
         return completion;
     };
@@ -91,12 +91,12 @@ var LocalCollectionService = (function () {
         if (this.historyStore.length >= 100) {
             this.historyStore.shift();
         }
-        this.historyStore.push({ action: action, state: this.dataStore });
+        this.historyStore.push({ action: action, state: this.store });
         this._history.next(this.historyStore);
     };
     LocalCollectionService.prototype.removeCollectionItems = function (ids) {
-        this.dataStore = Object.assign({}, this.dataStore, {
-            collection: this.dataStore.collection.filter(function (item) { return !ids.find(function (id) { return id === item.id; }); })
+        this.store = Object.assign({}, this.store, {
+            collection: this.store.collection.filter(function (item) { return !ids.find(function (id) { return id === item.id; }); })
         });
     };
     LocalCollectionService.prototype.assignIds = function (items) {

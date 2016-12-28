@@ -23,12 +23,12 @@ var MockPersistenceMapper = (function () {
         return Observable_1.Observable.of(ids);
     };
     MockPersistenceMapper.prototype.load = function (id, options) {
-        var result = Observable_1.Observable.of(utilities_1.clone(MockPersistenceMapper.mockResponse));
+        var result = Observable_1.Observable.of(utilities_1.deepClone(MockPersistenceMapper.mockResponse));
         MockPersistenceMapper.mockResponse = null;
         return result;
     };
     MockPersistenceMapper.prototype.loadMany = function (options) {
-        var result = Observable_1.Observable.of(utilities_1.clone(MockPersistenceMapper.mockResponse));
+        var result = Observable_1.Observable.of(utilities_1.deepClone(MockPersistenceMapper.mockResponse));
         MockPersistenceMapper.mockResponse = null;
         return result;
     };

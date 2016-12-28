@@ -29,11 +29,13 @@
     "url": "git+https://github.com/vintage-software/vstack-graph.git"
   },
   "dependencies": {
-    "rxjs": "^5.0.1"
+    "rxjs": "^5.0.1",
+    "immutable": "3.8.1"
   },
   "devDependencies": {
     "@types/jasmine": "^2.5.38",
     "@types/es6-shim": "0.31.32",
+    "@types/immutable": "3.8.6",
     "browserify-istanbul": "^2.0.0",
     "codecov.io": "^0.1.6",
     "core-js": "^2.4.1",

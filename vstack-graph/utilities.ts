@@ -2,7 +2,7 @@ export interface CollectionItem {
   id: string | number;
 }
 
-export function clone(obj) {
+export function deepClone(obj) {
   let copy;
 
   if (null === obj || 'object' !== typeof obj) {
@@ -18,7 +18,7 @@ export function clone(obj) {
   if (obj instanceof Array) {
     copy = [];
     for (let i = 0, len = obj.length; i < len; i++) {
-      copy[i] = clone(obj[i]);
+      copy[i] = deepClone(obj[i]);
     }
     return copy;
   }
@@ -27,7 +27,7 @@ export function clone(obj) {
     copy = {};
     for (let attr in obj) {
       if (obj.hasOwnProperty(attr)) {
-        copy[attr] = clone(obj[attr]);
+        copy[attr] = deepClone(obj[attr]);
       }
     }
     return copy;
@@ -40,7 +40,6 @@ export function mergeCollection<TItem extends CollectionItem>(target: TItem[], s
   src.filter(i => i && i.id).forEach(srcItem => {
     let match = target.find(tItem => tItem.id === srcItem.id);
     if (target.find(tItem => tItem.id === srcItem.id)) {
-      // Object.assign(target, src);
       mergeCollectionItem(match, srcItem);
     } else {
       target.push(srcItem);
@@ -56,6 +55,8 @@ export function mergeCollectionItem<TItem extends CollectionItem>(target: TItem,
   }
 }
 
+// Slimify is used for sliming down what qualifies as deeply nested non shallow objects
+// We slimify objects so when we can remap the new relations when there is a new update to the collection 
 export function slimify<TItem>(item: TItem) {
   let newItem: any = {};
 

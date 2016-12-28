@@ -1,5 +1,5 @@
 /// <reference path="./typings.d.ts" />
-import { slimify, isPrimitive, clone, mergeCollection } from './utilities';
+import { slimify, isPrimitive, deepClone, mergeCollection } from './utilities';
 
 describe('isPrimitive', () => {
   it('should detect primitives', () => {
@@ -37,11 +37,11 @@ describe('clone', () => {
       { id: 1, utcDate: new Date(), accounts: ['Visa', 'Discover'] },
       { id: 2, utcDate: new Date(), accounts: ['Visa', 'Discover'] }];
 
-    expect(clone(testDate).getTime()).toBe(testDate.getTime());
-    expect(clone(testObject).id).toBe(1);
-    expect(clone(testObject).utcDate.getTime()).toBe(testObject.utcDate.getTime());
-    expect(clone(testObject).accounts[0]).toBe('Visa');
-    expect(clone(testArray).length).toBe(2);
+    expect(deepClone(testDate).getTime()).toBe(testDate.getTime());
+    expect(deepClone(testObject).id).toBe(1);
+    expect(deepClone(testObject).utcDate.getTime()).toBe(testObject.utcDate.getTime());
+    expect(deepClone(testObject).accounts[0]).toBe('Visa');
+    expect(deepClone(testArray).length).toBe(2);
   });
 });
 
