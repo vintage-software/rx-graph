@@ -1,4 +1,4 @@
-# 0.7.4
+# 0.7.5
 - Added History Observable hook for entire graph 
 - Minor code cleanup
 
