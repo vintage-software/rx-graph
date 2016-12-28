@@ -1,14 +1,25 @@
 "use strict";
+var BehaviorSubject_1 = require("rxjs/BehaviorSubject");
 var Observable_1 = require("rxjs/Observable");
 require("rxjs/add/observable/combineLatest");
+require("rxjs/add/observable/merge");
+require("rxjs/add/operator/share");
 var utilities_1 = require("../utilities");
 var BaseGraphService = (function () {
     function BaseGraphService(serviceConfigs) {
         var _this = this;
         this.serviceConfigs = serviceConfigs;
-        this.graph = Observable_1.Observable
+        var graph = new BehaviorSubject_1.BehaviorSubject(null);
+        var history = new BehaviorSubject_1.BehaviorSubject({ state: null, action: 'INIT_GRAPH' });
+        Observable_1.Observable
             .combineLatest(this.serviceConfigs.map(function (i) { return i.service._collection; }))
-            .map(function (i) { return _this.slimifyCollection(i).map(function (array) { return utilities_1.deepClone(array); }); }).map(function (i) { return _this.toGraph(i); });
+            .map(function (i) { return _this.slimifyCollection(i).map(function (array) { return utilities_1.deepClone(array); }); }).map(function (i) { return _this.toGraph(i); })
+            .subscribe(function (g) { return graph.next(g); });
+        this.graph = graph;
+        Observable_1.Observable.combineLatest(Observable_1.Observable.merge.apply(Observable_1.Observable, this.serviceConfigs.map(function (i) { return (i.service).history; })), this.graph, function (h, g) {
+            return { state: g, action: h[h.length - 1].action };
+        }).subscribe(function (h) { return history.next(h); });
+        this.history = history;
     }
     BaseGraphService.prototype.slimifyCollection = function (collection) {
         var _this = this;

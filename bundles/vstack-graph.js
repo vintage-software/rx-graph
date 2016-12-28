@@ -240,16 +240,23 @@ System.register("vstack-graph/graph/graph-utilities", [], function (exports_3, c
         }
     };
 });
-System.register("vstack-graph/graph/base-graph.service", ["rxjs/Observable", "rxjs/add/observable/combineLatest", "vstack-graph/utilities"], function (exports_4, context_4) {
+System.register("vstack-graph/graph/base-graph.service", ["rxjs/BehaviorSubject", "rxjs/Observable", "rxjs/add/observable/combineLatest", "rxjs/add/observable/merge", "rxjs/add/operator/share", "vstack-graph/utilities"], function (exports_4, context_4) {
     "use strict";
     var __moduleName = context_4 && context_4.id;
-    var Observable_1, utilities_2, BaseGraphService;
+    var BehaviorSubject_2, Observable_1, utilities_2, BaseGraphService;
     return {
         setters: [
+            function (BehaviorSubject_2_1) {
+                BehaviorSubject_2 = BehaviorSubject_2_1;
+            },
             function (Observable_1_1) {
                 Observable_1 = Observable_1_1;
             },
             function (_2) {
+            },
+            function (_3) {
+            },
+            function (_4) {
             },
             function (utilities_2_1) {
                 utilities_2 = utilities_2_1;
@@ -260,9 +267,17 @@ System.register("vstack-graph/graph/base-graph.service", ["rxjs/Observable", "rx
                 function BaseGraphService(serviceConfigs) {
                     var _this = this;
                     this.serviceConfigs = serviceConfigs;
-                    this.graph = Observable_1.Observable
+                    var graph = new BehaviorSubject_2.BehaviorSubject(null);
+                    var history = new BehaviorSubject_2.BehaviorSubject({ state: null, action: 'INIT_GRAPH' });
+                    Observable_1.Observable
                         .combineLatest(this.serviceConfigs.map(function (i) { return i.service._collection; }))
-                        .map(function (i) { return _this.slimifyCollection(i).map(function (array) { return utilities_2.deepClone(array); }); }).map(function (i) { return _this.toGraph(i); });
+                        .map(function (i) { return _this.slimifyCollection(i).map(function (array) { return utilities_2.deepClone(array); }); }).map(function (i) { return _this.toGraph(i); })
+                        .subscribe(function (g) { return graph.next(g); });
+                    this.graph = graph;
+                    Observable_1.Observable.combineLatest(Observable_1.Observable.merge.apply(Observable_1.Observable, this.serviceConfigs.map(function (i) { return (i.service).history; })), this.graph, function (h, g) {
+                        return { state: g, action: h[h.length - 1].action };
+                    }).subscribe(function (h) { return history.next(h); });
+                    this.history = history;
                 }
                 BaseGraphService.prototype.slimifyCollection = function (collection) {
                     var _this = this;

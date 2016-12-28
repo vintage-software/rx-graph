@@ -1,3 +1,7 @@
+# 0.7.4
+- Added History Observable hook for entire graph 
+- Minor code cleanup
+
 # 0.6.3
 - Updated to latest RxJS (5.0.1)
 

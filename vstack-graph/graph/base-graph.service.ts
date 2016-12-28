@@ -1,27 +1,34 @@
-// import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
+import 'rxjs/add/observable/merge';
+import 'rxjs/add/operator/share';
 
 import { CollectionItem, deepClone, mergeCollection } from '../utilities';
 import { IServiceConfig, Relation } from './graph-utilities';
 
 export class BaseGraphService<TGraph> {
   graph: Observable<TGraph>;
-  // history: Observable<{ state: {}, action: string }>;
+  history: Observable<{ state: {}, action: string }>;
 
   constructor(private serviceConfigs: IServiceConfig<TGraph>[]) {
-    // let history = new BehaviorSubject({ state: {}, action: 'INIT' });
+    let graph = new BehaviorSubject<TGraph>(null);
+    let history = new BehaviorSubject<{ state: any, action: string }>({ state: null, action: 'INIT_GRAPH' });
 
-    // .subscribe(i => { 
-    //   graph.next(i);
-    //   history.next();
-    // });
-
-    this.graph = Observable
+    Observable
       .combineLatest(this.serviceConfigs.map(i => (<any>i.service)._collection))
-      .map(i => this.slimifyCollection(i).map(array => deepClone(array))).map(i => this.toGraph(i));
+      .map(i => this.slimifyCollection(i).map(array => deepClone(array))).map(i => this.toGraph(i))
+      .subscribe(g => graph.next(g));
 
-    // this.history = history;
+    this.graph = graph;
+
+    Observable.combineLatest(
+      Observable.merge(...this.serviceConfigs.map(i => (i.service).history)),
+      this.graph, (h, g) => {
+        return { state: g, action: h[h.length - 1].action };
+      }).subscribe(h => history.next(h));
+
+    this.history = history;
   }
 
   private slimifyCollection(collection: any[]) {
