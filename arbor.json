@@ -1,0 +1,6 @@
+{
+  "name": "VStack Graph",
+  "tasks": {
+    "build": "npm run build"
+  }
+}
