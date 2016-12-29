@@ -23,9 +23,8 @@ export class BaseGraphService<TGraph> {
     this.graph = graph;
 
     Observable.combineLatest(
-      Observable.merge(...this.serviceConfigs.map(i => (i.service).history)),
-      this.graph, (h, g) => {
-        return { state: g, action: h[h.length - 1].action };
+      Observable.merge(...this.serviceConfigs.map(i => (i.service).history)), h => {
+        return { state: graph.value, action: h[h.length - 1].action };
       }).subscribe(h => history.next(h));
 
     this.history = history;

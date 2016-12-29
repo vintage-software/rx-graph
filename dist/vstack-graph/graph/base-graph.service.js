@@ -16,8 +16,8 @@ var BaseGraphService = (function () {
             .map(function (i) { return _this.slimifyCollection(i).map(function (array) { return utilities_1.deepClone(array); }); }).map(function (i) { return _this.toGraph(i); })
             .subscribe(function (g) { return graph.next(g); });
         this.graph = graph;
-        Observable_1.Observable.combineLatest(Observable_1.Observable.merge.apply(Observable_1.Observable, this.serviceConfigs.map(function (i) { return (i.service).history; })), this.graph, function (h, g) {
-            return { state: g, action: h[h.length - 1].action };
+        Observable_1.Observable.combineLatest(Observable_1.Observable.merge.apply(Observable_1.Observable, this.serviceConfigs.map(function (i) { return (i.service).history; })), function (h) {
+            return { state: graph.value, action: h[h.length - 1].action };
         }).subscribe(function (h) { return history.next(h); });
         this.history = history;
     }
