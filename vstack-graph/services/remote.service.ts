@@ -11,7 +11,7 @@ export interface RemotePersistenceMapper<TItem extends CollectionItem> extends L
 }
 
 export abstract class BaseRemoteService<TItem extends CollectionItem> extends LocalCollectionService<TItem> {
-  constructor(private remotePersistenceMapper: RemotePersistenceMapper<TItem>) {
+  constructor(remotePersistenceMapper: RemotePersistenceMapper<TItem>) {
     super(remotePersistenceMapper);
   }
 
@@ -85,7 +85,7 @@ export abstract class VSCollectionService<TItem extends CollectionItem> extends 
   }
 
   get(id: any): VsQueryable<TItem> {
-    return new VsQueryable<TItem>((isLoadAll, options) => this.load(id, options));
+    return new VsQueryable<TItem>((_isLoadAll, options) => this.load(id, options));
   }
 
   getAll(): VsQueryable<TItem[]> {

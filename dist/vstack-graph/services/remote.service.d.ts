@@ -8,7 +8,6 @@ export interface RemotePersistenceMapper<TItem extends CollectionItem> extends L
     loadMany(options: string): Observable<TItem[]>;
 }
 export declare abstract class BaseRemoteService<TItem extends CollectionItem> extends LocalCollectionService<TItem> {
-    private remotePersistenceMapper;
     constructor(remotePersistenceMapper: RemotePersistenceMapper<TItem>);
     readonly _remoteMapper: RemotePersistenceMapper<TItem>;
     protected inject(items: TItem[]): ReplaySubject<TItem[]>;

@@ -8,6 +8,8 @@
     "experimentalDecorators": true,
     "removeComments": true,
     "noImplicitAny": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "declaration": true,
     "outFile": "./bundles/vstack-graph.js",
     "types": ["jasmine", "es6-shim"]

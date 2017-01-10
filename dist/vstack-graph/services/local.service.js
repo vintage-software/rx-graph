@@ -37,7 +37,7 @@ var LocalCollectionService = (function () {
     });
     LocalCollectionService.prototype.create = function (item, options) {
         if (options === void 0) { options = ''; }
-        return this.createMany([item], options).map(function (items) { return items.find(function (i) { return true; }); });
+        return this.createMany([item], options).map(function (items) { return items.find(function () { return true; }); });
     };
     LocalCollectionService.prototype.createMany = function (items, options) {
         var _this = this;
@@ -55,7 +55,7 @@ var LocalCollectionService = (function () {
     };
     LocalCollectionService.prototype.update = function (item, options) {
         if (options === void 0) { options = ''; }
-        return this.updateMany([item], options).map(function (items) { return items.find(function (i) { return true; }); });
+        return this.updateMany([item], options).map(function (items) { return items.find(function () { return true; }); });
     };
     LocalCollectionService.prototype.updateMany = function (items, options) {
         var _this = this;
@@ -72,7 +72,7 @@ var LocalCollectionService = (function () {
     };
     LocalCollectionService.prototype.delete = function (id, options) {
         if (options === void 0) { options = ''; }
-        return this.deleteMany([id], options).map(function (items) { return items.find(function (i) { return true; }); });
+        return this.deleteMany([id], options).map(function (items) { return items.find(function () { return true; }); });
     };
     LocalCollectionService.prototype.deleteMany = function (ids, options) {
         var _this = this;

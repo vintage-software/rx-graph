@@ -133,7 +133,7 @@ System.register("vstack-graph/services/local.service", ["rxjs/BehaviorSubject", 
                 });
                 LocalCollectionService.prototype.create = function (item, options) {
                     if (options === void 0) { options = ''; }
-                    return this.createMany([item], options).map(function (items) { return items.find(function (i) { return true; }); });
+                    return this.createMany([item], options).map(function (items) { return items.find(function () { return true; }); });
                 };
                 LocalCollectionService.prototype.createMany = function (items, options) {
                     var _this = this;
@@ -151,7 +151,7 @@ System.register("vstack-graph/services/local.service", ["rxjs/BehaviorSubject", 
                 };
                 LocalCollectionService.prototype.update = function (item, options) {
                     if (options === void 0) { options = ''; }
-                    return this.updateMany([item], options).map(function (items) { return items.find(function (i) { return true; }); });
+                    return this.updateMany([item], options).map(function (items) { return items.find(function () { return true; }); });
                 };
                 LocalCollectionService.prototype.updateMany = function (items, options) {
                     var _this = this;
@@ -168,7 +168,7 @@ System.register("vstack-graph/services/local.service", ["rxjs/BehaviorSubject", 
                 };
                 LocalCollectionService.prototype.delete = function (id, options) {
                     if (options === void 0) { options = ''; }
-                    return this.deleteMany([id], options).map(function (items) { return items.find(function (i) { return true; }); });
+                    return this.deleteMany([id], options).map(function (items) { return items.find(function () { return true; }); });
                 };
                 LocalCollectionService.prototype.deleteMany = function (ids, options) {
                     var _this = this;
@@ -394,9 +394,7 @@ System.register("vstack-graph/services/remote.service", ["rxjs/ReplaySubject", "
             BaseRemoteService = (function (_super) {
                 __extends(BaseRemoteService, _super);
                 function BaseRemoteService(remotePersistenceMapper) {
-                    var _this = _super.call(this, remotePersistenceMapper) || this;
-                    _this.remotePersistenceMapper = remotePersistenceMapper;
-                    return _this;
+                    return _super.call(this, remotePersistenceMapper) || this;
                 }
                 Object.defineProperty(BaseRemoteService.prototype, "_remoteMapper", {
                     get: function () {
@@ -466,7 +464,7 @@ System.register("vstack-graph/services/remote.service", ["rxjs/ReplaySubject", "
                 }
                 VSCollectionService.prototype.get = function (id) {
                     var _this = this;
-                    return new vs_queryable_1.VsQueryable(function (isLoadAll, options) { return _this.load(id, options); });
+                    return new vs_queryable_1.VsQueryable(function (_isLoadAll, options) { return _this.load(id, options); });
                 };
                 VSCollectionService.prototype.getAll = function () {
                     var _this = this;

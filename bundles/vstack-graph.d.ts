@@ -125,7 +125,6 @@ declare module "vstack-graph/services/remote.service" {
         loadMany(options: string): Observable<TItem[]>;
     }
     export abstract class BaseRemoteService<TItem extends CollectionItem> extends LocalCollectionService<TItem> {
-        private remotePersistenceMapper;
         constructor(remotePersistenceMapper: RemotePersistenceMapper<TItem>);
         readonly _remoteMapper: RemotePersistenceMapper<TItem>;
         protected inject(items: TItem[]): ReplaySubject<TItem[]>;

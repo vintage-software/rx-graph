@@ -11,9 +11,7 @@ var vs_queryable_1 = require("./vs-queryable");
 var BaseRemoteService = (function (_super) {
     __extends(BaseRemoteService, _super);
     function BaseRemoteService(remotePersistenceMapper) {
-        var _this = _super.call(this, remotePersistenceMapper) || this;
-        _this.remotePersistenceMapper = remotePersistenceMapper;
-        return _this;
+        return _super.call(this, remotePersistenceMapper) || this;
     }
     Object.defineProperty(BaseRemoteService.prototype, "_remoteMapper", {
         get: function () {
@@ -83,7 +81,7 @@ var VSCollectionService = (function (_super) {
     }
     VSCollectionService.prototype.get = function (id) {
         var _this = this;
-        return new vs_queryable_1.VsQueryable(function (isLoadAll, options) { return _this.load(id, options); });
+        return new vs_queryable_1.VsQueryable(function (_isLoadAll, options) { return _this.load(id, options); });
     };
     VSCollectionService.prototype.getAll = function () {
         var _this = this;

@@ -13,7 +13,7 @@
     "coverage": "remap-istanbul -i coverage/coverage-final.json -o coverage -t html && http-server -c-1 -o -p 9875 ./coverage",
     "report-coverage": "cat ./coverage/lcov.info | codecov",
     "minify-js": "uglifyjs ./bundles/vstack-graph.js -o ./bundles/vstack-graph.min.js",
-    "clean": "rm -rf dist && rm -rf bundles",
+    "clean": "rimraf dist && rimraf bundles",
     "lint": "tslint \"vstack-graph/**/*.ts\""
   },
   "author": "Vintage Software",
@@ -32,8 +32,8 @@
     "rxjs": "^5.0.1"
   },
   "devDependencies": {
-    "@types/jasmine": "^2.5.38",
     "@types/es6-shim": "0.31.32",
+    "@types/jasmine": "^2.5.38",
     "browserify-istanbul": "^2.0.0",
     "codecov.io": "^0.1.6",
     "core-js": "^2.4.1",
@@ -45,7 +45,8 @@
     "karma-firefox-launcher": "^1.0.0",
     "karma-jasmine": "^1.1.0",
     "remap-istanbul": "^0.8.3",
-    "tslint": "4.1.1",
+    "rimraf": "^2.5.4",
+    "tslint": "4.3.1",
     "typescript": "^2.1.4",
     "typings": "^2.1.0",
     "uglify-js": "^2.7.5",

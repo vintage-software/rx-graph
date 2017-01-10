@@ -38,7 +38,7 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
   }
 
   create(item: any | TItem, options = ''): Observable<TItem> {
-    return this.createMany([item], options).map(items => items.find(i => true));
+    return this.createMany([item], options).map(items => items.find(() => true));
   }
 
   createMany(items: TItem[], options = ''): Observable<TItem[]> {
@@ -57,7 +57,7 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
   }
 
   update(item: any | TItem, options = ''): Observable<TItem> {
-    return this.updateMany([item], options).map(items => items.find(i => true));
+    return this.updateMany([item], options).map(items => items.find(() => true));
   }
 
   updateMany(items: TItem[], options = ''): Observable<TItem[]> {
@@ -75,7 +75,7 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
   }
 
   delete(id: any, options = ''): Observable<any> {
-    return this.deleteMany([id], options).map(items => items.find(i => true));
+    return this.deleteMany([id], options).map(items => items.find(() => true));
   }
 
   deleteMany(ids: any[], options = ''): Observable<any[]> {
