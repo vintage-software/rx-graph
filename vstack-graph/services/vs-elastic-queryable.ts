@@ -2,37 +2,45 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
 import { getPropertyName, getPropertyNamesFromProjection } from '../utilities';
-import { Filter, PrimaryFilter } from '../filters';
+import { ElasticFilter, BypassElasticFilter } from '../filters';
 
-export class VsQueryable<TResult> {
-  private primaryFilter: string;
+export class VsElasticQueryable<TResult> {
+  private bypassFilter: string;
   private filters: string[] = [];
   private includes: string[] = [];
   private selects: string[] = [];
 
   constructor(private load: (boolean, string) => Observable<TResult[]>) { }
 
-  withPrimaryFilter(filter: PrimaryFilter<TResult>): VsQueryable<TResult> {
-    this.primaryFilter = filter.toString();
-    return this;
-  }
+  filter(filter: ElasticFilter<TResult>): VsElasticQueryable<TResult> {
+    if (this.filters.length) {
+      throw new Error('Elastic filters cannot be used with a bypass elastic filters.');
+    }
 
-  filter(filter: Filter<TResult>): VsQueryable<TResult> {
     this.filters.push(filter.toString());
     return this;
   }
 
-  select<TInterface>(projection: (i: TResult) => any): VsQueryable<TInterface> {
+  bypass(filter: BypassElasticFilter<TResult>): VsElasticQueryable<TResult> {
+    if (this.filters.length) {
+      throw new Error('A bypass elastic filter cannot be used with elastic filters.');
+    }
+
+    this.bypassFilter = filter.toString();
+    return this;
+  }
+
+  select<TInterface>(projection: (i: TResult) => any): VsElasticQueryable<TInterface> {
     this.selects = getPropertyNamesFromProjection(projection);
 
     let queryable: any = this;
     return queryable;
   }
 
-  include(prop: (i: TResult) => any): VsQueryable<TResult>;
-  include<T1>(prop1: (i: TResult) => T1[], prop2: (i: T1) => any): VsQueryable<TResult>;
-  include<T1, T2>(prop1: (i: TResult) => T1[], prop2: (i: T1) => T2[], prop3: (i: T2) => any): VsQueryable<TResult>;
-  include(...props: ((i: any) => any)[]): VsQueryable<TResult> {
+  include(prop: (i: TResult) => any): VsElasticQueryable<TResult>;
+  include<T1>(prop1: (i: TResult) => T1[], prop2: (i: T1) => any): VsElasticQueryable<TResult>;
+  include<T1, T2>(prop1: (i: TResult) => T1[], prop2: (i: T1) => T2[], prop3: (i: T2) => any): VsElasticQueryable<TResult>;
+  include(...props: ((i: any) => any)[]): VsElasticQueryable<TResult> {
     let propNames = props
       .map(prop => getPropertyName(prop).toLowerCase());
 
@@ -40,6 +48,16 @@ export class VsQueryable<TResult> {
 
     if (this.includes.indexOf(propName) === -1) {
       this.includes.push(propName);
+    }
+
+    return this;
+  }
+
+  includeElasticMetadata() {
+    const meta = '_meta';
+
+    if (this.includes.indexOf(meta) === -1) {
+      this.includes.push(meta);
     }
 
     return this;
@@ -59,8 +77,8 @@ export class VsQueryable<TResult> {
   private buildQueryString(): string {
     let queryStringParams: string[] = [];
 
-    if (this.primaryFilter) {
-      queryStringParams.push(`primary-filter=${this.primaryFilter}`);
+    if (this.bypassFilter) {
+      queryStringParams.push(`bypass=${this.bypassFilter}`);
     }
 
     if (this.filters.length) {

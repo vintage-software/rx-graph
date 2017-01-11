@@ -4,7 +4,8 @@ import 'rxjs/add/observable/of';
 import { BaseGraphService } from './../graph/base-graph.service';
 import { ServiceConfig, Relation } from './../graph/graph-utilities';
 import { CollectionItem, deepClone } from './../utilities';
-import { VSCollectionService, RemotePersistenceMapper } from './../services/remote.service';
+import { RemotePersistenceMapper } from './../services/remote.service';
+import { VsCollectionService } from './../services/vs-collection.service';
 
 export class MockPersistenceMapper<TItem extends CollectionItem> implements RemotePersistenceMapper<TItem> {
   static mockResponse: any;
@@ -54,19 +55,19 @@ export interface TestItem {
   testUser: TestUser;
 }
 
-export class TestUserService extends VSCollectionService<TestUser> {
+export class TestUserService extends VsCollectionService<TestUser> {
   constructor() {
     super(new MockPersistenceMapper<TestUser>());
   }
 }
 
-export class TestPackageService extends VSCollectionService<TestPackage> {
+export class TestPackageService extends VsCollectionService<TestPackage> {
   constructor() {
     super(new MockPersistenceMapper<TestPackage>());
   }
 }
 
-export class TestItemService extends VSCollectionService<TestItem> {
+export class TestItemService extends VsCollectionService<TestItem> {
   constructor() {
     super(new MockPersistenceMapper<TestItem>());
   }
@@ -83,21 +84,21 @@ export class TestGraphService extends BaseGraphService<TestGraph> {
     public testPackageService: TestPackageService,
     public testItemService: TestItemService) {
     super([
-      new ServiceConfig<TestUser, TestGraph>(
-        testUserService, (graph, collection) => graph.testUsers = collection, [
-          new Relation('testItems', testItemService, 'testUserId', true),
-          new Relation('testPackage', testPackageService, 'testPackageId', false)
-        ]
-      ),
-      new ServiceConfig<TestPackage, TestGraph>(
-        testPackageService, (graph, collection) => graph.testPackages = collection, [
-        ]
-      ),
-      new ServiceConfig<TestItem, TestGraph>(
-        testItemService, (graph, collection) => graph.testItems = collection, [
-          new Relation('testUser', testUserService, 'testUserId', false)
-        ]
-      )
+      // new ServiceConfig<TestUser, TestGraph>(
+      //   testUserService, (graph, collection) => graph.testUsers = collection, [
+      //     new Relation('testItems', testItemService, 'testUserId', true),
+      //     new Relation('testPackage', testPackageService, 'testPackageId', false)
+      //   ]
+      // ),
+      // new ServiceConfig<TestPackage, TestGraph>(
+      //   testPackageService, (graph, collection) => graph.testPackages = collection, [
+      //   ]
+      // ),
+      // new ServiceConfig<TestItem, TestGraph>(
+      //   testItemService, (graph, collection) => graph.testItems = collection, [
+      //     new Relation('testUser', testUserService, 'testUserId', false)
+      //   ]
+      // )
     ]);
   }
 }

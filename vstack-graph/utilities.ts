@@ -2,7 +2,7 @@ export interface CollectionItem {
   id: string | number;
 }
 
-export function deepClone(obj) {
+export function deepClone<T>(obj: T): T {
   let copy;
 
   if (null === obj || 'object' !== typeof obj) {
@@ -56,7 +56,7 @@ export function mergeCollectionItem<TItem extends CollectionItem>(target: TItem,
 }
 
 // Slimify is used for sliming down what qualifies as deeply nested non shallow objects
-// We slimify objects so when we can remap the new relations when there is a new update to the collection 
+// We slimify objects so when we can remap the new relations when there is a new update to the collection
 export function slimify<TItem>(item: TItem) {
   let newItem: any = {};
 
@@ -73,4 +73,36 @@ export function slimify<TItem>(item: TItem) {
 
 export function isPrimitive(item: any) {
   return Object.prototype.toString.call(item) === '[object Date]' || typeof item !== 'object' || item === null;
+}
+
+export function getPropertyName(expression: (i: any) => any): string {
+  /* tslint:disable */
+  let memberExpressionRegEx = /^\s*function\s*\(([a-z]+)\)\s*{\s*(?:"use strict";)?\s*return\s+\1\.((?:(?:[a-z]+)\.?)+);?\s*}\s*$/i;
+  /* tslint:enable */
+
+  let funcStr = expression.toString().replace(/\n/g, ' ');
+  let funcStrMatch = funcStr.match(memberExpressionRegEx);
+
+  if (!funcStrMatch) {
+    throw new Error(`'${funcStr}' is not a valid member expression.`);
+  }
+
+  return funcStrMatch[2];
+}
+
+export function getPropertyNamesFromProjection(projection: (i: any) => any): string[] {
+  /* tslint:disable */
+  let projectionExpressionRegEx = /^\s*function\s*\(([a-z]+)\)\s*{\s*(?:"use strict";)?\s*(?:return\s+)?((?:\1\.(?:(?:[a-z]+)\.?),?\s*)+);?\s*}\s*$/i;
+  /* tslint:enable */
+
+  let funcStr = projection.toString().replace(/\n/g, ' ');
+  let funcStrMatch = funcStr.match(projectionExpressionRegEx);
+
+  if (!funcStrMatch) {
+    throw new Error(`'${funcStr}' is not a valid projection expression.`);
+  }
+
+  return funcStrMatch[2]
+    .split(',')
+    .map(prop => prop.split('.', 2)[1].trim());
 }

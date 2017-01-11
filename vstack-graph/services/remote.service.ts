@@ -3,7 +3,6 @@ import { ReplaySubject } from 'rxjs/ReplaySubject';
 
 import { LocalCollectionService, LocalPersistenceMapper } from './local.service';
 import { CollectionItem, deepClone, mergeCollection } from '../utilities';
-import { VsQueryable } from './vs-queryable';
 
 export interface RemotePersistenceMapper<TItem extends CollectionItem> extends LocalPersistenceMapper<TItem> {
   load(id: any, options: string): Observable<TItem>;
@@ -32,12 +31,12 @@ export abstract class BaseRemoteService<TItem extends CollectionItem> extends Lo
   }
 
   protected load(id: any, options: string) {
-    let completion = new ReplaySubject<TItem>(1);
+    let completion = new ReplaySubject<TItem[]>(1);
 
     this._remoteMapper.load(id, options).subscribe(item => {
       mergeCollection(this.store.collection, [item]);
       this.recordHistory('LOAD');
-      completion.next(deepClone(item));
+      completion.next([deepClone(item)]);
       completion.complete();
       this._collection.next(this.store.collection);
     }, error => { this._errors.next(error); completion.error(error); });
@@ -61,34 +60,5 @@ export abstract class BaseRemoteService<TItem extends CollectionItem> extends Lo
     }, error => { this._errors.next(error); completion.error(error); });
 
     return completion;
-  }
-}
-
-export abstract class CollectionService<TItem extends CollectionItem> extends BaseRemoteService<TItem> {
-  constructor(remotePersistenceMapper: RemotePersistenceMapper<TItem>) {
-    super(remotePersistenceMapper);
-  }
-
-  get(id: any, options?: string): Observable<TItem> {
-    return this.load(id, options);
-  }
-
-  getAll(options?: string): Observable<TItem[]> {
-    let isLoadAll = !!!options;
-    return this.loadMany(isLoadAll, options);
-  }
-}
-
-export abstract class VSCollectionService<TItem extends CollectionItem> extends BaseRemoteService<TItem> {
-  constructor(remotePersistenceMapper: RemotePersistenceMapper<TItem>) {
-    super(remotePersistenceMapper);
-  }
-
-  get(id: any): VsQueryable<TItem> {
-    return new VsQueryable<TItem>((_isLoadAll, options) => this.load(id, options));
-  }
-
-  getAll(): VsQueryable<TItem[]> {
-    return new VsQueryable<TItem[]>((isLoadAll, options) => this.loadMany(isLoadAll, options));
   }
 }
