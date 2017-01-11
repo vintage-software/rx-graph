@@ -1,4 +1,14 @@
-dist
+.vscode
+src
+
+.travis.yml
+arbor.json
+karma.conf.js
+tsconfig.json
+tsconfig-spec.json
+tslint.json
+
+#-----.gitignore, except dist----
 
 # Logs
 logs
