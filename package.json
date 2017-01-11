@@ -29,7 +29,7 @@
     "url": "git+https://github.com/vintage-software/vstack-graph.git"
   },
   "dependencies": {
-    "rxjs": "^5.0.1"
+    "rxjs": "5.0.1"
   },
   "devDependencies": {
     "@types/es6-shim": "0.31.32",
