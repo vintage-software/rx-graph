@@ -1,14 +1,16 @@
 .vscode
-src
+/vstack-graph
 
+.npmignore
 .travis.yml
 arbor.json
+index.ts
 karma.conf.js
 tsconfig.json
 tsconfig-spec.json
 tslint.json
 
-#-----.gitignore, except dist----
+#-----.gitignore, except dist and bundles----
 
 # Logs
 logs
