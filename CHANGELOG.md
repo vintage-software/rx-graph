@@ -1,5 +1,8 @@
+# 0.8.0
+- Added support for vstack filters and include/select expressions
+
 # 0.7.7
-- Added History Observable hook for entire graph 
+- Added History Observable hook for entire graph
 - Minor code cleanup
 
 # 0.6.3
