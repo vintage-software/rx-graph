@@ -5,6 +5,7 @@ import { getPropertyName, getPropertyNamesFromProjection } from '../utilities';
 import { Filter, PrimaryFilter } from '../filters';
 
 export class VsQueryable<TResult> {
+  private queryString: string;
   private primaryFilter: string;
   private filters: string[] = [];
   private includes: string[] = [];
@@ -12,17 +13,50 @@ export class VsQueryable<TResult> {
 
   constructor(private load: (boolean, string) => Observable<TResult[]>) { }
 
+  withQueryString(query: string): VsQueryable<TResult> {
+    if (this.primaryFilter) {
+      throw new Error('Query string cannot be used with primary filter.');
+    }
+
+    if (this.filters.length) {
+      throw new Error('Query string cannot be used with filter.');
+    }
+
+    if (this.includes.length) {
+      throw new Error('Query string cannot be used with include.');
+    }
+
+    if (this.selects.length) {
+      throw new Error('Query string cannot be used with select');
+    }
+
+    this.queryString = query;
+    return this;
+  }
+
   withPrimaryFilter(filter: PrimaryFilter<TResult>): VsQueryable<TResult> {
+    if (this.queryString) {
+      throw new Error('Primary filter cannot be used with query string.');
+    }
+
     this.primaryFilter = filter.toString();
     return this;
   }
 
   filter(filter: Filter<TResult>): VsQueryable<TResult> {
+    if (this.queryString) {
+      throw new Error('Filter cannot be used with query string.');
+    }
+
     this.filters.push(filter.toString());
     return this;
   }
 
   select<TInterface>(projection: (i: TResult) => any): VsQueryable<TInterface> {
+    if (this.queryString) {
+      throw new Error('Select cannot be used with query string.');
+    }
+
     this.selects = getPropertyNamesFromProjection(projection);
 
     let queryable: any = this;
@@ -33,6 +67,10 @@ export class VsQueryable<TResult> {
   include<T1>(prop1: (i: TResult) => T1[], prop2: (i: T1) => any): VsQueryable<TResult>;
   include<T1, T2>(prop1: (i: TResult) => T1[], prop2: (i: T1) => T2[], prop3: (i: T2) => any): VsQueryable<TResult>;
   include(...props: ((i: any) => any)[]): VsQueryable<TResult> {
+    if (this.queryString) {
+      throw new Error('Include cannot be used with query string.');
+    }
+
     let propNames = props
       .map(prop => getPropertyName(prop).toLowerCase());
 
@@ -46,7 +84,7 @@ export class VsQueryable<TResult> {
   }
 
   toList(): Observable<TResult[]> {
-    let queryString = this.buildQueryString();
+    let queryString = this.queryString || this.buildQueryString();
     let isLoadAll = !!!queryString;
     return this.load(isLoadAll, queryString);
   }

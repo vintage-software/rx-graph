@@ -84,21 +84,21 @@ export class TestGraphService extends BaseGraphService<TestGraph> {
     public testPackageService: TestPackageService,
     public testItemService: TestItemService) {
     super([
-      // new ServiceConfig<TestUser, TestGraph>(
-      //   testUserService, (graph, collection) => graph.testUsers = collection, [
-      //     new Relation('testItems', testItemService, 'testUserId', true),
-      //     new Relation('testPackage', testPackageService, 'testPackageId', false)
-      //   ]
-      // ),
-      // new ServiceConfig<TestPackage, TestGraph>(
-      //   testPackageService, (graph, collection) => graph.testPackages = collection, [
-      //   ]
-      // ),
-      // new ServiceConfig<TestItem, TestGraph>(
-      //   testItemService, (graph, collection) => graph.testItems = collection, [
-      //     new Relation('testUser', testUserService, 'testUserId', false)
-      //   ]
-      // )
+      new ServiceConfig<TestUser, TestGraph>(
+        testUserService, (graph, collection) => graph.testUsers = collection, [
+          new Relation('testItems', testItemService, 'testUserId', true),
+          new Relation('testPackage', testPackageService, 'testPackageId', false)
+        ]
+      ),
+      new ServiceConfig<TestPackage, TestGraph>(
+        testPackageService, (graph, collection) => graph.testPackages = collection, [
+        ]
+      ),
+      new ServiceConfig<TestItem, TestGraph>(
+        testItemService, (graph, collection) => graph.testItems = collection, [
+          new Relation('testUser', testUserService, 'testUserId', false)
+        ]
+      )
     ]);
   }
 }

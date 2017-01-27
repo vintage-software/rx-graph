@@ -5,6 +5,7 @@ import { getPropertyName, getPropertyNamesFromProjection } from '../utilities';
 import { ElasticFilter, BypassElasticFilter } from '../filters';
 
 export class VsElasticQueryable<TResult> {
+  private queryString: string;
   private bypassFilter: string;
   private filters: string[] = [];
   private includes: string[] = [];
@@ -12,9 +13,34 @@ export class VsElasticQueryable<TResult> {
 
   constructor(private load: (boolean, string) => Observable<TResult[]>) { }
 
-  filter(filter: ElasticFilter<TResult>): VsElasticQueryable<TResult> {
+  withQueryString(query: string): VsElasticQueryable<TResult> {
+    if (this.bypassFilter) {
+      throw new Error('Query string cannot be used with bypass filter.');
+    }
+
     if (this.filters.length) {
-      throw new Error('Elastic filters cannot be used with a bypass elastic filters.');
+      throw new Error('Query string cannot be used with filter.');
+    }
+
+    if (this.includes.length) {
+      throw new Error('Query string cannot be used with include.');
+    }
+
+    if (this.selects.length) {
+      throw new Error('Query string cannot be used with select');
+    }
+
+    this.queryString = query;
+    return this;
+  }
+
+  filter(filter: ElasticFilter<TResult>): VsElasticQueryable<TResult> {
+    if (this.queryString) {
+      throw new Error('Elastic filter cannot be used with query string.');
+    }
+
+    if (this.bypassFilter) {
+      throw new Error('Elastic filters cannot be used with a bypass elastic filter.');
     }
 
     this.filters.push(filter.toString());
@@ -22,6 +48,10 @@ export class VsElasticQueryable<TResult> {
   }
 
   bypass(filter: BypassElasticFilter<TResult>): VsElasticQueryable<TResult> {
+    if (this.queryString) {
+      throw new Error('Bypass elastic filter cannot be used with query string.');
+    }
+
     if (this.filters.length) {
       throw new Error('A bypass elastic filter cannot be used with elastic filters.');
     }
@@ -31,6 +61,10 @@ export class VsElasticQueryable<TResult> {
   }
 
   select<TInterface>(projection: (i: TResult) => any): VsElasticQueryable<TInterface> {
+    if (this.queryString) {
+      throw new Error('Select cannot be used with query string.');
+    }
+
     this.selects = getPropertyNamesFromProjection(projection);
 
     let queryable: any = this;
@@ -41,6 +75,10 @@ export class VsElasticQueryable<TResult> {
   include<T1>(prop1: (i: TResult) => T1[], prop2: (i: T1) => any): VsElasticQueryable<TResult>;
   include<T1, T2>(prop1: (i: TResult) => T1[], prop2: (i: T1) => T2[], prop3: (i: T2) => any): VsElasticQueryable<TResult>;
   include(...props: ((i: any) => any)[]): VsElasticQueryable<TResult> {
+    if (this.queryString) {
+      throw new Error('Include cannot be used with query string.');
+    }
+
     let propNames = props
       .map(prop => getPropertyName(prop).toLowerCase());
 
@@ -64,7 +102,7 @@ export class VsElasticQueryable<TResult> {
   }
 
   toList(): Observable<TResult[]> {
-    let queryString = this.buildQueryString();
+    let queryString = this.queryString || this.buildQueryString();
     let isLoadAll = !!!queryString;
     return this.load(isLoadAll, queryString);
   }
