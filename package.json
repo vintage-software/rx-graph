@@ -1,6 +1,6 @@
 {
   "name": "vstack-graph",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "A RxJS object relation graph for client side JavaScript Applications",
   "typings": "./dist/index.d.ts",
   "main": "./dist/index.js",
@@ -29,7 +29,7 @@
     "url": "git+https://github.com/vintage-software/vstack-graph.git"
   },
   "dependencies": {
-    "rxjs": "5.0.1"
+    "rxjs": "5.1.0"
   },
   "devDependencies": {
     "@types/es6-shim": "0.31.32",

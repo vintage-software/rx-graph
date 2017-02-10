@@ -1,3 +1,6 @@
+# 0.8.1
+- Updated to latest RxJS 5.1.0
+
 # 0.8.0
 - Added support for vstack filters and include/select expressions
 
