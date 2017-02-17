@@ -1,3 +1,6 @@
+# 0.8.2
+- Updated to latest RxJS ^5.1.1
+
 # 0.8.1
 - Updated to latest RxJS 5.1.0
 
