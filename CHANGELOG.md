@@ -1,3 +1,7 @@
+# 0.9.0
+- Add support for HTTP PATCH
+- Add generic elastic filters
+
 # 0.8.3
 - Bug fix for select in queryables.
 
