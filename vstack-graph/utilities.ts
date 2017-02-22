@@ -84,7 +84,7 @@ export function getPropertyName(expression: (i: any) => any): string {
 
   let funcStr = expression.toString().replace(/\n/g, ' ');
 
-  if (describe && it) {
+  if (typeof(describe) === 'function' && typeof(it) === 'function') {
     funcStr = funcStr.replace(instrumentationRegex, '');
   }
 
@@ -104,7 +104,7 @@ export function getPropertyNamesFromProjection(projection: (i: any) => any): str
 
   let funcStr = projection.toString().replace(/\n/g, ' ');
 
-  if (describe && it) {
+  if (typeof(describe) === 'function' && typeof(it) === 'function') {
     funcStr = funcStr.replace(instrumentationRegex, '');
   }
 
