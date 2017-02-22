@@ -1,3 +1,6 @@
+# 0.8.3
+- Bug fix for select in queryables.
+
 # 0.8.2
 - Updated to latest RxJS ^5.1.1
 
