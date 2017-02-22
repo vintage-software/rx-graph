@@ -124,7 +124,7 @@ export class VsElasticQueryable<TResult> {
     }
 
     if (this.selects.length) {
-      queryStringParams.push(`include=${this.selects.join(',')}`);
+      queryStringParams.push(`select=${this.selects.join(',')}`);
     }
 
     if (this.includes.length) {
