@@ -1,3 +1,6 @@
+# 0.9.1
+- Bug fix for runtime test error
+
 # 0.9.0
 - Add support for HTTP PATCH
 - Add generic elastic filters
