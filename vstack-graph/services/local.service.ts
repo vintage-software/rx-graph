@@ -9,6 +9,7 @@ import { slimify, CollectionItem, deepClone, mergeCollection } from '../utilitie
 export interface LocalPersistenceMapper<TItem extends CollectionItem> {
   create(items: TItem[], options: string): Observable<TItem[]>;
   update(items: TItem[], options: string): Observable<TItem[]>;
+  patch(items: TItem[], options: string): Observable<TItem[]>;
   delete(ids: any[], options: string): Observable<any>;
 }
 
@@ -66,6 +67,24 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
     this._mapper.update(items.map(i => slimify(i)), options).subscribe(items => {
       mergeCollection(this.store.collection, items);
       this.recordHistory('UPDATE');
+      completion.next(deepClone(items));
+      completion.complete();
+      this._collection.next(this.store.collection);
+    }, error => { this._errors.next(error); completion.error(error); });
+
+    return completion;
+  }
+
+  patch(item: any | TItem, options = ''): Observable<TItem> {
+    return this.patchMany([item], options).map(items => items.find(() => true));
+  }
+
+  patchMany(items: TItem[], options = ''): Observable<TItem[]> {
+    let completion = new ReplaySubject<TItem[]>(1);
+
+    this._mapper.patch(items.map(i => slimify(i)), options).subscribe(items => {
+      mergeCollection(this.store.collection, items);
+      this.recordHistory('PATCH');
       completion.next(deepClone(items));
       completion.complete();
       this._collection.next(this.store.collection);

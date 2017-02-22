@@ -18,6 +18,10 @@ export class MockPersistenceMapper<TItem extends CollectionItem> implements Remo
     return Observable.of(items);
   }
 
+  patch(items: TItem[]): Observable<TItem[]> {
+    return Observable.of(items);
+  }
+
   delete(ids: any[]): Observable<any[]> {
     return Observable.of(ids);
   }
