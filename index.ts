@@ -10,6 +10,6 @@ export { VsElasticQueryable } from './vstack-graph/services/vs-elastic-queryable
 export { LocalCollectionService } from './vstack-graph/services/local.service';
 export { AngularHttpMapper } from './vstack-graph/services/angular-http';
 export { CollectionItem } from './vstack-graph/utilities';
-export { Filter, PrimaryFilter, ElasticFilter, BypassElasticFilter } from './vstack-graph/filters';
+export * from './vstack-graph/filters';
 
 export const utilities = { getPropertyName };

@@ -1,3 +1,5 @@
+const instrumentationRegex = /__cov_[a-z0-9.$]+\['[0-9]+'\]\+\+;/ig;
+
 export interface CollectionItem {
   id: string | number;
 }
@@ -81,6 +83,11 @@ export function getPropertyName(expression: (i: any) => any): string {
   /* tslint:enable */
 
   let funcStr = expression.toString().replace(/\n/g, ' ');
+
+  if (describe && it) {
+    funcStr = funcStr.replace(instrumentationRegex, '');
+  }
+
   let funcStrMatch = funcStr.match(memberExpressionRegEx);
 
   if (!funcStrMatch) {
@@ -96,6 +103,11 @@ export function getPropertyNamesFromProjection(projection: (i: any) => any): str
   /* tslint:enable */
 
   let funcStr = projection.toString().replace(/\n/g, ' ');
+
+  if (describe && it) {
+    funcStr = funcStr.replace(instrumentationRegex, '');
+  }
+
   let funcStrMatch = funcStr.match(projectionExpressionRegEx);
 
   if (!funcStrMatch) {
