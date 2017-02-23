@@ -32,7 +32,6 @@
     "rxjs": "^5.1.0"
   },
   "devDependencies": {
-    "@types/es6-shim": "0.31.32",
     "@types/jasmine": "^2.5.38",
     "browserify-istanbul": "^2.0.0",
     "codecov.io": "^0.1.6",

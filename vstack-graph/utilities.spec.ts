@@ -1,4 +1,3 @@
-/// <reference path="./typings.d.ts" />
 import { slimify, isPrimitive, deepClone, mergeCollection } from './utilities';
 
 describe('isPrimitive', () => {

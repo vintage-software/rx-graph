@@ -1,5 +1,4 @@
 import { SortType, ByFieldHasAny, ByFieldHasAll, SortBy, ByField, TakeAll, Take, Skip, ElasticFilter } from './filters';
-/// <reference path="./typings.d.ts" />
 import { slimify, isPrimitive, deepClone, mergeCollection } from './utilities';
 
 class Test {

@@ -12,7 +12,8 @@
     "noUnusedParameters": true,
     "declaration": true,
     "outFile": "./bundles/vstack-graph.js",
-    "types": ["jasmine", "es6-shim"]
+    "lib": ["es6"],
+    "types": ["jasmine"]
   },
   "files": [
     "./index.ts"
