@@ -1,6 +1,7 @@
 const instrumentationRegex = /__cov_[a-z0-9.$_]+\['[0-9]+'\]\+\+;/ig;
 
 export type Id = string | number;
+export type QueryString = { [key: string]: string };
 
 export interface CollectionItem {
   id: Id;
@@ -77,6 +78,18 @@ export function slimify<TItem>(item: TItem) {
 
 export function isPrimitive(item: any) {
   return Object.prototype.toString.call(item) === '[object Date]' || typeof item !== 'object' || item === null;
+}
+
+export function toQueryString(query: QueryString): string {
+  let params: string[] = [];
+
+  for (let prop in query) {
+    if (query.hasOwnProperty(prop)) {
+      params.push(`${prop}=${encodeURIComponent(query[prop])}`);
+    }
+  }
+
+  return params.join('&');
 }
 
 export function getPropertyName(expression: (i: any) => any): string {

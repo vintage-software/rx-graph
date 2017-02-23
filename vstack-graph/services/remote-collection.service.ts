@@ -2,7 +2,7 @@ import { ReplaySubject } from 'rxjs/ReplaySubject';
 
 import { LocalCollectionService } from './local-collection.service';
 import { RemotePersistenceMapper } from '../mappers/remote-persistence.mapper';
-import { CollectionItem, deepClone, mergeCollection, Id } from '../utilities';
+import { CollectionItem, deepClone, mergeCollection, Id, QueryString } from '../utilities';
 
 export abstract class RemoteCollectionService<TItem extends CollectionItem> extends LocalCollectionService<TItem> {
   constructor(remotePersistenceMapper: RemotePersistenceMapper<TItem>) {
@@ -25,7 +25,7 @@ export abstract class RemoteCollectionService<TItem extends CollectionItem> exte
     return completion;
   }
 
-  protected load(id: Id, options: string) {
+  protected load(id: Id, options: QueryString) {
     let completion = new ReplaySubject<TItem[]>(1);
 
     this._remoteMapper.load(id, options).subscribe(item => {
@@ -39,7 +39,7 @@ export abstract class RemoteCollectionService<TItem extends CollectionItem> exte
     return completion;
   }
 
-  protected loadMany(isLoadAll: boolean, options: string) {
+  protected loadMany(isLoadAll: boolean, options: QueryString) {
     let completion = new ReplaySubject<TItem[]>(1);
 
     this._remoteMapper.loadMany(options).subscribe(items => {

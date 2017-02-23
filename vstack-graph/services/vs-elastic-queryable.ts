@@ -1,19 +1,19 @@
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
-import { getPropertyName, getPropertyNamesFromProjection } from '../utilities';
+import { getPropertyName, getPropertyNamesFromProjection, QueryString } from '../utilities';
 import { ElasticFilter, BypassElasticFilter } from '../filters';
 
 export class VsElasticQueryable<TResult> {
-  private queryString: string;
+  private queryString: QueryString;
   private bypassFilter: string;
   private filters: string[] = [];
   private includes: string[] = [];
   private selects: string[] = [];
 
-  constructor(private load: (boolean, string) => Observable<TResult[]>) { }
+  constructor(private load: (boolean, QueryString) => Observable<TResult[]>) { }
 
-  withQueryString(query: string): VsElasticQueryable<TResult> {
+  withQueryString(queryString: QueryString): VsElasticQueryable<TResult> {
     if (this.bypassFilter) {
       throw new Error('Query string cannot be used with bypass filter.');
     }
@@ -30,7 +30,7 @@ export class VsElasticQueryable<TResult> {
       throw new Error('Query string cannot be used with select');
     }
 
-    this.queryString = query;
+    this.queryString = queryString;
     return this;
   }
 
@@ -112,25 +112,25 @@ export class VsElasticQueryable<TResult> {
       .map(items => items.length ? items[0] : undefined);
   }
 
-  private buildQueryString(): string {
-    let queryStringParams: string[] = [];
+  private buildQueryString(): QueryString {
+    let queryString: QueryString = {};
 
     if (this.bypassFilter) {
-      queryStringParams.push(`bypass=${this.bypassFilter}`);
+      queryString['bypass'] = this.bypassFilter;
     }
 
     if (this.filters.length) {
-      queryStringParams.push(`filter=${this.filters.join('|')}`);
+      queryString['filter'] = this.filters.join('|');
     }
 
     if (this.selects.length) {
-      queryStringParams.push(`select=${this.selects.join(',')}`);
+      queryString['select'] = this.selects.join(',');
     }
 
     if (this.includes.length) {
-      queryStringParams.push(`include=${this.includes.join(',')}`);
+      queryString['include'] = this.includes.join(',');
     }
 
-    return queryStringParams.join('&');
+    return Object.keys(queryString).length ? queryString : undefined;
   }
 }

@@ -261,7 +261,7 @@ describe('GraphService Specs', () => {
     MockPersistenceMapper.mockResponse = [{ id: 1, value: 'user 1', testPackageId: 1 }, { id: 2, value: 'user 2', testPackageId: 1 }];
     testGraphService.testUserService.getAll().toList();
     MockPersistenceMapper.mockResponse = [{ id: 1, value: 'user 1', testPackageId: 1 }];
-    testGraphService.testUserService.getAll().withQueryString('bob').toList();
+    testGraphService.testUserService.getAll().withQueryString({'name': 'bob'}).toList();
 
     expect(checked).toBe(true);
   });

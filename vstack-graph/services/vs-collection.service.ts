@@ -1,4 +1,4 @@
-import { CollectionItem, Id } from '../utilities';
+import { CollectionItem, Id, QueryString } from '../utilities';
 import { VsQueryable } from './vs-queryable';
 
 import { RemotePersistenceMapper } from '../mappers/remote-persistence.mapper';
@@ -10,10 +10,10 @@ export abstract class VsCollectionService<TItem extends CollectionItem> extends 
   }
 
   get(id: Id): VsQueryable<TItem> {
-    return new VsQueryable<TItem>((_isLoadAll, options) => this.load(id, options));
+    return new VsQueryable<TItem>((_isLoadAll: boolean, options: QueryString) => this.load(id, options));
   }
 
   getAll(): VsQueryable<TItem> {
-    return new VsQueryable<TItem>((isLoadAll, options) => this.loadMany(isLoadAll, options));
+    return new VsQueryable<TItem>((isLoadAll: boolean, options: QueryString) => this.loadMany(isLoadAll, options));
   }
 }

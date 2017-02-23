@@ -1,8 +1,8 @@
 import { RemotePersistenceMapper } from './remote-persistence.mapper';
 import { Observable } from 'rxjs/Observable';
 
-import { CollectionItem, Id } from '../utilities';
-import { AngularHttp, AngularRequestOptionsArgs } from './angular-http';
+import { toQueryString, CollectionItem, Id, QueryString } from '../utilities';
+import { AngularHttp, AngularRequestOptionsArgs, AngularResponse } from './angular-http';
 
 export class AngularHttpMapper<TItem extends CollectionItem> implements RemotePersistenceMapper<TItem> {
   protected baseUrl: string;
@@ -15,27 +15,58 @@ export class AngularHttpMapper<TItem extends CollectionItem> implements RemotePe
     this.http = http;
   }
 
-  create(items: TItem[], options = ''): Observable<TItem[]> {
-    return this.http.post(`${this.baseUrl}/bulk?${options}`, JSON.stringify(items), this.requestOptionsArgs).map(res => res.json());
+  create(items: TItem[], options: QueryString = {}): Observable<TItem[]> {
+    return this.createInternal(items, options).map(res => res.json());
   }
 
-  update(items: TItem[], options = ''): Observable<TItem[]> {
-    return this.http.put(`${this.baseUrl}/bulk?${options}`, JSON.stringify(items), this.requestOptionsArgs).map(res => res.json());
+  update(items: TItem[], options: QueryString = {}): Observable<TItem[]> {
+    return this.updateInternal(items, options).map(res => res.json());
   }
 
-  patch(items: TItem[], options = ''): Observable<TItem[]> {
-    return this.http.patch(`${this.baseUrl}/bulk?${options}`, JSON.stringify(items), this.requestOptionsArgs).map(res => res.json());
+  patch(items: TItem[], options: QueryString = {}): Observable<TItem[]> {
+    return this.patchInternal(items, options).map(res => res.json());
   }
 
-  delete(ids: Id[], options = ''): Observable<any> {
-    return this.http.delete(`${this.baseUrl}?ids=${ids.join()}&${options}`, this.requestOptionsArgs).map(res => res.status);
+  delete(ids: Id[], options: QueryString = {}): Observable<any> {
+    return this.deleteInternal(ids, options).map(res => res.status);
   }
 
-  load(id: Id, options = '') {
-    return this.http.get(`${this.baseUrl}/${id}?${options}`, this.requestOptionsArgs).map(res => res.json());
+  load(id: Id, options: QueryString = {}): Observable<TItem> {
+    return this.loadInternal(id, options).map(res => res.json());
   }
 
-  loadMany(options = '') {
-    return this.http.get(`${this.baseUrl}?${options}`, this.requestOptionsArgs).map(res => res.json());
+  loadMany(options: QueryString = {}): Observable<TItem[]> {
+    return this.loadManyInternal(options).map(res => res.json());
+  }
+
+  protected createInternal(items: TItem[], options: QueryString = {}): Observable<AngularResponse> {
+    let queryString = toQueryString(options);
+    return this.http.post(`${this.baseUrl}/bulk?${queryString}`, JSON.stringify(items), this.requestOptionsArgs);
+  }
+
+  protected updateInternal(items: TItem[], options: QueryString = {}): Observable<AngularResponse> {
+    let queryString = toQueryString(options);
+    return this.http.put(`${this.baseUrl}/bulk?${queryString}`, JSON.stringify(items), this.requestOptionsArgs);
+  }
+
+  protected patchInternal(items: TItem[], options: QueryString = {}): Observable<AngularResponse> {
+    let queryString = toQueryString(options);
+    return this.http.patch(`${this.baseUrl}/bulk?${queryString}`, JSON.stringify(items), this.requestOptionsArgs);
+  }
+
+  protected deleteInternal(ids: Id[], options: QueryString = {}): Observable<AngularResponse> {
+    let optionsWithIds: QueryString = Object.assign({}, options, { ids: ids.join() });
+    let queryString = toQueryString(optionsWithIds);
+    return this.http.delete(`${this.baseUrl}?&${queryString}`, this.requestOptionsArgs);
+  }
+
+  protected loadInternal(id: Id, options: QueryString = {}): Observable<AngularResponse> {
+    let queryString = toQueryString(options);
+    return this.http.get(`${this.baseUrl}/${id}?${queryString}`, this.requestOptionsArgs);
+  }
+
+  protected loadManyInternal(options: QueryString = {}): Observable<AngularResponse> {
+    let queryString = toQueryString(options);
+    return this.http.get(`${this.baseUrl}?${queryString}`, this.requestOptionsArgs);
   }
 }

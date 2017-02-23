@@ -4,7 +4,7 @@ import { Subject } from 'rxjs/Subject';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import 'rxjs/add/operator/map';
 
-import { slimify, CollectionItem, deepClone, mergeCollection, Id } from '../utilities';
+import { slimify, CollectionItem, deepClone, mergeCollection, Id, QueryString } from '../utilities';
 
 import { LocalPersistenceMapper } from '../mappers/local-persistence.mapper';
 
@@ -33,11 +33,11 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
     return this._history.asObservable();
   }
 
-  create(item: any | TItem, options = ''): Observable<TItem> {
+  create(item: any | TItem, options: QueryString = {}): Observable<TItem> {
     return this.createMany([item], options).map(items => items.find(() => true));
   }
 
-  createMany(items: TItem[], options = ''): Observable<TItem[]> {
+  createMany(items: TItem[], options: QueryString = {}): Observable<TItem[]> {
     let completion = new ReplaySubject<TItem[]>(1);
     this.assignIds(items);
 
@@ -52,11 +52,11 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
     return completion;
   }
 
-  update(item: any | TItem, options = ''): Observable<TItem> {
+  update(item: any | TItem, options: QueryString = {}): Observable<TItem> {
     return this.updateMany([item], options).map(items => items.find(() => true));
   }
 
-  updateMany(items: TItem[], options = ''): Observable<TItem[]> {
+  updateMany(items: TItem[], options: QueryString = {}): Observable<TItem[]> {
     let completion = new ReplaySubject<TItem[]>(1);
 
     this._mapper.update(items.map(i => slimify(i)), options).subscribe(items => {
@@ -70,11 +70,11 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
     return completion;
   }
 
-  patch(item: any | TItem, options = ''): Observable<TItem> {
+  patch(item: any | TItem, options: QueryString = {}): Observable<TItem> {
     return this.patchMany([item], options).map(items => items.find(() => true));
   }
 
-  patchMany(items: TItem[], options = ''): Observable<TItem[]> {
+  patchMany(items: TItem[], options: QueryString = {}): Observable<TItem[]> {
     let completion = new ReplaySubject<TItem[]>(1);
 
     this._mapper.patch(items.map(i => slimify(i)), options).subscribe(items => {
@@ -88,11 +88,11 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
     return completion;
   }
 
-  delete(id: Id, options = ''): Observable<any> {
+  delete(id: Id, options: QueryString = {}): Observable<any> {
     return this.deleteMany([id], options).map(items => items.find(() => true));
   }
 
-deleteMany(ids: any[], options = ''): Observable<any[]> {
+deleteMany(ids: any[], options: QueryString = {}): Observable<any[]> {
     let completion = new ReplaySubject<TItem[]>(1);
 
     this._mapper.delete(ids, options).subscribe(() => {

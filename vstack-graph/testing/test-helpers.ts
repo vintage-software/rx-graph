@@ -3,7 +3,7 @@ import 'rxjs/add/observable/of';
 
 import { BaseGraphService } from './../graph/base-graph.service';
 import { ServiceConfig, Relation } from './../graph/graph-utilities';
-import { CollectionItem, deepClone, Id } from './../utilities';
+import { CollectionItem, deepClone, Id, QueryString } from './../utilities';
 import { RemotePersistenceMapper } from './../mappers/remote-persistence.mapper';
 import { VsCollectionService } from './../services/vs-collection.service';
 
@@ -26,13 +26,13 @@ export class MockPersistenceMapper<TItem extends CollectionItem> implements Remo
     return Observable.of(ids);
   }
 
-  load(id: Id, options?: string): Observable<TItem> {
+  load(id: Id, options?: QueryString): Observable<TItem> {
     let result = Observable.of(deepClone(MockPersistenceMapper.mockResponse));
     MockPersistenceMapper.mockResponse = null;
     return result;
   }
 
-  loadMany(options?: string): Observable<TItem[]> {
+  loadMany(options?: QueryString): Observable<TItem[]> {
     let result = Observable.of(deepClone(MockPersistenceMapper.mockResponse));
     MockPersistenceMapper.mockResponse = null;
     return result;
