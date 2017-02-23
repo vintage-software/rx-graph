@@ -11,7 +11,6 @@ const message = '';
 
 const testFilter = (filter: ElasticFilter<Test>) => {
   let params = filter.getParameters();
-  console.log(params);
   return `${filter.getFilterName()}${params.length ? ':' : ''}${params.join('_')}`;
 };
 
