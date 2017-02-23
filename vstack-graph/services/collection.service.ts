@@ -2,9 +2,10 @@ import { Observable } from 'rxjs/Observable';
 
 import { CollectionItem, Id } from '../utilities';
 
-import { BaseRemoteService, RemotePersistenceMapper } from './remote.service';
+import { RemotePersistenceMapper } from '../mappers/remote-persistence.mapper';
+import { RemoteCollectionService } from './remote-collection.service';
 
-export abstract class CollectionService<TItem extends CollectionItem> extends BaseRemoteService<TItem> {
+export abstract class CollectionService<TItem extends CollectionItem> extends RemoteCollectionService<TItem> {
   constructor(remotePersistenceMapper: RemotePersistenceMapper<TItem>) {
     super(remotePersistenceMapper);
   }

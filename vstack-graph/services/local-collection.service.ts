@@ -6,12 +6,7 @@ import 'rxjs/add/operator/map';
 
 import { slimify, CollectionItem, deepClone, mergeCollection, Id } from '../utilities';
 
-export interface LocalPersistenceMapper<TItem extends CollectionItem> {
-  create(items: TItem[], options: string): Observable<TItem[]>;
-  update(items: TItem[], options: string): Observable<TItem[]>;
-  patch(items: TItem[], options: string): Observable<TItem[]>;
-  delete(ids: Id[], options: string): Observable<any>;
-}
+import { LocalPersistenceMapper } from '../mappers/local-persistence.mapper';
 
 export abstract class LocalCollectionService<TItem extends CollectionItem> {
   protected _collection = new BehaviorSubject(<TItem[]>[]);

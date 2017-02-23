@@ -7,8 +7,8 @@ export { VsCollectionService } from './vstack-graph/services/vs-collection.servi
 export { VsElasticCollectionService } from './vstack-graph/services/vs-elastic-collection.service';
 export { VsQueryable } from './vstack-graph/services/vs-queryable';
 export { VsElasticQueryable } from './vstack-graph/services/vs-elastic-queryable';
-export { LocalCollectionService } from './vstack-graph/services/local.service';
-export { AngularHttpMapper } from './vstack-graph/services/angular-http';
+export { LocalCollectionService } from './vstack-graph/services/local-collection.service';
+export { AngularHttpMapper } from './vstack-graph/mappers/angular-http.mapper';
 export { CollectionItem } from './vstack-graph/utilities';
 export * from './vstack-graph/filters';
 

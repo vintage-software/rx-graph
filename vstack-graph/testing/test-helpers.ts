@@ -4,7 +4,7 @@ import 'rxjs/add/observable/of';
 import { BaseGraphService } from './../graph/base-graph.service';
 import { ServiceConfig, Relation } from './../graph/graph-utilities';
 import { CollectionItem, deepClone, Id } from './../utilities';
-import { RemotePersistenceMapper } from './../services/remote.service';
+import { RemotePersistenceMapper } from './../mappers/remote-persistence.mapper';
 import { VsCollectionService } from './../services/vs-collection.service';
 
 export class MockPersistenceMapper<TItem extends CollectionItem> implements RemotePersistenceMapper<TItem> {

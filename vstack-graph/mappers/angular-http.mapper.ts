@@ -1,8 +1,8 @@
-import { RemotePersistenceMapper } from './remote.service';
+import { RemotePersistenceMapper } from './remote-persistence.mapper';
 import { Observable } from 'rxjs/Observable';
 
 import { CollectionItem } from '../utilities';
-import { AngularHttp, AngularRequestOptionsArgs } from './http';
+import { AngularHttp, AngularRequestOptionsArgs } from './angular-http';
 
 export class AngularHttpMapper<TItem extends CollectionItem> implements RemotePersistenceMapper<TItem> {
   protected baseUrl: string;

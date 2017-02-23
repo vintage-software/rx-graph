@@ -1,9 +1,10 @@
 import { CollectionItem, Id} from '../utilities';
 import { VsElasticQueryable } from './vs-elastic-queryable';
 
-import { BaseRemoteService, RemotePersistenceMapper } from './remote.service';
+import { RemotePersistenceMapper } from '../mappers/remote-persistence.mapper';
+import { RemoteCollectionService } from './remote-collection.service';
 
-export abstract class VsElasticCollectionService<TItem extends CollectionItem> extends BaseRemoteService<TItem> {
+export abstract class VsElasticCollectionService<TItem extends CollectionItem> extends RemoteCollectionService<TItem> {
   constructor(remotePersistenceMapper: RemotePersistenceMapper<TItem>) {
     super(remotePersistenceMapper);
   }

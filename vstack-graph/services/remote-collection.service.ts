@@ -1,15 +1,10 @@
-import { Observable } from 'rxjs/Observable';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 
-import { LocalCollectionService, LocalPersistenceMapper } from './local.service';
+import { LocalCollectionService } from './local-collection.service';
+import { RemotePersistenceMapper } from '../mappers/remote-persistence.mapper';
 import { CollectionItem, deepClone, mergeCollection, Id } from '../utilities';
 
-export interface RemotePersistenceMapper<TItem extends CollectionItem> extends LocalPersistenceMapper<TItem> {
-  load(id: Id, options: string): Observable<TItem>;
-  loadMany(options: string): Observable<TItem[]>;
-}
-
-export abstract class BaseRemoteService<TItem extends CollectionItem> extends LocalCollectionService<TItem> {
+export abstract class RemoteCollectionService<TItem extends CollectionItem> extends LocalCollectionService<TItem> {
   constructor(remotePersistenceMapper: RemotePersistenceMapper<TItem>) {
     super(remotePersistenceMapper);
   }
