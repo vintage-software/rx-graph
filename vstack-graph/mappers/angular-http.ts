@@ -4,28 +4,10 @@ export interface AngularRequestOptionsArgs {
   headers?: Headers;
 }
 
-export enum AngularResponseType {
-  Basic = 0,
-  Cors = 1,
-  Default = 2,
-  Error = 3,
-  Opaque = 4,
-}
-
 export interface AngularResponse {
-  type: AngularResponseType;
-  ok: boolean;
-  url: string;
   status: number;
-  statusText: string;
-  bytesLoaded: number;
-  totalBytes: number;
-  headers: Headers;
   json(): any;
   text(): string;
-  arrayBuffer(): ArrayBuffer;
-  blob(): Blob;
-  toString(): string;
 }
 
 export interface AngularHttp {
