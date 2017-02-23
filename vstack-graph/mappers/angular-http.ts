@@ -1,7 +1,20 @@
 import { Observable } from 'rxjs/Observable';
 
+export interface AngularHeaders {
+  append(name: string, value: string): void;
+  delete(name: string): void;
+  forEach(fn: (values: string[], name: string, headers: Map<string, string[]>) => void): void;
+  get(name: string): string;
+  has(name: string): boolean;
+  keys(): string[];
+  set(name: string, value: string | string[]): void;
+  values(): string[][];
+  toJSON(): { [name: string]: any; };
+  getAll(name: string): string[];
+}
+
 export interface AngularRequestOptionsArgs {
-  headers?: Headers;
+  headers?: AngularHeaders;
 }
 
 export interface AngularResponse {
