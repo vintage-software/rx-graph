@@ -92,8 +92,8 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
     return this.deleteMany([id], options).map(items => items.find(() => true));
   }
 
-  deleteMany(ids: Id[], options = ''): Observable<Id[]> {
-    let completion = new ReplaySubject<Id[]>(1);
+deleteMany(ids: any[], options = ''): Observable<any[]> {
+    let completion = new ReplaySubject<TItem[]>(1);
 
     this._mapper.delete(ids, options).subscribe(() => {
       this.removeCollectionItems(ids);
