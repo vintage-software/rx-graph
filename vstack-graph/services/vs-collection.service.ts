@@ -1,4 +1,4 @@
-import { CollectionItem } from '../utilities';
+import { CollectionItem, Id } from '../utilities';
 import { VsQueryable } from './vs-queryable';
 
 import { BaseRemoteService, RemotePersistenceMapper } from './remote.service';
@@ -8,7 +8,7 @@ export abstract class VsCollectionService<TItem extends CollectionItem> extends 
     super(remotePersistenceMapper);
   }
 
-  get(id: any): VsQueryable<TItem> {
+  get(id: Id): VsQueryable<TItem> {
     return new VsQueryable<TItem>((_isLoadAll, options) => this.load(id, options));
   }
 

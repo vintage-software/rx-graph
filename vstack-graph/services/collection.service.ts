@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs/Observable';
 
-import { CollectionItem } from '../utilities';
+import { CollectionItem, Id } from '../utilities';
 
 import { BaseRemoteService, RemotePersistenceMapper } from './remote.service';
 
@@ -9,7 +9,7 @@ export abstract class CollectionService<TItem extends CollectionItem> extends Ba
     super(remotePersistenceMapper);
   }
 
-  get(id: any, options?: string): Observable<TItem[]> {
+  get(id: Id, options?: string): Observable<TItem[]> {
     return this.load(id, options);
   }
 

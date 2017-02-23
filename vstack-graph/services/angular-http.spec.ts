@@ -2,13 +2,15 @@
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 
+import { AngularHttp } from './http';
 import { AngularHttpMapper } from './angular-http';
 
-let mockAngularHttp = {
-  post: () => Observable.of({ json: () => true }),
+let mockAngularHttp: AngularHttp = {
+  get: () => Observable.of({ json: () => true }),
   put: () => Observable.of({ json: () => true }),
-  delete: () => Observable.of(true),
-  get: () => Observable.of({ json: () => true })
+  post: () => Observable.of({ json: () => true }),
+  patch: () => Observable.of({ json: () => true }),
+  delete: () => Observable.of({ json: () => true })
 };
 
 describe('Angular Http Adapter Specs', () => {

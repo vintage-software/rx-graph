@@ -2,10 +2,10 @@ import { Observable } from 'rxjs/Observable';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 
 import { LocalCollectionService, LocalPersistenceMapper } from './local.service';
-import { CollectionItem, deepClone, mergeCollection } from '../utilities';
+import { CollectionItem, deepClone, mergeCollection, Id } from '../utilities';
 
 export interface RemotePersistenceMapper<TItem extends CollectionItem> extends LocalPersistenceMapper<TItem> {
-  load(id: any, options: string): Observable<TItem>;
+  load(id: Id, options: string): Observable<TItem>;
   loadMany(options: string): Observable<TItem[]>;
 }
 
@@ -30,7 +30,7 @@ export abstract class BaseRemoteService<TItem extends CollectionItem> extends Lo
     return completion;
   }
 
-  protected load(id: any, options: string) {
+  protected load(id: Id, options: string) {
     let completion = new ReplaySubject<TItem[]>(1);
 
     this._remoteMapper.load(id, options).subscribe(item => {

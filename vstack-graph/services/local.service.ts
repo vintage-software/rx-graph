@@ -4,13 +4,13 @@ import { Subject } from 'rxjs/Subject';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import 'rxjs/add/operator/map';
 
-import { slimify, CollectionItem, deepClone, mergeCollection } from '../utilities';
+import { slimify, CollectionItem, deepClone, mergeCollection, Id } from '../utilities';
 
 export interface LocalPersistenceMapper<TItem extends CollectionItem> {
   create(items: TItem[], options: string): Observable<TItem[]>;
   update(items: TItem[], options: string): Observable<TItem[]>;
   patch(items: TItem[], options: string): Observable<TItem[]>;
-  delete(ids: any[], options: string): Observable<any>;
+  delete(ids: Id[], options: string): Observable<any>;
 }
 
 export abstract class LocalCollectionService<TItem extends CollectionItem> {
@@ -93,12 +93,12 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
     return completion;
   }
 
-  delete(id: any, options = ''): Observable<any> {
+  delete(id: Id, options = ''): Observable<any> {
     return this.deleteMany([id], options).map(items => items.find(() => true));
   }
 
-  deleteMany(ids: any[], options = ''): Observable<any[]> {
-    let completion = new ReplaySubject<TItem[]>(1);
+  deleteMany(ids: Id[], options = ''): Observable<Id[]> {
+    let completion = new ReplaySubject<Id[]>(1);
 
     this._mapper.delete(ids, options).subscribe(() => {
       this.removeCollectionItems(ids);
@@ -120,13 +120,13 @@ export abstract class LocalCollectionService<TItem extends CollectionItem> {
     this._history.next(this.historyStore);
   }
 
-  protected removeCollectionItems(ids: any[]) {
+  protected removeCollectionItems(ids: Id[]) {
     this.store = Object.assign({}, this.store, {
       collection: this.store.collection.filter(item => !ids.find(id => id === item.id))
     });
   }
 
-  protected assignIds(items: any[]) {
+  protected assignIds(items: CollectionItem[]) {
     items.forEach(i => i.id = this.getGuid());
   }
 

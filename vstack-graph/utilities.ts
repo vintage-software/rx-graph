@@ -1,7 +1,9 @@
 const instrumentationRegex = /__cov_[a-z0-9.$_]+\['[0-9]+'\]\+\+;/ig;
 
+export type Id = string | number;
+
 export interface CollectionItem {
-  id: string | number;
+  id: Id;
 }
 
 export function deepClone<T>(obj: T): T {

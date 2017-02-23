@@ -1,4 +1,4 @@
-import { CollectionItem } from '../utilities';
+import { CollectionItem, Id} from '../utilities';
 import { VsElasticQueryable } from './vs-elastic-queryable';
 
 import { BaseRemoteService, RemotePersistenceMapper } from './remote.service';
@@ -8,7 +8,7 @@ export abstract class VsElasticCollectionService<TItem extends CollectionItem> e
     super(remotePersistenceMapper);
   }
 
-  get(id: any): VsElasticQueryable<TItem> {
+  get(id: Id): VsElasticQueryable<TItem> {
     return new VsElasticQueryable<TItem>((_isLoadAll, options) => this.load(id, options));
   }
 
