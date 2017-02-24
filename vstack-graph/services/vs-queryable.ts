@@ -4,6 +4,17 @@ import 'rxjs/add/operator/map';
 import { getPropertyName, getPropertyNamesFromProjection, QueryString } from '../utilities';
 import { Filter, PrimaryFilter } from '../filters';
 
+export const errors = {
+  queryStringAfterPrimaryFilter: 'Query string cannot be used with primary filter.',
+  queryStringAfterFilter: 'Query string cannot be used with filter.',
+  queryStringAfterSelect: 'Query string cannot be used with select.',
+  queryStringAfterInclude: 'Query string cannot be used with include.',
+  primaryFilterAfterQueryString: 'Primary filter cannot be used with query string.',
+  filterAfterQueryString: 'Filter cannot be used with query string.',
+  selectAfterQueryString: 'Select cannot be used with query string.',
+  includeAfterQueryString: 'Include cannot be used with query string.'
+};
+
 export class VsQueryable<TResult> {
   private queryString: QueryString;
   private primaryFilter: string;
@@ -15,19 +26,19 @@ export class VsQueryable<TResult> {
 
   withQueryString(queryString: QueryString): VsQueryable<TResult> {
     if (this.primaryFilter) {
-      throw new Error('Query string cannot be used with primary filter.');
+      throw new Error(errors.queryStringAfterPrimaryFilter);
     }
 
     if (this.filters.length) {
-      throw new Error('Query string cannot be used with filter.');
+      throw new Error(errors.queryStringAfterFilter);
     }
 
     if (this.includes.length) {
-      throw new Error('Query string cannot be used with include.');
+      throw new Error(errors.queryStringAfterInclude);
     }
 
     if (this.selects.length) {
-      throw new Error('Query string cannot be used with select');
+      throw new Error(errors.queryStringAfterSelect);
     }
 
     this.queryString = queryString;
@@ -36,7 +47,7 @@ export class VsQueryable<TResult> {
 
   withPrimaryFilter(filter: PrimaryFilter<TResult>): VsQueryable<TResult> {
     if (this.queryString) {
-      throw new Error('Primary filter cannot be used with query string.');
+      throw new Error(errors.primaryFilterAfterQueryString);
     }
 
     this.primaryFilter = filter.toString();
@@ -45,7 +56,7 @@ export class VsQueryable<TResult> {
 
   filter(filter: Filter<TResult>): VsQueryable<TResult> {
     if (this.queryString) {
-      throw new Error('Filter cannot be used with query string.');
+      throw new Error(errors.filterAfterQueryString);
     }
 
     this.filters.push(filter.toString());
@@ -54,7 +65,7 @@ export class VsQueryable<TResult> {
 
   select<TInterface>(projection: (i: TResult) => any): VsQueryable<TInterface> {
     if (this.queryString) {
-      throw new Error('Select cannot be used with query string.');
+      throw new Error(errors.selectAfterQueryString);
     }
 
     this.selects = getPropertyNamesFromProjection(projection);
@@ -68,7 +79,7 @@ export class VsQueryable<TResult> {
   include<T1, T2>(prop1: (i: TResult) => T1[], prop2: (i: T1) => T2[], prop3: (i: T2) => any): VsQueryable<TResult>;
   include(...props: ((i: any) => any)[]): VsQueryable<TResult> {
     if (this.queryString) {
-      throw new Error('Include cannot be used with query string.');
+      throw new Error(errors.includeAfterQueryString);
     }
 
     let propNames = props
