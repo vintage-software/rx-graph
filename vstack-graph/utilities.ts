@@ -80,18 +80,6 @@ export function isPrimitive(item: any) {
   return Object.prototype.toString.call(item) === '[object Date]' || typeof item !== 'object' || item === null;
 }
 
-export function toQueryString(query: QueryString): string {
-  let params: string[] = [];
-
-  for (let prop in query) {
-    if (query.hasOwnProperty(prop)) {
-      params.push(`${prop}=${encodeURIComponent(query[prop])}`);
-    }
-  }
-
-  return params.join('&');
-}
-
 export function getPropertyName(expression: (i: any) => any): string {
   /* tslint:disable */
   let memberExpressionRegEx = /^\s*function\s*\(([a-z]+)\)\s*{\s*(?:"use strict";)?\s*return\s+\1\.((?:(?:[a-z]+)\.?)+);?\s*}\s*$/i;
@@ -132,4 +120,36 @@ export function getPropertyNamesFromProjection(projection: (i: any) => any): str
   return funcStrMatch[2]
     .split(',')
     .map(prop => prop.split('.', 2)[1].trim());
+}
+
+export function toQueryString(query: QueryString): string {
+  let params: string[] = [];
+
+  for (let prop in query) {
+    if (query.hasOwnProperty(prop)) {
+      params.push(`${prop}=${query[prop]}`);
+    }
+  }
+
+  return params.join('&');
+}
+
+export function parseExplicitTypes(_key: string, value: any) {
+  let result = value;
+
+  if (value) {
+    const keys = Object.keys(value);
+    if (keys.length === 2 && keys.indexOf('_type') > -1 && keys.indexOf('_value') > -1) {
+      const explicitType: { type: string, value: any } = { type: value._type, value: value._value };
+
+      switch (explicitType.type) {
+        case 'DateTime':
+          const dateStr: string = value._value;
+          result = dateStr ? new Date(dateStr.replace('T', ' ').replace('Z', '')) : dateStr;
+          break;
+      }
+    }
+  }
+
+  return result;
 }

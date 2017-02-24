@@ -1,4 +1,4 @@
-import { slimify, isPrimitive, deepClone, mergeCollection } from './utilities';
+import { slimify, isPrimitive, deepClone, mergeCollection, parseExplicitTypes } from './utilities';
 
 describe('isPrimitive', () => {
   it('should detect primitives', () => {
@@ -53,5 +53,61 @@ describe('mergeCollection', () => {
 
     expect(collection1[0].value).toBe('updated value');
     expect(collection1.length).toBe(3);
+  });
+});
+
+describe('parseExplicitTypes', () => {
+  it('should allow null or undefined to pass though', () => {
+    expect(parseExplicitTypes('', null)).toBeNull();
+    expect(parseExplicitTypes('', undefined)).toBeUndefined();
+  });
+});
+
+describe('parseExplicitTypes (DateTime)', () => {
+  const year = 2017;
+  const month = 12;
+  const dayOfMonth = 19;
+  const hours = 17;
+  const minutes = 30;
+
+  const explicitDate = {
+    _type: 'DateTime',
+    _value: `${year}-${month}-${dayOfMonth}T${hours}:${minutes}:00Z`
+  };
+
+  let verifyDate = (date: Date) => {
+    expect(date instanceof Date).toBe(true);
+
+    expect(date.getFullYear()).toBe(year);
+    expect(date.getMonth()).toBe(month - 1);
+    expect(date.getDate()).toBe(dayOfMonth);
+    expect(date.getHours()).toBe(hours);
+    expect(date.getMinutes()).toBe(minutes);
+    expect(date.getSeconds()).toBe(0);
+  };
+
+  it('should convert explicit date to date object', () => {
+    const utcStartDate: Date = parseExplicitTypes('', explicitDate);
+    verifyDate(utcStartDate);
+  });
+
+  it('should work with JSON.parse', () => {
+    const sale = {
+      name: 'The very best sale',
+      utcStartDate: explicitDate
+    };
+
+    const saleJson = JSON.stringify(sale);
+    const parsedSale = JSON.parse(saleJson, parseExplicitTypes);
+
+    verifyDate(parsedSale.utcStartDate);
+  });
+
+  it('should allow null or undefined to pass though', () => {
+    const nullExplicitDate = { _type: 'DateTime', _value: null };
+    const undefinedExplicitDate = { _type: 'DateTime', _value: undefined };
+
+    expect(parseExplicitTypes('', nullExplicitDate)).toBeNull();
+    expect(parseExplicitTypes('', undefinedExplicitDate)).toBeUndefined();
   });
 });
