@@ -1,3 +1,7 @@
+# 0.10.0
+- add VsAngularHttpMapper to handle explicity DateTime values
+- use es6 lib instead of es6-shim types
+
 # 0.9.1
 - Bug fix for runtime test error
 
