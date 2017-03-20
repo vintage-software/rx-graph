@@ -2,7 +2,7 @@ import { ReplaySubject } from 'rxjs/ReplaySubject';
 
 import { LocalCollectionService } from './local-collection.service';
 import { RemotePersistenceMapper } from '../mappers/remote-persistence.mapper';
-import { CollectionItem, deepClone, mergeCollection, Id, QueryString } from '../utilities';
+import { CollectionItem, deepClone, mergeCollection, getItemsAccountingForPossibleMetadata, Id, QueryString } from '../utilities';
 
 export abstract class RemoteCollectionService<TItem extends CollectionItem> extends LocalCollectionService<TItem> {
   constructor(remotePersistenceMapper: RemotePersistenceMapper<TItem>) {
@@ -43,7 +43,7 @@ export abstract class RemoteCollectionService<TItem extends CollectionItem> exte
     let completion = new ReplaySubject<TItem[]>(1);
 
     this._remoteMapper.loadMany(options).subscribe(results => {
-      let items: TItem[] = this.getItemsAccountingForPossibleMetadata(results);
+      let items: TItem[] = getItemsAccountingForPossibleMetadata<TItem>(results);
 
       mergeCollection(this.store.collection, items);
       if (isLoadAll) {
@@ -57,13 +57,5 @@ export abstract class RemoteCollectionService<TItem extends CollectionItem> exte
     }, error => { this._errors.next(error); completion.error(error); });
 
     return completion;
-  }
-
-  private getItemsAccountingForPossibleMetadata(results: any): TItem[] {
-    let hasMetadata = Array.isArray(results) === false &&
-      Object.keys(results).indexOf('items') > -1 &&
-      Array.isArray(results.items);
-
-    return hasMetadata ? results.items : results;
   }
 }

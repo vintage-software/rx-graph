@@ -146,6 +146,14 @@ export function getPropertyNamesFromProjection(projection: (i: any) => any): str
     .map(prop => prop.split('.', 2)[1].trim());
 }
 
+export function getItemsAccountingForPossibleMetadata<TItem>(results: any): TItem[] {
+  let hasMetadata = Array.isArray(results) === false &&
+    Object.keys(results).indexOf('items') > -1 &&
+    Array.isArray(results.items);
+
+  return hasMetadata ? results.items : results;
+}
+
 export function toQueryString(query: QueryString): string {
   let params: string[] = [];
 
