@@ -1,34 +1,6 @@
-import { slimify, isPrimitive, deepClone, mergeCollection, parseExplicitTypes } from './utilities';
+import { deepClone, mergeCollection, slimify, isPrimitive, parseExplicitTypes } from './utilities';
 
-describe('isPrimitive', () => {
-  it('should detect primitives', () => {
-    expect(isPrimitive('Hello World')).toBe(true);
-    expect(isPrimitive(true)).toBe(true);
-    expect(isPrimitive(42)).toBe(true);
-    expect(isPrimitive(null)).toBe(true);
-    expect(isPrimitive(undefined)).toBe(true);
-    expect(isPrimitive(new Date())).toBe(true);
-
-    expect(isPrimitive({})).toBe(false);
-    expect(isPrimitive([])).toBe(false);
-  });
-});
-
-describe('slimify', () => {
-  it('should be able to slimify objects', () => {
-    let complexObject = {
-      id: 1,
-      name: 'John Doe',
-      includedAccounts: ['Visa', 'Mastercard', 'Discover'],
-      includedSession: { token: '1234' }
-    };
-
-    expect(slimify(complexObject).includedAccounts).toBe(null);
-    expect(slimify(complexObject).includedSession).toBe(null);
-  });
-});
-
-describe('clone', () => {
+describe('deepClone', () => {
   it('should be able to clone Dates, Objects and Arrays', () => {
     let testDate = new Date();
     let testObject = { id: 1, utcDate: new Date(), accounts: ['Visa', 'Discover'] };
@@ -53,6 +25,34 @@ describe('mergeCollection', () => {
 
     expect(collection1[0].value).toBe('updated value');
     expect(collection1.length).toBe(3);
+  });
+});
+
+describe('slimify', () => {
+  it('should be able to slimify objects', () => {
+    let complexObject = {
+      id: 1,
+      name: 'John Doe',
+      includedAccounts: ['Visa', 'Mastercard', 'Discover'],
+      includedSession: { token: '1234' }
+    };
+
+    expect(slimify(complexObject).includedAccounts).toBe(null);
+    expect(slimify(complexObject).includedSession).toBe(null);
+  });
+});
+
+describe('isPrimitive', () => {
+  it('should detect primitives', () => {
+    expect(isPrimitive('Hello World')).toBe(true);
+    expect(isPrimitive(true)).toBe(true);
+    expect(isPrimitive(42)).toBe(true);
+    expect(isPrimitive(null)).toBe(true);
+    expect(isPrimitive(undefined)).toBe(true);
+    expect(isPrimitive(new Date())).toBe(true);
+
+    expect(isPrimitive({})).toBe(false);
+    expect(isPrimitive([])).toBe(false);
   });
 });
 
