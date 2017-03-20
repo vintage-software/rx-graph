@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
-import { getPropertyName, getPropertyNamesFromProjection, QueryString } from '../utilities';
+import { getPropertyName, getPropertyNamesFromProjection, ItemsWithAggs, QueryString } from '../utilities';
 import { ElasticFilter, BypassElasticFilter } from '../filters';
 
 export const errors = {
@@ -24,7 +24,7 @@ export class VsElasticQueryable<TItem> {
   private includes: string[] = [];
   private selects: string[] = [];
 
-  constructor(private load: (isLoadAll, queryString) => Observable<TItem[]>) { }
+  constructor(private load: (isLoadAll, queryString) => Observable<TItem[]> | Observable<ItemsWithAggs<TItem>>) { }
 
   withQueryString(queryString: QueryString): VsElasticQueryable<TItem> {
     if (this.bypassFilter) {
@@ -114,15 +114,30 @@ export class VsElasticQueryable<TItem> {
     return this;
   }
 
-  toList(): Observable<TItem[]> {
-    let queryString = this.queryString || this.buildQueryString();
-    let isLoadAll = !!!queryString;
-    return this.load(isLoadAll, queryString);
+  toList() {
+    return this.toListInternal(false);
+  }
+
+  toListWithAggs() {
+    return this.toListInternal(true);
   }
 
   firstOrDefault(): Observable<TItem> {
     return this.toList()
       .map(items => items.length ? items[0] : undefined);
+  }
+
+  private toListInternal(withAggs: true): Observable<ItemsWithAggs<TItem>>
+  private toListInternal(withAggs: false): Observable<TItem[]>
+  private toListInternal(withAggs: boolean) {
+    let queryString = this.queryString || this.buildQueryString();
+    let isLoadAll = !!!queryString;
+
+    if (withAggs === true) {
+      queryString['aggsMetadata'] = 'true';
+    }
+
+    return this.load(isLoadAll, queryString);
   }
 
   private buildQueryString(): QueryString {

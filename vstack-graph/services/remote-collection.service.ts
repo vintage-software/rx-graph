@@ -42,18 +42,28 @@ export abstract class RemoteCollectionService<TItem extends CollectionItem> exte
   protected loadMany(isLoadAll: boolean, options: QueryString) {
     let completion = new ReplaySubject<TItem[]>(1);
 
-    this._remoteMapper.loadMany(options).subscribe(items => {
+    this._remoteMapper.loadMany(options).subscribe(results => {
+      let items: TItem[] = this.getItemsAccountingForPossibleMetadata(results);
+
       mergeCollection(this.store.collection, items);
       if (isLoadAll) {
         this.store.collection = this.store.collection.filter(i => !!items.find(j => j.id === i.id));
       }
 
       this.recordHistory('LOAD_MANY');
-      completion.next(deepClone(items));
+      completion.next(deepClone(results));
       completion.complete();
       this._collection.next(this.store.collection);
     }, error => { this._errors.next(error); completion.error(error); });
 
     return completion;
+  }
+
+  private getItemsAccountingForPossibleMetadata(results: any): TItem[] {
+    let hasMetadata = Array.isArray(results) === false &&
+      Object.keys(results).indexOf('items') > -1 &&
+      Array.isArray(results.items);
+
+    return hasMetadata ? results.items : results;
   }
 }

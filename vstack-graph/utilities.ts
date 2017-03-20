@@ -7,6 +7,30 @@ export interface CollectionItem {
   id: Id;
 }
 
+export interface AggItem {
+  key: string;
+  docCount: number;
+  aggregations?: Aggs[];
+}
+
+export interface AggValue {
+  items: AggItem[];
+  docCountErrorUpperBound: number;
+  sumOtherDocCount: number;
+  meta?: any;
+  docCount: number;
+}
+
+export interface Aggs {
+  key: string;
+  value: AggValue;
+}
+
+export interface ItemsWithAggs<TItem> {
+  items: TItem[];
+  aggs: Aggs[];
+}
+
 export function deepClone<T>(obj: T): T {
   let copy;
 
