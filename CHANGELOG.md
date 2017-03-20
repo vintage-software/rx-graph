@@ -1,3 +1,6 @@
+# 0.11.0
+- add support for elasticsearch queries with aggs
+
 # 0.10.0
 - add VsAngularHttpMapper to handle explicity DateTime values
 - use es6 lib instead of es6-shim types
