@@ -15,16 +15,16 @@ export const errors = {
   includeAfterQueryString: 'Include cannot be used with query string.'
 };
 
-export class VsQueryable<TResult> {
+export class VsQueryable<TItem> {
   private queryString: QueryString;
   private primaryFilter: string;
   private filters: string[] = [];
   private includes: string[] = [];
   private selects: string[] = [];
 
-  constructor(private load: (isLoadAll, queryString) => Observable<TResult[]>) { }
+  constructor(private load: (isLoadAll, queryString) => Observable<TItem[]>) { }
 
-  withQueryString(queryString: QueryString): VsQueryable<TResult> {
+  withQueryString(queryString: QueryString): VsQueryable<TItem> {
     if (this.primaryFilter) {
       throw new Error(errors.queryStringAfterPrimaryFilter);
     }
@@ -45,7 +45,7 @@ export class VsQueryable<TResult> {
     return this;
   }
 
-  withPrimaryFilter(filter: PrimaryFilter<TResult>): VsQueryable<TResult> {
+  withPrimaryFilter(filter: PrimaryFilter<TItem>): VsQueryable<TItem> {
     if (this.queryString) {
       throw new Error(errors.primaryFilterAfterQueryString);
     }
@@ -54,7 +54,7 @@ export class VsQueryable<TResult> {
     return this;
   }
 
-  filter(filter: Filter<TResult>): VsQueryable<TResult> {
+  filter(filter: Filter<TItem>): VsQueryable<TItem> {
     if (this.queryString) {
       throw new Error(errors.filterAfterQueryString);
     }
@@ -63,7 +63,7 @@ export class VsQueryable<TResult> {
     return this;
   }
 
-  select<TInterface>(projection: (i: TResult) => any): VsQueryable<TInterface> {
+  select<TInterface>(projection: (i: TItem) => any): VsQueryable<TInterface> {
     if (this.queryString) {
       throw new Error(errors.selectAfterQueryString);
     }
@@ -74,10 +74,10 @@ export class VsQueryable<TResult> {
     return queryable;
   }
 
-  include(prop: (i: TResult) => any): VsQueryable<TResult>;
-  include<T1>(prop1: (i: TResult) => T1[], prop2: (i: T1) => any): VsQueryable<TResult>;
-  include<T1, T2>(prop1: (i: TResult) => T1[], prop2: (i: T1) => T2[], prop3: (i: T2) => any): VsQueryable<TResult>;
-  include(...props: ((i: any) => any)[]): VsQueryable<TResult> {
+  include(prop: (i: TItem) => any): VsQueryable<TItem>;
+  include<T1>(prop1: (i: TItem) => T1[], prop2: (i: T1) => any): VsQueryable<TItem>;
+  include<T1, T2>(prop1: (i: TItem) => T1[], prop2: (i: T1) => T2[], prop3: (i: T2) => any): VsQueryable<TItem>;
+  include(...props: ((i: any) => any)[]): VsQueryable<TItem> {
     if (this.queryString) {
       throw new Error(errors.includeAfterQueryString);
     }
@@ -94,13 +94,13 @@ export class VsQueryable<TResult> {
     return this;
   }
 
-  toList(): Observable<TResult[]> {
+  toList(): Observable<TItem[]> {
     let queryString = this.queryString || this.buildQueryString();
     let isLoadAll = !!!queryString;
     return this.load(isLoadAll, queryString);
   }
 
-  firstOrDefault(): Observable<TResult> {
+  firstOrDefault(): Observable<TItem> {
     return this.toList()
       .map(items => items.length ? items[0] : undefined);
   }

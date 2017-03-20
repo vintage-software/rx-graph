@@ -17,16 +17,16 @@ export const errors = {
   filterAfterBypassFilter: 'A bypass elastic filter cannot be used with elastic filters.'
 };
 
-export class VsElasticQueryable<TResult> {
+export class VsElasticQueryable<TItem> {
   private queryString: QueryString;
   private bypassFilter: string;
   private filters: string[] = [];
   private includes: string[] = [];
   private selects: string[] = [];
 
-  constructor(private load: (isLoadAll, queryString) => Observable<TResult[]>) { }
+  constructor(private load: (isLoadAll, queryString) => Observable<TItem[]>) { }
 
-  withQueryString(queryString: QueryString): VsElasticQueryable<TResult> {
+  withQueryString(queryString: QueryString): VsElasticQueryable<TItem> {
     if (this.bypassFilter) {
       throw new Error(errors.queryStringAfterBypassFilter);
     }
@@ -47,7 +47,7 @@ export class VsElasticQueryable<TResult> {
     return this;
   }
 
-  filter(filter: ElasticFilter<TResult>): VsElasticQueryable<TResult> {
+  filter(filter: ElasticFilter<TItem>): VsElasticQueryable<TItem> {
     if (this.queryString) {
       throw new Error(errors.filterAfterQueryString);
     }
@@ -60,7 +60,7 @@ export class VsElasticQueryable<TResult> {
     return this;
   }
 
-  bypass(filter: BypassElasticFilter<TResult>): VsElasticQueryable<TResult> {
+  bypass(filter: BypassElasticFilter<TItem>): VsElasticQueryable<TItem> {
     if (this.queryString) {
       throw new Error(errors.bypassFilterAfterQueryString);
     }
@@ -73,7 +73,7 @@ export class VsElasticQueryable<TResult> {
     return this;
   }
 
-  select<TInterface>(projection: (i: TResult) => any): VsElasticQueryable<TInterface> {
+  select<TInterface>(projection: (i: TItem) => any): VsElasticQueryable<TInterface> {
     if (this.queryString) {
       throw new Error(errors.selectAfterQueryString);
     }
@@ -84,10 +84,10 @@ export class VsElasticQueryable<TResult> {
     return queryable;
   }
 
-  include(prop: (i: TResult) => any): VsElasticQueryable<TResult>;
-  include<T1>(prop1: (i: TResult) => T1[], prop2: (i: T1) => any): VsElasticQueryable<TResult>;
-  include<T1, T2>(prop1: (i: TResult) => T1[], prop2: (i: T1) => T2[], prop3: (i: T2) => any): VsElasticQueryable<TResult>;
-  include(...props: ((i: any) => any)[]): VsElasticQueryable<TResult> {
+  include(prop: (i: TItem) => any): VsElasticQueryable<TItem>;
+  include<T1>(prop1: (i: TItem) => T1[], prop2: (i: T1) => any): VsElasticQueryable<TItem>;
+  include<T1, T2>(prop1: (i: TItem) => T1[], prop2: (i: T1) => T2[], prop3: (i: T2) => any): VsElasticQueryable<TItem>;
+  include(...props: ((i: any) => any)[]): VsElasticQueryable<TItem> {
     if (this.queryString) {
       throw new Error(errors.includeAfterQueryString);
     }
@@ -114,13 +114,13 @@ export class VsElasticQueryable<TResult> {
     return this;
   }
 
-  toList(): Observable<TResult[]> {
+  toList(): Observable<TItem[]> {
     let queryString = this.queryString || this.buildQueryString();
     let isLoadAll = !!!queryString;
     return this.load(isLoadAll, queryString);
   }
 
-  firstOrDefault(): Observable<TResult> {
+  firstOrDefault(): Observable<TItem> {
     return this.toList()
       .map(items => items.length ? items[0] : undefined);
   }

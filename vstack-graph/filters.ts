@@ -13,20 +13,20 @@ export abstract class BaseFilter {
   }
 }
 
-export abstract class Filter<TResult> extends BaseFilter {
-  protected abstract __dummy(): TResult;
+export abstract class Filter<TItem> extends BaseFilter {
+  protected abstract __dummy(): TItem;
 }
 
-export abstract class PrimaryFilter<TResult> extends BaseFilter {
-  protected abstract __dummy(): TResult;
+export abstract class PrimaryFilter<TItem> extends BaseFilter {
+  protected abstract __dummy(): TItem;
 }
 
-export abstract class ElasticFilter<TResult> extends BaseFilter {
-  protected abstract __dummy(): TResult;
+export abstract class ElasticFilter<TItem> extends BaseFilter {
+  protected abstract __dummy(): TItem;
 }
 
-export abstract class BypassElasticFilter<TResult> extends BaseFilter {
-  protected abstract __dummy(): TResult;
+export abstract class BypassElasticFilter<TItem> extends BaseFilter {
+  protected abstract __dummy(): TItem;
 }
 
 export enum SortType {
