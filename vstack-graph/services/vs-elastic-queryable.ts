@@ -24,7 +24,7 @@ export class VsElasticQueryable<TResult> {
   private includes: string[] = [];
   private selects: string[] = [];
 
-  constructor(private load: (boolean, QueryString) => Observable<TResult[]>) { }
+  constructor(private load: (isLoadAll, queryString) => Observable<TResult[]>) { }
 
   withQueryString(queryString: QueryString): VsElasticQueryable<TResult> {
     if (this.bypassFilter) {
