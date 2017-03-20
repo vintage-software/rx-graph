@@ -1,4 +1,21 @@
-import { deepClone, mergeCollection, slimify, isPrimitive, parseExplicitTypes } from './utilities';
+import {
+  deepClone,
+  mergeCollection,
+  slimify,
+  isPrimitive,
+  getPropertyName,
+  getPropertyNamesFromProjection,
+  getItemsAccountingForPossibleMetadata,
+  parseExplicitTypes,
+  toQueryString
+} from './utilities';
+
+interface Item {
+  id: number;
+  category: string;
+  name: string;
+  url: string;
+}
 
 describe('deepClone', () => {
   it('should be able to clone Dates, Objects and Arrays', () => {
@@ -56,8 +73,58 @@ describe('isPrimitive', () => {
   });
 });
 
+describe('getPropertyName', () => {
+  it('should get a property name from a function', () => {
+    expect(getPropertyName((item: Item) => item.url)).toBe('url');
+  });
+
+  it('should throw when the function is not a valid member expression', () => {
+    expect(() => getPropertyName((item: Item) => item)).toThrowError();
+  });
+});
+
+describe('getPropertyNamesFromProjection', () => {
+  it('should get a property name from a function', () => {
+    expect(getPropertyNamesFromProjection((item: Item) => { return item.id, item.name, item.url; })).toEqual(['id', 'name', 'url']);
+  });
+
+  it('should throw when the function is not a valid projection expression', () => {
+    expect(() => getPropertyNamesFromProjection((item: Item) => item)).toThrowError();
+  });
+});
+
+describe('getItemsAccountingForPossibleMetadata', () => {
+  it('should allow items array to pass through', () => {
+    const items = [ { id: 1 } ];
+    expect(getItemsAccountingForPossibleMetadata(items)).toBe(items);
+  });
+
+  it('should return `results.items` if `results` is not an array and contains a property named `items` that has an array value', () => {
+    const results = { items: [ { id: 1 } ] };
+    expect(getItemsAccountingForPossibleMetadata(results)).toBe(results.items);
+  });
+});
+
+describe('toQueryString', () => {
+  it('should convert object to query string', () => {
+    const queryString = { };
+    queryString['ids'] = '1,2';
+    queryString['include'] = 'description';
+
+    expect(toQueryString(queryString)).toBe('ids=1,2&include=description');
+  });
+
+  it('should ignore non-own properties', () => {
+    const queryString = Object.create({ ignoreme: 'ignoreme' });
+    queryString['ids'] = '1,2';
+    queryString['include'] = 'description';
+
+    expect(toQueryString(queryString)).toBe('ids=1,2&include=description');
+  });
+});
+
 describe('parseExplicitTypes', () => {
-  it('should allow null or undefined to pass though', () => {
+  it('should allow null or undefined to pass through', () => {
     expect(parseExplicitTypes('', null)).toBeNull();
     expect(parseExplicitTypes('', undefined)).toBeUndefined();
   });

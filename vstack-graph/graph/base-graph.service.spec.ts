@@ -104,9 +104,9 @@ describe('GraphService Specs', () => {
     testGraphService.graph
       .skip(3)
       .do(graph => {
-        expect(graph.testUsers[0].value).toBe('user 1-changed');
-        expect(graph.testUsers[1].value).toBe('user 2-changed');
-        expect(graph.testUsers[2].value).toBe('user 3-changed');
+        expect(graph.testUsers[0].value).toBe('user 1-updated');
+        expect(graph.testUsers[1].value).toBe('user 2-updated');
+        expect(graph.testUsers[2].value).toBe('user 3-updated');
         checked = true;
       })
       .subscribe();
@@ -114,9 +114,32 @@ describe('GraphService Specs', () => {
     let users = getTestUsers();
     MockPersistenceMapper.mockResponse = users;
     testGraphService.testUserService.getAll().toList();
-    users.forEach(i => i.value += '-changed');
+    users.forEach(i => i.value += '-updated');
     testGraphService.testUserService.updateMany([users[0], users[1]]);
     testGraphService.testUserService.update(users[2]);
+
+    expect(checked).toBe(true);
+  });
+
+  it('patch and patchMany should be reflected in the graph', () => {
+    let checked = false;
+
+    testGraphService.graph
+      .skip(3)
+      .do(graph => {
+        expect(graph.testUsers[0].value).toBe('user 1-patched');
+        expect(graph.testUsers[1].value).toBe('user 2-patched');
+        expect(graph.testUsers[2].value).toBe('user 3-patched');
+        checked = true;
+      })
+      .subscribe();
+
+    let users = getTestUsers();
+    MockPersistenceMapper.mockResponse = users;
+    testGraphService.testUserService.getAll().toList();
+    users.forEach(i => i.value += '-patched');
+    testGraphService.testUserService.patchMany([users[0], users[1]]);
+    testGraphService.testUserService.patch(users[2]);
 
     expect(checked).toBe(true);
   });

@@ -10,23 +10,23 @@ export class VsAngularHttpMapper<TItem extends CollectionItem> extends AngularHt
     super({ baseUrl, http, options });
   }
 
-  create(items: TItem[], options: QueryString = {}): Observable<TItem[]> {
+  create(items: TItem[], options: QueryString): Observable<TItem[]> {
     return this.wrapRequest(options, explicitOptions => this.createInternal(items, explicitOptions));
   }
 
-  update(items: TItem[], options: QueryString = {}): Observable<TItem[]> {
+  update(items: TItem[], options: QueryString): Observable<TItem[]> {
     return this.wrapRequest(options, explicitOptions => this.updateInternal(items, explicitOptions));
   }
 
-  patch(items: TItem[], options: QueryString = {}): Observable<TItem[]> {
+  patch(items: TItem[], options: QueryString): Observable<TItem[]> {
     return this.wrapRequest(options, explicitOptions => this.patchInternal(items, explicitOptions));
   }
 
-  load(id: Id, options: QueryString = {}): Observable<TItem> {
+  load(id: Id, options: QueryString): Observable<TItem> {
     return this.wrapRequest(options, explicitOptions => this.loadInternal(id, explicitOptions));
   }
 
-  loadMany(options: QueryString = {}): Observable<TItem[]> {
+  loadMany(options: QueryString): Observable<TItem[]> {
     return this.wrapRequest(options, explicitOptions => this.loadManyInternal(explicitOptions));
   }
 

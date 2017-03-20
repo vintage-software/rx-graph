@@ -40,28 +40,46 @@ describe('VsElasticQueryable', () => {
     let filter: string = undefined;
     let include: string = undefined;
     let select: string = undefined;
+    let aggsMetadata: string = undefined;
 
     const load = (isLoadAll: boolean, options: QueryString) => {
       bypass = options['bypass'];
       filter = options['filter'];
       include = options['include'];
       select = options['select'];
+      aggsMetadata = options['aggsMetadata'];
       return Observable.of(items);
     };
 
-    new VsElasticQueryable(load)
+    const queryable = new VsElasticQueryable(load)
       .filter(new ByNameElasticFilter('Toy'))
       .filter(new ByNameElasticFilter('Gift'))
       .include(item => item.name)
       .include(item => item.description)
-      .select(item => { return item.id, item.name; })
-      .toList()
-      .subscribe(() => {});
+      .include(item => item.description) // should not be added twice
+      .includeElasticMetadata()
+      .includeElasticMetadata() // should not be added twice
+      .select(item => { return item.id, item.name; });
 
-    expect(bypass).toBe(undefined);
-    expect(filter).toBe('byname:toy|byname:gift');
-    expect(include).toBe('name,description');
-    expect(select).toBe('id,name');
+    const test = (observable: Observable<any>, withAggs = false) => {
+      observable
+        .subscribe(() => {});
+
+      expect(bypass).toBe(undefined);
+      expect(filter).toBe('byname:toy|byname:gift');
+      expect(include).toBe('name,description,_meta');
+      expect(select).toBe('id,name');
+
+      if (withAggs) {
+        expect(aggsMetadata).toBe('true');
+      } else {
+        expect(aggsMetadata).toBeUndefined();
+      }
+    };
+
+    test(queryable.toList());
+    test(queryable.toListWithAggs(), true);
+    test(queryable.firstOrDefault());
   });
 
   it('should correctly build query string with bypass filter', () => {
@@ -103,10 +121,10 @@ describe('VsElasticQueryable', () => {
     const queryStringThenSelect = () => query().select(item => { return item.id, item.name; });
     const queryStringThenInclude = () => query().include(item => item.description);
 
-    expect(queryStringThenBypassFilter).toThrow(new Error(errors.bypassFilterAfterQueryString));
-    expect(queryStringThenFilter).toThrow(new Error(errors.filterAfterQueryString));
-    expect(queryStringThenSelect).toThrow(new Error(errors.selectAfterQueryString));
-    expect(queryStringThenInclude).toThrow(new Error(errors.includeAfterQueryString));
+    expect(queryStringThenBypassFilter).toThrowError(errors.bypassFilterAfterQueryString);
+    expect(queryStringThenFilter).toThrowError(errors.filterAfterQueryString);
+    expect(queryStringThenSelect).toThrowError(errors.selectAfterQueryString);
+    expect(queryStringThenInclude).toThrowError(errors.includeAfterQueryString);
   });
 
   it('should not allow custom query string after typed options', () => {
@@ -120,10 +138,10 @@ describe('VsElasticQueryable', () => {
     const selectThenQueryString = () => query().select(item => { return item.id, item.name; }).withQueryString(queryString);
     const includeThenQueryString = () => query().include(item => item.description).withQueryString(queryString);
 
-    expect(bypassFilterThenQueryString).toThrow(new Error(errors.queryStringAfterBypassFilter));
-    expect(filterThenQueryString).toThrow(new Error(errors.queryStringAfterFilter));
-    expect(selectThenQueryString).toThrow(new Error(errors.queryStringAfterSelect));
-    expect(includeThenQueryString).toThrow(new Error(errors.queryStringAfterInclude));
+    expect(bypassFilterThenQueryString).toThrowError(errors.queryStringAfterBypassFilter);
+    expect(filterThenQueryString).toThrowError(errors.queryStringAfterFilter);
+    expect(selectThenQueryString).toThrowError(errors.queryStringAfterSelect);
+    expect(includeThenQueryString).toThrowError(errors.queryStringAfterInclude);
   });
 
   it('should not allow a normal elastic filter and a bypass elastic filter to be used together', () => {
@@ -135,8 +153,8 @@ describe('VsElasticQueryable', () => {
     const bypassThenNormalFilter = () => query().bypass(new ByNameBypassElasticFilter('Toy')).filter(new ByNameElasticFilter('Toy'));
     const normalThenBypassFilter = () => query().filter(new ByNameElasticFilter('Toy')).bypass(new ByNameBypassElasticFilter('Toy'));
 
-    expect(bypassThenNormalFilter).toThrow(new Error(errors.filterAfterBypassFilter));
-    expect(normalThenBypassFilter).toThrow(new Error(errors.bypassFilterAfterFilter));
+    expect(bypassThenNormalFilter).toThrowError(errors.filterAfterBypassFilter);
+    expect(normalThenBypassFilter).toThrowError(errors.bypassFilterAfterFilter);
   });
 });
 

@@ -49,20 +49,27 @@ describe('VsQueryable', () => {
       return Observable.of(items);
     };
 
-    new VsQueryable(load)
+    const queryable = new VsQueryable(load)
       .withPrimaryFilter(new ByNamePrimaryFilter('Toy'))
       .filter(new ByNameFilter('Toy'))
       .filter(new ByNameFilter('Gift'))
       .include(item => item.name)
       .include(item => item.description)
-      .select(item => { return item.id, item.name; })
-      .toList()
-      .subscribe(() => {});
+      .include(item => item.description) // should not be added twice
+      .select(item => { return item.id, item.name; });
 
-    expect(primaryFilter).toBe('byname:toy');
-    expect(filter).toBe('byname:toy|byname:gift');
-    expect(include).toBe('name,description');
-    expect(select).toBe('id,name');
+    const test = (observable: Observable<any>) => {
+      observable
+        .subscribe(() => {});
+
+      expect(primaryFilter).toBe('byname:toy');
+      expect(filter).toBe('byname:toy|byname:gift');
+      expect(include).toBe('name,description');
+      expect(select).toBe('id,name');
+    };
+
+    test(queryable.toList());
+    test(queryable.firstOrDefault());
   });
 
   it('should not allow typed options after custom query string', () => {
@@ -76,10 +83,10 @@ describe('VsQueryable', () => {
     const queryStringThenSelect = () => query().select(item => { return item.id, item.name; });
     const queryStringThenInclude = () => query().include(item => item.description);
 
-    expect(queryStringThenPrimaryFilter).toThrow(new Error(errors.primaryFilterAfterQueryString));
-    expect(queryStringThenFilter).toThrow(new Error(errors.filterAfterQueryString));
-    expect(queryStringThenSelect).toThrow(new Error(errors.selectAfterQueryString));
-    expect(queryStringThenInclude).toThrow(new Error(errors.includeAfterQueryString));
+    expect(queryStringThenPrimaryFilter).toThrowError(errors.primaryFilterAfterQueryString);
+    expect(queryStringThenFilter).toThrowError(errors.filterAfterQueryString);
+    expect(queryStringThenSelect).toThrowError(errors.selectAfterQueryString);
+    expect(queryStringThenInclude).toThrowError(errors.includeAfterQueryString);
   });
 
   it('should not allow custom query string after typed options', () => {
@@ -93,10 +100,10 @@ describe('VsQueryable', () => {
     const selectThenQueryString = () => query().select(item => { return item.id, item.name; }).withQueryString(queryString);
     const includeThenQueryString = () => query().include(item => item.description).withQueryString(queryString);
 
-    expect(primaryFilterThenQueryString).toThrow(new Error(errors.queryStringAfterPrimaryFilter));
-    expect(filterThenQueryString).toThrow(new Error(errors.queryStringAfterFilter));
-    expect(selectThenQueryString).toThrow(new Error(errors.queryStringAfterSelect));
-    expect(includeThenQueryString).toThrow(new Error(errors.queryStringAfterInclude));
+    expect(primaryFilterThenQueryString).toThrowError(errors.queryStringAfterPrimaryFilter);
+    expect(filterThenQueryString).toThrowError(errors.queryStringAfterFilter);
+    expect(selectThenQueryString).toThrowError(errors.queryStringAfterSelect);
+    expect(includeThenQueryString).toThrowError(errors.queryStringAfterInclude);
   });
 });
 
