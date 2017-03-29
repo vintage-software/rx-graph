@@ -13,7 +13,7 @@
     "declaration": true,
     "outFile": "./bundles/vstack-graph.js",
     "lib": ["es6"],
-    "types": ["jasmine"]
+    "types": ["jasmine", "node"]
   },
   "files": [
     "./index.ts"

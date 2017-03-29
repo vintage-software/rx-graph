@@ -1,5 +1,4 @@
 import { getPropertyName } from './vstack-graph/utilities';
-
 export { BaseGraphService } from './vstack-graph/graph/base-graph.service';
 export { ServiceConfig, Relation } from './vstack-graph/graph/graph-utilities';
 export { CollectionService } from './vstack-graph/services/collection.service';
@@ -10,7 +9,7 @@ export { VsElasticQueryable } from './vstack-graph/services/vs-elastic-queryable
 export { LocalCollectionService } from './vstack-graph/services/local-collection.service';
 export { AngularHttpMapper } from './vstack-graph/mappers/angular-http.mapper';
 export { VsAngularHttpMapper } from './vstack-graph/mappers/vs-angular-http.mapper';
-export { CollectionItem } from './vstack-graph/utilities';
+export { CollectionItem, AggItem, AggValue, Aggs, ItemsWithAggs } from './vstack-graph/utilities';
 export * from './vstack-graph/filters';
-
 export const utilities = { getPropertyName };
+export { Store, StoreService } from './vstack-graph/store/store';
