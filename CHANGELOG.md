@@ -1,3 +1,6 @@
+# 0.12.1
+- Fixed tsconfig typing issue
+
 # 0.12.0
 - Export Agg interfaces
 - Experimental Store Service
