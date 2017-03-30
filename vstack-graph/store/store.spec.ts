@@ -26,8 +26,8 @@ class OrgService extends StoreService<IState> {
 
   updateOrgName(name: string) {
     this.dispatch((state: IState) => {
-      state.org = { ...state.org, name };
-      return state;
+      const org = { ...state.org, name };
+      return { ...state, org };
     });
   }
 

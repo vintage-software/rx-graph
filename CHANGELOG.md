@@ -1,3 +1,6 @@
+# 0.12.2
+- Fixed typing issue on select operator
+
 # 0.12.1
 - Fixed tsconfig typing issue
 

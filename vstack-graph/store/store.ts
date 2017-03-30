@@ -8,14 +8,14 @@ import 'rxjs/add/operator/share';
 
 export interface Store<T> extends Observable<T> {
   // tslint:disable
-  select<K>(mapFn: (state: T) => K): BehaviorSubject<K>;
-  select<a extends keyof T>(key: a): BehaviorSubject<T[a]>;
-  select<a extends keyof T, b extends keyof T[a]>(key1: a, key2: b): BehaviorSubject<T[a][b]>
-  select<a extends keyof T, b extends keyof T[a], c extends keyof T[a][b]>(key1: a, key2: b, key3: c): BehaviorSubject<T[a][b][c]>
-  select<a extends keyof T, b extends keyof T[a], c extends keyof T[a][b], d extends keyof T[a][b][c]>(key1: a, key2: b, key3: c, key4: d): BehaviorSubject<T[a][b][c][d]>
-  select<a extends keyof T, b extends keyof T[a], c extends keyof T[a][b], d extends keyof T[a][b][c], e extends keyof T[a][b][c][d]>(key1: a, key2: b, key3: c, key4: d, key5: e): BehaviorSubject<T[a][b][c][d][e]>
-  select<a extends keyof T, b extends keyof T[a], c extends keyof T[a][b], d extends keyof T[a][b][c], e extends keyof T[a][b][c][d], f extends keyof T[a][b][c][d][e]>(key1: a, key2: b, key3: c, key4: d, key5: e, key6: f): BehaviorSubject<T[a][b][c][d][e][f]>
-  select(pathOrMapFn: ((state: T) => any) | string, ...paths: string[]): BehaviorSubject<any>;
+  select<K>(mapFn: (state: T) => K): Observable<K>;
+  select<a extends keyof T>(key: a): Observable<T[a]>;
+  select<a extends keyof T, b extends keyof T[a]>(key1: a, key2: b): Observable<T[a][b]>
+  select<a extends keyof T, b extends keyof T[a], c extends keyof T[a][b]>(key1: a, key2: b, key3: c): Observable<T[a][b][c]>
+  select<a extends keyof T, b extends keyof T[a], c extends keyof T[a][b], d extends keyof T[a][b][c]>(key1: a, key2: b, key3: c, key4: d): Observable<T[a][b][c][d]>
+  select<a extends keyof T, b extends keyof T[a], c extends keyof T[a][b], d extends keyof T[a][b][c], e extends keyof T[a][b][c][d]>(key1: a, key2: b, key3: c, key4: d, key5: e): Observable<T[a][b][c][d][e]>
+  select<a extends keyof T, b extends keyof T[a], c extends keyof T[a][b], d extends keyof T[a][b][c], e extends keyof T[a][b][c][d], f extends keyof T[a][b][c][d][e]>(key1: a, key2: b, key3: c, key4: d, key5: e, key6: f): Observable<T[a][b][c][d][e][f]>
+  select(pathOrMapFn: ((state: T) => any) | string, ...paths: string[]): Observable<any>;
   // tslint:enable
 };
 
