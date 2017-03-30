@@ -1,3 +1,7 @@
+# 0.12.0
+- Export Agg interfaces
+- Experimental Store Service
+
 # 0.11.0
 - add support for elasticsearch queries with aggs
 
